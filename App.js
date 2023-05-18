@@ -1,13 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { StatusBar } from 'expo-status-bar'
+import { Button, StyleSheet } from 'react-native'
+import { Colors } from './constants/colors'
+import HomeScreen from './screens/HomeScreen'
+import RouteDetailScreen from './screens/RouteDetailScreen'
+
+const Stack = createNativeStackNavigator()
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <>
       <StatusBar style="auto" />
-    </View>
-  );
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: Colors.accent500 },
+            headerTintColor: Colors.gray700,
+            contentStyle: { backgroundColor: Colors.gray700 },
+          }}
+        >
+          <Stack.Screen
+            name="HomeScreen"
+            component={HomeScreen}
+            options={({ navigation }) => ({
+              headerRight: ({ tintColor }) => (
+                <Button
+                  title="Route Detail"
+                  color={tintColor}
+                  onPress={() => navigation.navigate('RouteDetailScreen')}
+                />
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="RouteDetailScreen"
+            component={RouteDetailScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -17,4 +50,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})
