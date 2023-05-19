@@ -3,7 +3,7 @@ import { getForwardRouteApi } from '../../services/api'
 import { getFullDetailDirection } from '../../utils/mapUtils'
 import Map from '../map/Map'
 
-function RouteDirection() {
+function RouteDirection({ routeNumber }) {
   const [routeDirection, setRouteDirection] = useState([])
   const [routeStations, setRouteStations] = useState([])
   const [route, setRoute] = useState([])
@@ -11,7 +11,7 @@ function RouteDirection() {
   useEffect(() => {
     const fetchRoute = async () => {
       try {
-        const routeData = await getForwardRouteApi('R16')
+        const routeData = await getForwardRouteApi(routeNumber)
         const forwardRoute = routeData.data.route.forwardRoute
         setRoute(forwardRoute)
 

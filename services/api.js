@@ -1,8 +1,9 @@
-import { API_URL, MAPBOX_API_KEY } from '@env'
+import { API_BASE_URL, MAPBOX_API_KEY } from '@env'
 import axios from 'axios'
 
+console.log(API_BASE_URL)
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

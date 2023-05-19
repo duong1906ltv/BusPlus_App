@@ -7,9 +7,7 @@ function AllRoutes() {
     const fetchAllRoutes = async () => {
       try {
         const response = await getAllRoutes()
-        console.log('hello')
         const allRoutes = response.data
-        console.log(allRoutes)
       } catch (error) {
         // Handle the error
         console.log(error)
