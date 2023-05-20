@@ -7,7 +7,6 @@ import {
   Text,
   View,
 } from 'react-native'
-// import BusLocation from '../bus_location/BusLocation'
 
 const RouteDetails = () => {
   const { height: screenHeight } = Dimensions.get('window')
@@ -61,7 +60,6 @@ const RouteDetails = () => {
         },
       ]}
     >
-      {/* <BusLocation /> */}
       <View
         style={[styles.header, { height: headerHeight }]}
         {...panResponder.panHandlers}
@@ -74,6 +72,8 @@ const RouteDetails = () => {
     </Animated.View>
   )
 }
+
+export default RouteDetails
 
 const styles = StyleSheet.create({
   container: {
@@ -97,5 +97,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default RouteDetails
