@@ -10,7 +10,7 @@ function BusLocation() {
     longitude: 108.22679,
   })
   const [activeStatus, setActiveStatus] = useState(false)
-  console.log('START', location, activeStatus)
+  // console.log('START', location, activeStatus)
 
   useEffect(() => {
     // Connect to the socket server

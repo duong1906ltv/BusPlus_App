@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Animated,
   Dimensions,
@@ -7,17 +7,18 @@ import {
   Text,
   View,
 } from 'react-native'
+import RouteDetailTabs from './RouteDetailTabs'
 
-const RouteDetails = () => {
+const RouteDetails = ({ route, schedule }) => {
   const { height: screenHeight } = Dimensions.get('window')
   const headerHeight = 60
   const fullHeight = (screenHeight * 96) / 100
   const halfHeight = fullHeight / 2
   // console.log(fullHeight, halfHeight, headerHeight)
-
   const pan = useRef(new Animated.ValueXY()).current
 
   const [panY, setPanY] = useState(0)
+  const [currentHeight, setCurrentHeight] = useState(halfHeight + panY)
 
   const panResponder = useRef(
     PanResponder.create({
@@ -37,12 +38,10 @@ const RouteDetails = () => {
           pan.y.setValue(0)
           pan.y.setOffset(halfHeight - headerHeight)
         } else if (pY > -halfHeight / 2) {
-          console.log(0)
           setPanY(0)
           pan.y.setValue(0)
           pan.y.setOffset(0)
         } else {
-          console.log(-1)
           setPanY(-halfHeight)
           pan.y.setValue(0)
           pan.y.setOffset(-halfHeight)
@@ -51,6 +50,10 @@ const RouteDetails = () => {
     })
   ).current
 
+  useEffect(() => {
+    setCurrentHeight(halfHeight - panY)
+  }, [panY])
+
   return (
     <Animated.View
       style={[
@@ -58,16 +61,19 @@ const RouteDetails = () => {
         {
           transform: [{ translateX: 0 }, { translateY: panY }],
         },
+        {
+          height: currentHeight,
+        },
       ]}
     >
       <View
         style={[styles.header, { height: headerHeight }]}
         {...panResponder.panHandlers}
       >
-        <Text>Header</Text>
+        <Text>{route.routeName}</Text>
       </View>
       <View style={styles.content}>
-        <Text>Content</Text>
+        <RouteDetailTabs route={route} schedule={schedule} />
       </View>
     </Animated.View>
   )
@@ -83,17 +89,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     overflow: 'hidden',
-    backgroundColor: '#ffffff',
-    height: '100%',
+    backgroundColor: 'white',
+    // height: '100%',
   },
   header: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightgray',
+    backgroundColor: 'white',
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 })

@@ -4,7 +4,6 @@ import MapView, { Marker, Polyline } from 'react-native-maps'
 
 function Map({ coordinates, stations, origin, children }) {
   const [zoomLevel, setZoomLevel] = useState(null)
-  console.log('origin', origin)
 
   const region = {
     latitude: 16.07215,

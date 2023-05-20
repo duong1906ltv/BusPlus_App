@@ -19,6 +19,8 @@ export const getForwardRouteApi = (routeName) =>
 export const getBackwardRouteApi = (routeName) =>
   api.get(`/routes/backward-route${routeName}`)
 
+export const getSchedules = () => api.get('/schedules')
+
 export const getDetailDirectionApi = (coordinates) => {
   let coordinatesString = ''
 
