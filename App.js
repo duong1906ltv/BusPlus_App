@@ -1,30 +1,34 @@
+import { createDrawerNavigator } from '@react-navigation/drawer'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { StatusBar } from 'expo-status-bar'
-import { Button, StyleSheet } from 'react-native'
-import { Colors } from './constants/colors'
+import { Button } from 'react-native'
 import HomeScreen from './screens/HomeScreen'
+import MyTicket from './screens/MyTicket'
 import RouteDetailScreen from './screens/RouteDetailScreen'
 import RoutesLookupScreen from './screens/RoutesLookupScreen'
 
+const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
+
+function Root() {
+  return (
+    <Drawer.Navigator initialRouteName="Map">
+      <Drawer.Screen name="Map" component={HomeScreen} />
+      <Drawer.Screen name="My Ticket" component={MyTicket} />
+    </Drawer.Navigator>
+  )
+}
 
 export default function App() {
   return (
     <>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="HomeScreen"
-          screenOptions={{
-            headerStyle: { backgroundColor: Colors.accent500 },
-            headerTintColor: Colors.gray700,
-            contentStyle: { backgroundColor: Colors.white },
-          }}
-        >
+        <Stack.Navigator>
           <Stack.Screen
-            name="HomeScreen"
-            component={HomeScreen}
+            name="BusPlus"
+            component={Root}
             options={({ navigation }) => ({
               headerRight: ({ tintColor }) => (
                 <Button
@@ -39,7 +43,7 @@ export default function App() {
             name="RoutesLookupScreen"
             component={RoutesLookupScreen}
             options={{
-              animation: 'fade',
+              animation: 'slide_from_right',
             }}
           />
           <Stack.Screen
@@ -54,12 +58,3 @@ export default function App() {
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
