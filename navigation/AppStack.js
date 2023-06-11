@@ -2,17 +2,23 @@ import { Fontisto } from '@expo/vector-icons'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Icon from 'react-native-vector-icons/Ionicons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomDrawerContent from '../components/CustomDrawerContent'
 import { Colors } from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import MyTicket from '../screens/MyTicket'
 import RouteDetailScreen from '../screens/RouteDetailScreen'
 import RoutesLookupScreen from '../screens/RoutesLookupScreen'
+import { useSelector } from 'react-redux'
+import LoginScreen from '../screens/Login'
+import RegisterScreen from '../screens/Register'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
 
 function DrawerNavigator() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -48,17 +54,45 @@ function DrawerNavigator() {
           ),
         }}
       />
-      <Drawer.Screen
-        name="MyTicket"
-        component={MyTicket}
-        options={{
-          headerTitle: 'My Ticket',
-          drawerLabel: 'My Ticket',
-          drawerIcon: ({ color, size }) => (
-            <Fontisto name="ticket" color={color} size={size} />
-          ),
-        }}
-      />
+
+      {!isAuthenticated ? (
+        <>
+          <Drawer.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              headerTitle: 'Login',
+              drawerLabel: 'Login',
+              drawerIcon: ({ color, size }) => (
+                <AntDesign name="login" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{
+              headerTitle: 'Register',
+              drawerLabel: 'Register',
+              drawerIcon: ({ color, size }) => (
+                <FontAwesome name="registered" color={color} size={size} />
+              ),
+            }}
+          />
+        </>
+      ) : (
+        <Drawer.Screen
+          name="MyTicket"
+          component={MyTicket}
+          options={{
+            headerTitle: 'My Ticket',
+            drawerLabel: 'My Ticket',
+            drawerIcon: ({ color, size }) => (
+              <Fontisto name="ticket" color={color} size={size} />
+            ),
+          }}
+        />
+      )}
     </Drawer.Navigator>
   )
 }

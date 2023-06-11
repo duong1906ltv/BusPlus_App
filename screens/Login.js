@@ -45,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
       <View style={{ paddingHorizontal: 25 }}>
         <View style={{ alignItems: 'center' }}>
           <Image
-            source={require('../assets/images/bus.png')}
+            source={require('../assets/images/bus_green.png')}
             style={{ width: 200, height: 200 }}
           />
           <Text

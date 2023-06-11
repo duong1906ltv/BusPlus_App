@@ -19,10 +19,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import CustomButton from '../components/auth/CustomButton'
 
 const RegisterScreen = ({ navigation }) => {
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
-  const [dobLabel, setDobLabel] = useState('Date of Birth')
-
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
       <ScrollView
@@ -31,7 +27,7 @@ const RegisterScreen = ({ navigation }) => {
       >
         <View style={{ alignItems: 'center' }}>
           <Image
-            source={require('../assets/images/bus.png')}
+            source={require('../assets/images/bus_green.png')}
             style={{ width: 200, height: 200 }}
           />
           <Text
