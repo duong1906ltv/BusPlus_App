@@ -6,8 +6,8 @@ function Map({ coordinates, stations, origin, children }) {
   const [zoomLevel, setZoomLevel] = useState(null)
 
   const region = {
-    latitude: 16.07215,
-    longitude: 108.22679,
+    latitude: 16.0738355,
+    longitude: 108.145475,
     latitudeDelta: 0.04,
     longitudeDelta: 0.02,
   }
@@ -23,7 +23,7 @@ function Map({ coordinates, stations, origin, children }) {
       style={styles.map}
       customMapStyle={mapStyle}
       initialRegion={region}
-      region={{ ...origin, latitudeDelta: 0.04, longitudeDelta: 0.02 }}
+      // region={{ ...origin, latitudeDelta: 0.04, longitudeDelta: 0.02 }}
       onRegionChangeComplete={handleRegionChangeComplete}
     >
       {zoomLevel <= 0.05 &&

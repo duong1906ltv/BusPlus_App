@@ -5,6 +5,7 @@ import RouteDirection from '../components/routes/RouteDirection'
 import { Colors } from '../constants/colors'
 import { getForwardRouteApi, getSchedules } from '../services/api'
 import { getFullDetailDirection } from '../utils/mapUtils'
+import { useDispatch, useSelector } from 'react-redux'
 
 function RouteDetailScreen({
   route: {
