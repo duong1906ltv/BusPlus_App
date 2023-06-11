@@ -1,18 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  Animated,
-  Dimensions,
-  PanResponder,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native'
+import { windowHeight } from '../../utils/dimensions'
 import RouteDetailTabs from './RouteDetailTabs'
 
 const RouteDetails = ({ route, schedule }) => {
-  const { height: screenHeight } = Dimensions.get('window')
   const headerHeight = 60
-  const fullHeight = (screenHeight * 96) / 100
+  const fullHeight = (windowHeight * 96) / 100
   const halfHeight = fullHeight / 2
   // console.log(fullHeight, halfHeight, headerHeight)
   const pan = useRef(new Animated.ValueXY()).current

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import RouteDetails from '../components/routes/RouteDetails'
 import RouteDirection from '../components/routes/RouteDirection'
+import { Colors } from '../constants/colors'
 import { getForwardRouteApi, getSchedules } from '../services/api'
 import { getFullDetailDirection } from '../utils/mapUtils'
 
@@ -9,12 +10,22 @@ function RouteDetailScreen({
   route: {
     params: { routeNumber },
   },
+  navigation,
 }) {
   const [routeDirection, setRouteDirection] = useState([])
   const [routeStations, setRouteStations] = useState([])
   const [route, setRoute] = useState([])
   const [origin, setOrigin] = useState()
   const [schedule, setSchedule] = useState()
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: routeNumber,
+      headerStyle: { backgroundColor: Colors.primary },
+      headerTintColor: Colors.white,
+    })
+  }, [navigation, routeNumber])
 
   useEffect(() => {
     const fetchRoute = async () => {
