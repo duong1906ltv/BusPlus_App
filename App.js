@@ -5,8 +5,9 @@ import {
   createDrawerNavigator,
 } from '@react-navigation/drawer'
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { StatusBar } from 'expo-status-bar'
+import AppStack from './navigation/AppStack'
+// import AuthStack from './navigation/AuthStack'
 import HomeScreen from './screens/HomeScreen'
 import MyTicket from './screens/MyTicket'
 import RouteDetailScreen from './screens/RouteDetailScreen'
