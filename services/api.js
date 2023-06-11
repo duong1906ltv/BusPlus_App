@@ -1,13 +1,42 @@
 import { API_BASE_URL, MAPBOX_API_KEY } from '@env'
 import axios from 'axios'
 
-console.log(API_BASE_URL)
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 })
+
+// axios
+export const authFetch = axios.create({
+  baseURL: '/api',
+  timeout: 3000,
+})
+// request
+
+authFetch.interceptors.request.use(
+  (config) => {
+    config.headers.common['Authorization'] = `Bearer ${state.token}`
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+// response
+
+authFetch.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      logoutUser()
+    }
+    return Promise.reject(error)
+  }
+)
 
 export const getAllRoutesApi = () => api.get('/routes')
 
@@ -36,5 +65,3 @@ export const getDetailDirectionApi = (coordinates) => {
     `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinatesString}?alternatives=true&continue_straight=false&geometries=polyline&language=en&overview=simplified&access_token=${MAPBOX_API_KEY}`
   )
 }
-
-export default api
