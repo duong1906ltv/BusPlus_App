@@ -5,7 +5,7 @@ import RouteDetailTabs from './RouteDetailTabs'
 
 const RouteDetails = ({ route, schedule }) => {
   const headerHeight = 60
-  const fullHeight = (screenHeight * 90) / 100
+  const fullHeight = (windowHeight * 90) / 100
   const halfHeight = fullHeight / 2
   // console.log(fullHeight, halfHeight, headerHeight)
   const pan = useRef(new Animated.ValueXY()).current

@@ -32,7 +32,7 @@ const RegisterScreen = ({ navigation }) => {
           />
           <Text
             style={{
-              fontFamily: 'Roboto-Medium',
+              // fontFamily: 'Roboto-Medium',
               fontSize: 28,
               fontWeight: '500',
               color: '#333',
@@ -45,7 +45,7 @@ const RegisterScreen = ({ navigation }) => {
 
         <Text
           style={{
-            fontFamily: 'Roboto-Medium',
+            // fontFamily: 'Roboto-Medium',
             fontSize: 28,
             fontWeight: '500',
             color: '#333',

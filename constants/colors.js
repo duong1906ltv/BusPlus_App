@@ -9,4 +9,5 @@ export const Colors = {
   primary800: '#003b88',
   primary: '#e6b30b',
   gray700: '#221c30',
+  black: '#000000',
 }

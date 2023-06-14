@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   username: {
     flex: 1,
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontWeight: 'bold',
     fontSize: 16,
   },

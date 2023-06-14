@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View, Text, TouchableOpacity, Image } from 'react-native'
 
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Zocial from 'react-native-vector-icons/Zocial'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -12,28 +12,37 @@ import InputField from '../components/auth/InputField'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { login } from '../actions/auth.js'
+import { Colors } from '../constants/colors'
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
-  const error = useSelector((state) => state.auth.error)
-  const loading = useSelector((state) => state.auth.loading)
-  const [email, setEmail] = useState('')
+
+  const { isLoading, user, error } = useSelector((state) => state.auth)
+
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = () => {
-    dispatch(login({ email, password }))
+    dispatch(login({ phone, password }))
   }
 
-  // if (loading) {
-  //   // return <div>Loading...</div>
-  //   console.log(state.auth)
-  // }
+  useEffect(() => {
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: error,
+      })
+      dispatch(clearError())
+    }
 
-  // if (error) {
-  //   // return <div>Error: {error}</div>
-  //   console.log(error)
-  // }
+    if (user) {
+      Toast.show({
+        type: 'success',
+        text1: 'Redirecting...',
+      })
+    }
+  }, [error, user, dispatch])
 
   if (isAuthenticated) {
     navigation.navigate('HomeScreen')
@@ -50,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
           />
           <Text
             style={{
-              fontFamily: 'Roboto-Medium',
+              // fontFamily: 'Roboto-Medium',
               fontSize: 28,
               fontWeight: '500',
               color: '#333',
@@ -63,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
 
         <Text
           style={{
-            fontFamily: 'Roboto-Medium',
+            // fontFamily: 'Roboto-Medium',
             fontSize: 28,
             fontWeight: '500',
             color: '#333',
@@ -74,17 +83,18 @@ const LoginScreen = ({ navigation }) => {
         </Text>
 
         <InputField
-          label={'Email ID'}
+          label={'Phone numer'}
           icon={
-            <MaterialIcons
-              name="alternate-email"
+            <FontAwesome
+              name="phone"
               size={20}
               color="#666"
               style={{ marginRight: 5 }}
             />
           }
+          editable={true}
           keyboardType="email-address"
-          setText={setEmail}
+          setText={setPhone}
         />
 
         <InputField
@@ -97,13 +107,18 @@ const LoginScreen = ({ navigation }) => {
               style={{ marginRight: 5 }}
             />
           }
+          editable={true}
           setText={setPassword}
           inputType="password"
           fieldButtonLabel={'Forgot?'}
           fieldButtonFunction={() => {}}
         />
 
-        <CustomButton label={'Login'} onPress={handleLogin} />
+        <CustomButton
+          isloading={isLoading}
+          label={'Login'}
+          onPress={handleLogin}
+        />
 
         <Text style={{ textAlign: 'center', color: '#666', marginBottom: 30 }}>
           Or, login with ...
@@ -163,7 +178,7 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text>New to the app?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={{ color: '#AD40AF', fontWeight: '700' }}>
+            <Text style={{ color: Colors.primary, fontWeight: '700' }}>
               {' '}
               Register
             </Text>

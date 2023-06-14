@@ -3,6 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomDrawerContent from '../components/CustomDrawerContent'
 import { Colors } from '../constants/colors'
@@ -10,14 +11,22 @@ import HomeScreen from '../screens/HomeScreen'
 import MyTicket from '../screens/MyTicket'
 import RouteDetailScreen from '../screens/RouteDetailScreen'
 import RoutesLookupScreen from '../screens/RoutesLookupScreen'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import LoginScreen from '../screens/Login'
 import RegisterScreen from '../screens/Register'
+import ProfileScreen from '../screens/ProfileScreen'
+import { Text, TouchableOpacity } from 'react-native'
+import { View } from 'react-native'
+import { editProfileButtonClick } from '../actions/profile'
+import FriendScreen from '../screens/FriendScreen'
+import NotificationScreen from '../screens/NotificationScreen'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
 
-function DrawerNavigator() {
+function DrawerNavigator({ navigation }) {
+  const dispatch = useDispatch()
+  const isEditing = useSelector((state) => state.profile.isEditing)
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
   return (
     <Drawer.Navigator
@@ -81,17 +90,67 @@ function DrawerNavigator() {
           />
         </>
       ) : (
-        <Drawer.Screen
-          name="MyTicket"
-          component={MyTicket}
-          options={{
-            headerTitle: 'My Ticket',
-            drawerLabel: 'My Ticket',
-            drawerIcon: ({ color, size }) => (
-              <Fontisto name="ticket" color={color} size={size} />
-            ),
-          }}
-        />
+        <>
+          <Drawer.Screen
+            name="Notification"
+            component={NotificationScreen}
+            options={{
+              headerTitle: 'Notification',
+              drawerLabel: 'Notification',
+              drawerIcon: ({ color, size }) => (
+                <Icon name="notifications" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="MyTicket"
+            component={MyTicket}
+            options={{
+              headerTitle: 'My Ticket',
+              drawerLabel: 'My Ticket',
+              drawerIcon: ({ color, size }) => (
+                <Fontisto name="ticket" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+              headerTitle: 'Profile',
+              drawerLabel: 'Profile',
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => dispatch(editProfileButtonClick())}
+                >
+                  {!isEditing ? (
+                    <View style={{ marginRight: 20 }}>
+                      <AntDesign name="edit" color={Colors.white} size={25} />
+                    </View>
+                  ) : (
+                    <View style={{ marginRight: 20 }}>
+                      <AntDesign name="check" color={Colors.white} size={25} />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ),
+              drawerIcon: ({ color, size }) => (
+                <AntDesign name="profile" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Friend"
+            component={FriendScreen}
+            options={{
+              headerTitle: 'Friend',
+              drawerLabel: 'Friend',
+              drawerIcon: ({ color, size }) => (
+                <FontAwesome5 name="user-friends" color={color} size={size} />
+              ),
+            }}
+          />
+        </>
       )}
     </Drawer.Navigator>
   )
@@ -104,6 +163,11 @@ function AppStack() {
       <Stack.Screen
         name="RouteDetailScreen"
         component={RouteDetailScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>

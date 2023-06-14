@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, TextInput } from 'react-native'
+import { Colors } from '../../constants/colors'
 
 export default function InputField({
   label,
@@ -9,6 +10,8 @@ export default function InputField({
   fieldButtonLabel,
   fieldButtonFunction,
   setText,
+  editable,
+  value,
 }) {
   return (
     <View
@@ -25,19 +28,21 @@ export default function InputField({
         <TextInput
           placeholder={label}
           keyboardType={keyboardType}
-          style={{ flex: 1, paddingVertical: 0 }}
+          style={{ flex: 1, paddingVertical: 0, paddingHorizontal: 10 }}
           onChangeText={(text) => setText(text)}
         />
       ) : (
         <TextInput
           placeholder={label}
           keyboardType={keyboardType}
-          style={{ flex: 1, paddingVertical: 0 }}
-          onChangeText={(text) => setText(text)}
+          style={{ flex: 1, paddingVertical: 0, paddingHorizontal: 10 }}
+          onChangeText={(text) => (setText ? setText(text) : null)}
+          editable={editable}
+          value={value ? value : null}
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>
-        <Text style={{ color: '#AD40AF', fontWeight: '700' }}>
+        <Text style={{ color: Colors.primary, fontWeight: '700' }}>
           {fieldButtonLabel}
         </Text>
       </TouchableOpacity>
