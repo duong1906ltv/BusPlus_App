@@ -1,9 +1,13 @@
-import { Text, View } from 'react-native'
+import {
+  Text,
+  View,
+  Modal,
+  StyleSheet,
+  Pressable,
+  TextInput,
+} from 'react-native'
 import React, { Component } from 'react'
-import { Modal } from 'react-native'
-import { StyleSheet } from 'react-native'
-import { Pressable } from 'react-native'
-import { TextInput } from 'react-native'
+import FontAweSome from 'react-native-vector-icons/FontAwesome'
 
 export default class AddFriendModal extends Component {
   render() {
@@ -20,15 +24,47 @@ export default class AddFriendModal extends Component {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>ADD FRIEND BY PHONE OR EMAIL</Text>
-              <TextInput
-                placeholder="Type phone number or email"
-                // onChangeText={(text) => setText(text)}
-              />
+              <Pressable
+                onPress={() => {
+                  this.props.setPhone('')
+                  this.props.setModalVisible(false)
+                }}
+                style={{
+                  alignItems: 'center',
+                  marginLeft: 'auto',
+                }}
+              >
+                <FontAweSome name="close" size={30}></FontAweSome>
+              </Pressable>
+              <View>
+                <Text style={styles.modalText}>ADD FRIEND BY PHONE </Text>
+              </View>
+              {this.props.phone ? (
+                <TextInput
+                  value={this.props.phone}
+                  style={{ textAlign: 'center' }}
+                  onChangeText={(text) => this.props.setPhone(text)}
+                />
+              ) : (
+                <TextInput
+                  placeholder="Type friend's phone number"
+                  style={{ textAlign: 'center' }}
+                  onChangeText={(text) => this.props.setPhone(text)}
+                />
+              )}
+
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() =>
-                  this.props.setModalVisible(!this.props.modalVisible)
+                onPress={
+                  this.props.phone
+                    ? () => {
+                        this.props.setPhone('')
+                        this.props.handleAddFriend()
+                        this.props.setModalVisible(!this.props.modalVisible)
+                      }
+                    : () => {
+                        this.props.setModalVisible(!this.props.modalVisible)
+                      }
                 }
               >
                 <Text style={styles.textStyle}>Add friends</Text>
@@ -47,12 +83,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -67,6 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+    marginTop: 20,
   },
   buttonOpen: {
     backgroundColor: '#F194FF',

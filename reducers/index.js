@@ -4,6 +4,8 @@ import routeReducer from './route'
 import busReducer from './bus'
 import authReducer from './auth'
 import profileReducer from './profile'
+import friendReducer from './friend'
+import ticketReducer from './ticket'
 
 const rootReducer = combineReducers({
   map: mapReducer,
@@ -11,6 +13,8 @@ const rootReducer = combineReducers({
   bus: busReducer,
   auth: authReducer,
   profile: profileReducer,
+  friend: friendReducer,
+  ticket: ticketReducer,
 })
 
 export default rootReducer

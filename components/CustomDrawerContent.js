@@ -16,27 +16,27 @@ const user = {
 
 function CustomDrawerContent(props) {
   const dispatch = useDispatch()
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
+  const authState = useSelector((state) => state.auth)
   return (
     <DrawerContentScrollView {...props}>
-      {isAuthenticated ? (
+      {authState.isAuthenticated ? (
         <View style={styles.userContainer}>
           <Image style={styles.avatar} source={{ uri: user.avatar }} />
           <Text style={styles.username} numberOfLines={1} ellipsizeMode="head">
-            {user.fullName}
+            {authState.user.fullname}
           </Text>
         </View>
       ) : (
         <View style={styles.userContainer}>
-          <Image style={styles.avatar} source={{ uri: user.avatar }} />
-          <Text style={styles.username} numberOfLines={1} ellipsizeMode="head">
-            None
-          </Text>
+          <Image
+            style={styles.avatar}
+            source={require('../assets/images/bus_green.png')}
+          />
         </View>
       )}
 
       <DrawerItemList {...props} />
-      {isAuthenticated && (
+      {authState.isAuthenticated && (
         <DrawerItem
           label="Logout"
           icon={({ color, size }) => (

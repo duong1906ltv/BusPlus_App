@@ -1,10 +1,23 @@
-import React, { useState } from 'react'
-import { Pressable } from 'react-native'
-import { Image } from 'react-native'
-import { View, Text, FlatList, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Alert,
+  Pressable,
+  Image,
+} from 'react-native'
 import AddFriendModal from '../components/AddFriendModal'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { Colors } from '../constants/colors'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  getFriendRequest,
+  getListFriend,
+  sentFriendRequest,
+} from '../actions/friend'
+import { useIsFocused } from '@react-navigation/native'
+// import ToastMessage from '../components/ToastMessage'
 
 const FlatListItem = ({ item, index }) => {
   return (
@@ -21,7 +34,7 @@ const FlatListItem = ({ item, index }) => {
           style={{ width: 100, height: 100, margin: 5 }}
         ></Image>
         <Text style={{ padding: 10, color: 'white', fontSize: 16 }}>
-          {item.name}
+          {item.profile.fullname}
         </Text>
       </View>
       <View style={{ height: 1, backgroundColor: 'white' }}></View>
@@ -29,46 +42,33 @@ const FlatListItem = ({ item, index }) => {
   )
 }
 const FriendScreen = () => {
-  const [friends, setFriends] = useState([
-    { id: 1, name: 'John Doe', avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg' },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 3,
-      name: 'Michael Johnson',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-  ])
+  const friend = useSelector((state) => state.friend)
+  const isFocused = useIsFocused()
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getListFriend())
+  }, [dispatch, isFocused])
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [phone, setPhone] = useState('')
+
+  const handleAddFriend = () => {
+    Alert.alert(
+      'Confrim',
+      `Do you want to make friends with a friend with phone number "${phone}"`,
+      [
+        { text: 'NO' },
+        {
+          text: 'YES',
+          onPress: () => {
+            dispatch(sentFriendRequest({ phone }))
+          },
+        },
+      ]
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -82,6 +82,13 @@ const FriendScreen = () => {
             margin: 10,
           }}
         >
+          <AddFriendModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            setPhone={setPhone}
+            phone={phone}
+            handleAddFriend={handleAddFriend}
+          />
           <Pressable
             style={[styles.button, styles.buttonOpen]}
             onPress={() => setModalVisible(true)}
@@ -91,15 +98,13 @@ const FriendScreen = () => {
         </View>
       </View>
       <FlatList
-        data={friends}
+        data={friend?.listFriend}
         renderItem={({ item, index }) => {
           return <FlatListItem item={item} index={index}></FlatListItem>
         }}
-        keyExtractor={(item) => item.id.toString()}
-      />
-      <AddFriendModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+        keyExtractor={(item) => {
+          return item.profile._id
+        }}
       />
     </View>
   )

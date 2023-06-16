@@ -1,40 +1,109 @@
-import React, { useState } from 'react'
-import { Pressable } from 'react-native'
-import { Image } from 'react-native'
-import { View, Text, FlatList, StyleSheet } from 'react-native'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import { Colors } from '../constants/colors'
-import Swipeout from 'react-native-swipeout'
+import React, { useEffect, useRef, useState } from 'react'
+import { useIsFocused } from '@react-navigation/native'
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native'
+import { Swipeable } from 'react-native-gesture-handler'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  acceptRequest,
+  getFriendRequest,
+  rejectRequest,
+} from '../actions/friend'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { Alert } from 'react-native'
 
-const FlatListItem = ({ item, index }) => {
-  const [activeRowKey, setActiveRowKey] = useState(null)
-  const swipeSettings = {
-    autoclose: true,
-    onClose: (secId, rowId, direction) => {
-      if (activeRowKey != null) {
-        setActiveRowKey(null)
-      }
-    },
-    onOpen: (secId, rowId, direction) => {
-      setActiveRowKey(item.key)
-    },
-    right: [
+const FlatListItem = ({ item, index, onComponentOpen }) => {
+  const dispatch = useDispatch()
+  const ref = useRef()
+
+  useEffect(() => {
+    dispatch(getFriendRequest())
+  }, [dispatch])
+
+  const handleReject = () => {
+    Alert.alert('Confrim', `Do you want to reject this request`, [
+      { text: 'NO' },
       {
-        onPress: () => {},
-        text: 'Accept',
-        type: 'primary',
+        text: 'YES',
+        onPress: () => {
+          dispatch(rejectRequest(item._id))
+          dispatch(getFriendRequest())
+        },
       },
-      {
-        onPress: () => {},
-        text: 'Decile',
-        type: 'delete',
-      },
-    ],
-    rowId: index,
-    sectionId: 1,
+    ])
   }
+
+  const handleAccept = () => {
+    Alert.alert('Confrim', `Do you want to accept this request`, [
+      { text: 'NO' },
+      {
+        text: 'YES',
+        onPress: () => {
+          dispatch(acceptRequest(item._id))
+          dispatch(getFriendRequest())
+        },
+      },
+    ])
+  }
+
+  const rightSwipe = () => {
+    return (
+      <View style={{ flexDirection: 'row', backgroundColor: '#fff' }}>
+        <TouchableOpacity
+          style={{
+            width: 110,
+            height: 110,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'green',
+            marginRight: 1,
+          }}
+          onPress={handleAccept}
+        >
+          <FontAwesome
+            name="check-circle"
+            size={50}
+            color={'yellow'}
+          ></FontAwesome>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: 110,
+            height: 110,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'red',
+          }}
+          onPress={handleReject}
+        >
+          <FontAwesome
+            name="times-circle-o"
+            size={50}
+            color={'yellow'}
+          ></FontAwesome>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+  useEffect(() => {
+    if (item.opened === false) {
+      ref.current.close()
+    }
+  })
   return (
-    <Swipeout {...swipeSettings}>
+    <Swipeable
+      renderRightActions={rightSwipe}
+      onSwipeableOpen={() => {
+        onComponentOpen(index)
+      }}
+      ref={ref}
+    >
       <View
         style={{
           flex: 1,
@@ -42,66 +111,95 @@ const FlatListItem = ({ item, index }) => {
           flexDirection: 'row',
         }}
       >
-        <Image
-          source={{ uri: item.avatar }}
-          style={{ width: 100, height: 100, margin: 5 }}
-        ></Image>
-        <Text style={{ padding: 10, color: 'white', fontSize: 16 }}>
-          {item.name}
-        </Text>
+        {item.senderId.profile.avatar ? (
+          <Image
+            source={{ uri: item.senderId.profile.avatar }}
+            style={{ width: 100, height: 100, margin: 5 }}
+          ></Image>
+        ) : (
+          <Image
+            source={{
+              uri: 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg',
+            }}
+            style={{ width: 100, height: 100, margin: 5 }}
+          ></Image>
+        )}
+
+        <View>
+          <Text
+            style={{
+              paddingBottom: 5,
+              paddingTop: 10,
+              paddingLeft: 10,
+              color: 'white',
+              fontSize: 16,
+            }}
+          >
+            {item.senderId.profile.fullname}
+          </Text>
+          <Text
+            style={{
+              paddingBottom: 5,
+              paddingLeft: 10,
+              color: 'white',
+              fontSize: 16,
+            }}
+          >
+            Phone number: {item.senderId.profile.phone}
+          </Text>
+          <Text style={{ paddingLeft: 10, color: 'white', fontSize: 16 }}>
+            sent you a friend request
+          </Text>
+        </View>
       </View>
       <View style={{ height: 1, backgroundColor: 'white' }}></View>
-    </Swipeout>
+    </Swipeable>
   )
 }
 
 function NotificationScreen() {
-  const [friends, setFriends] = useState([
-    { id: 1, name: 'John Doe', avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg' },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 3,
-      name: 'Michael Johnson',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    },
-  ])
+  const friendState = useSelector((state) => state.friend)
+  const dispatch = useDispatch()
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    dispatch(getFriendRequest())
+  }, [dispatch, isFocused])
+
+  const openComponent = (ind) => {
+    let tempData = friendState?.request
+    tempData.map((item, index) => {
+      if (index === ind) {
+        item.opened = true
+      } else {
+        item.opened = false
+      }
+    })
+    let temp = []
+    tempData.map((item) => {
+      temp.push(item)
+    })
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={friends}
+        data={friendState?.request}
         renderItem={({ item, index }) => {
-          return <FlatListItem item={item} index={index}></FlatListItem>
+          return (
+            <FlatListItem
+              item={item}
+              index={index}
+              onComponentOpen={(x) => {
+                openComponent(x)
+              }}
+            ></FlatListItem>
+          )
         }}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => {
+          return item._id
+        }}
+        extraData={friendState?.request}
       />
     </View>
   )

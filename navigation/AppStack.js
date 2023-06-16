@@ -15,11 +15,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import LoginScreen from '../screens/Login'
 import RegisterScreen from '../screens/Register'
 import ProfileScreen from '../screens/ProfileScreen'
-import { Text, TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import { View } from 'react-native'
 import { editProfileButtonClick } from '../actions/profile'
 import FriendScreen from '../screens/FriendScreen'
 import NotificationScreen from '../screens/NotificationScreen'
+import BuyTicket from '../screens/BuyTicket'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
@@ -108,6 +109,17 @@ function DrawerNavigator({ navigation }) {
             options={{
               headerTitle: 'My Ticket',
               drawerLabel: 'My Ticket',
+              drawerIcon: ({ color, size }) => (
+                <Fontisto name="ticket" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="BuyTicket"
+            component={BuyTicket}
+            options={{
+              headerTitle: 'Buy Ticket',
+              drawerLabel: 'Buy Ticket',
               drawerIcon: ({ color, size }) => (
                 <Fontisto name="ticket" color={color} size={size} />
               ),

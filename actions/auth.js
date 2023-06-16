@@ -24,7 +24,6 @@ export const register = (userData) => {
 
 // Action đăng nhập (login)
 export const login = (userData) => {
-  console.log(userData)
   return (dispatch) => {
     dispatch({ type: 'LOGIN_REQUEST' })
 
@@ -37,7 +36,6 @@ export const login = (userData) => {
         })
       })
       .catch((error) => {
-        console.log(error.response.data)
         dispatch({
           type: 'LOGIN_FAILURE',
           payload: error.response.data,

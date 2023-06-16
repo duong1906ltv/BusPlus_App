@@ -1,6 +1,16 @@
+import { useEffect } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { getMyTicket, getQRCode } from '../actions/ticket'
 
 function MyTicket() {
+  const dispatch = useDispatch()
+  const ticket = useSelector((state) => state.ticket)
+
+  useEffect(() => {
+    dispatch(getMyTicket())
+    dispatch(getQRCode())
+  }, [dispatch])
   const ticketInfo = {
     avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
     fullName: 'Phung Dinh Duong',
@@ -15,30 +25,35 @@ function MyTicket() {
   return (
     <View style={styles.container}>
       <View style={[styles.item, styles.imageContainer]}>
-        <Image style={styles.avatar} source={{ uri: ticketInfo.avatar }} />
+        <Image
+          style={styles.avatar}
+          source={{ uri: ticket?.myTicket[0].user.profile.avatar }}
+        />
       </View>
       <View style={styles.item}>
         <Text style={styles.title}>Full Name: </Text>
-        <Text style={styles.content}>{ticketInfo.fullName}</Text>
+        <Text style={styles.content}>
+          {ticket?.myTicket[0].user.profile.fullname}
+        </Text>
       </View>
       <View style={styles.item}>
         <Text style={styles.title}>Ticket ID: </Text>
-        <Text style={styles.content}>{ticketInfo.ticketId}</Text>
+        <Text style={styles.content}>{ticket?.myTicket[0].ticketCode}</Text>
       </View>
       <View style={styles.item}>
         <Text style={styles.title}>Month: </Text>
-        <Text style={styles.content}>{ticketInfo.month}</Text>
+        <Text style={styles.content}>{ticket?.myTicket[0].month}</Text>
       </View>
       <View style={styles.item}>
         <Text style={styles.title}>User Type: </Text>
-        <Text style={styles.content}>{ticketInfo.userType}</Text>
+        <Text style={styles.content}>{ticket?.myTicket[0].priority}</Text>
       </View>
       <View style={styles.item}>
         <Text style={styles.title}>Route Type: </Text>
-        <Text style={styles.content}>{ticketInfo.routeType}</Text>
+        <Text style={styles.content}>{ticket?.myTicket[0].ticketType}</Text>
       </View>
       <View style={[styles.item, styles.imageContainer]}>
-        <Image style={styles.qrCode} source={{ uri: ticketInfo.qrCode }} />
+        <Image style={styles.qrCode} source={{ uri: ticket.qrCode[0] }} />
       </View>
     </View>
   )

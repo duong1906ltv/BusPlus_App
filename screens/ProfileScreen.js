@@ -3,13 +3,14 @@ import { Image, ScrollView, View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Zocial from 'react-native-vector-icons/Zocial'
-import { Text } from 'react-native'
 import InputField from '../components/auth/InputField'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { getProfile } from '../actions/profile'
+import { RadioButton } from 'react-native-paper'
 
 function ProfileScreen() {
+  const [checked, setChecked] = React.useState('second')
   const isEditing = useSelector((state) => state.profile.isEditing)
   const profile = useSelector((state) => state.profile.profile)
 
@@ -39,7 +40,7 @@ function ProfileScreen() {
                 style={{ marginRight: 5 }}
               />
             }
-            // value={user.fullname}
+            value={profile?.fullname}
             editable={isEditing}
             keyboardType="email-address"
           />
@@ -56,7 +57,7 @@ function ProfileScreen() {
             keyboardType="email-address"
             editable={isEditing}
           />
-          <InputField
+          {/* <InputField
             label={'Gender'}
             icon={
               <FontAwesome
@@ -68,7 +69,20 @@ function ProfileScreen() {
             }
             keyboardType="email-address"
             editable={isEditing}
-          />
+          /> */}
+          <View>
+            <RadioButton
+              value="first"
+              status={checked === 'first' ? 'checked' : 'unchecked'}
+              onPress={() => setChecked('first')}
+              testID="Male"
+            />
+            <RadioButton
+              value="second"
+              status={checked === 'second' ? 'checked' : 'unchecked'}
+              onPress={() => setChecked('second')}
+            />
+          </View>
           <InputField
             label={'Phone numer'}
             icon={
@@ -81,6 +95,7 @@ function ProfileScreen() {
             }
             keyboardType="email-address"
             editable={isEditing}
+            value={profile?.phone}
           />
           <InputField
             label={'Email'}
@@ -94,12 +109,13 @@ function ProfileScreen() {
             }
             keyboardType="email-address"
             editable={isEditing}
+            value={profile?.email}
           />
           <InputField
-            label={'Job'}
+            label={'Address'}
             icon={
               <FontAwesome
-                name="briefcase"
+                name="address-card-o"
                 size={20}
                 color="#666"
                 style={{ marginRight: 5 }}
