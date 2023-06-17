@@ -1,46 +1,14 @@
+import { useIsFocused } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Alert,
-  Pressable,
-  Image,
-} from 'react-native'
-import AddFriendModal from '../components/AddFriendModal'
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getFriendRequest,
-  getListFriend,
-  sentFriendRequest,
-} from '../actions/friend'
-import { useIsFocused } from '@react-navigation/native'
+import { getListFriend, sentFriendRequest } from '../actions/friend'
+import AddFriendModal from '../components/AddFriendModal'
 // import ToastMessage from '../components/ToastMessage'
+import FriendListTabs from '../components/FriendListTabs'
+import { Colors } from '../constants/colors'
 
-const FlatListItem = ({ item, index }) => {
-  return (
-    <>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: index % 2 == 0 ? 'mediumseagreen' : 'tomato',
-          flexDirection: 'row',
-        }}
-      >
-        <Image
-          source={{ uri: item.avatar }}
-          style={{ width: 100, height: 100, margin: 5 }}
-        ></Image>
-        <Text style={{ padding: 10, color: 'white', fontSize: 16 }}>
-          {item.profile.fullname}
-        </Text>
-      </View>
-      <View style={{ height: 1, backgroundColor: 'white' }}></View>
-    </>
-  )
-}
 const FriendScreen = () => {
   const friend = useSelector((state) => state.friend)
   const isFocused = useIsFocused()
@@ -72,14 +40,22 @@ const FriendScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={styles.title}>Friends</Text>
-
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginBottom: 20,
+          marginTop: 5,
+        }}
+      >
+        <Text style={styles.title}>My Friends</Text>
         <View
           style={{
             width: 40,
             marginLeft: 'auto',
-            margin: 10,
+            borderColor: Colors.primary,
+            borderWidth: 2,
+            borderRadius: 30,
           }}
         >
           <AddFriendModal
@@ -93,19 +69,21 @@ const FriendScreen = () => {
             style={[styles.button, styles.buttonOpen]}
             onPress={() => setModalVisible(true)}
           >
-            <AntDesign name="adduser" size={30}></AntDesign>
+            <AntDesign
+              name="adduser"
+              size={30}
+              style={{
+                marginTop: -20,
+                marginBottom: 5,
+                paddingLeft: 3,
+              }}
+            ></AntDesign>
           </Pressable>
         </View>
       </View>
-      <FlatList
-        data={friend?.listFriend}
-        renderItem={({ item, index }) => {
-          return <FlatListItem item={item} index={index}></FlatListItem>
-        }}
-        keyExtractor={(item) => {
-          return item.profile._id
-        }}
-      />
+      {friend && friend?.listFriend && (
+        <FriendListTabs friendList={friend?.listFriend} />
+      )}
     </View>
   )
 }
@@ -118,8 +96,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    margin: 10,
     alignItems: 'center',
+    borderBottomColor: Colors.primary,
+    borderBottomWidth: 2,
   },
 })
 

@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMyTicket, getQRCode } from '../actions/ticket'
+import TicketComponent from '../components/TicketComponent'
+import { Colors } from '../constants/colors'
 
-function MyTicket() {
+function MyTicket({ navigation }) {
   const dispatch = useDispatch()
   const ticket = useSelector((state) => state.ticket)
 
@@ -24,36 +26,29 @@ function MyTicket() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.item, styles.imageContainer]}>
-        <Image
-          style={styles.avatar}
-          source={{ uri: ticket?.myTicket[0].user.profile.avatar }}
+      {ticket && ticket?.myTicket[0] && (
+        <TicketComponent
+          ticket={ticket?.myTicket[0]}
+          qrCode={ticket?.qrCode[0]}
         />
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Full Name: </Text>
-        <Text style={styles.content}>
-          {ticket?.myTicket[0].user.profile.fullname}
-        </Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Ticket ID: </Text>
-        <Text style={styles.content}>{ticket?.myTicket[0].ticketCode}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Month: </Text>
-        <Text style={styles.content}>{ticket?.myTicket[0].month}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>User Type: </Text>
-        <Text style={styles.content}>{ticket?.myTicket[0].priority}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Route Type: </Text>
-        <Text style={styles.content}>{ticket?.myTicket[0].ticketType}</Text>
-      </View>
-      <View style={[styles.item, styles.imageContainer]}>
-        <Image style={styles.qrCode} source={{ uri: ticket.qrCode[0] }} />
+      )}
+      <View style={styles.buttonsContainer}>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            navigation.navigate('MyTicketList')
+          }}
+        >
+          <Text style={styles.buttonText}>My Tickets</Text>
+        </Pressable>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            navigation.navigate('BuyTicket')
+          }}
+        >
+          <Text style={styles.buttonText}>Buy Ticket</Text>
+        </Pressable>
       </View>
     </View>
   )
@@ -68,33 +63,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     backgroundColor: 'white',
   },
-  item: {
-    width: '100%',
-    paddingVertical: 5,
+  buttonsContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    gap: 50,
+    position: 'absolute',
+    bottom: 40,
   },
-  title: {
-    width: '30%',
-    fontWeight: 'bold',
+  button: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: Colors.white,
     fontSize: 16,
-  },
-  content: {
-    width: '70%',
-    fontSize: 16,
-  },
-  imageContainer: {
-    justifyContent: 'center',
-  },
-  avatar: {
-    width: 150,
-    height: 150,
-    borderRadius: 150,
-    marginVertical: 20,
-  },
-  qrCode: {
-    width: 200,
-    height: 200,
-    marginTop: 10,
   },
 })
