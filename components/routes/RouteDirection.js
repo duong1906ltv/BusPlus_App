@@ -1,4 +1,5 @@
 import BusLocation from '../bus/BusLocation'
+import CheckinLocation from '../checkin/CheckinLocation'
 import Map from '../map/Map'
 
 function RouteDirection({ routeDirection, routeStations, origin }) {
@@ -10,6 +11,7 @@ function RouteDirection({ routeDirection, routeStations, origin }) {
         origin={origin}
       >
         <BusLocation />
+        <CheckinLocation />
       </Map>
     </>
   )

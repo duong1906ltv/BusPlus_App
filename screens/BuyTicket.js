@@ -1,7 +1,6 @@
 import { View, Text, Linking } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import queryString from 'query-string'
 
 const BuyTicket = () => {
   //   const onPress = () => {
