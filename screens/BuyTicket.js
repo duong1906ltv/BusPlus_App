@@ -1,9 +1,17 @@
-import { View, Text, Linking } from 'react-native'
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
+import { Linking, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import queryString from 'query-string'
+import { Colors } from '../constants/colors'
 
-const BuyTicket = () => {
+const BuyTicket = ({ navigation }) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: 'My Tickets',
+      headerStyle: { backgroundColor: Colors.primary },
+      headerTintColor: Colors.white,
+    })
+  }, [navigation])
   //   const onPress = () => {
   //     const paymentUrl = 'momo://app'
   //     //   'momo://app?action=payWithApp&partnerCode=MOMO&partnerName=Test&storeId=MoMoTestStore&orderId=MM1540456472575'

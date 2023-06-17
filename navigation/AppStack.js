@@ -1,26 +1,27 @@
 import { Fontisto } from '@expo/vector-icons'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { TouchableOpacity, View } from 'react-native'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { useDispatch, useSelector } from 'react-redux'
+import { editProfileButtonClick } from '../actions/profile'
 import CustomDrawerContent from '../components/CustomDrawerContent'
 import { Colors } from '../constants/colors'
+import BuyTicket from '../screens/BuyTicket'
+import FriendScreen from '../screens/FriendScreen'
 import HomeScreen from '../screens/HomeScreen'
+import LoginScreen from '../screens/Login'
 import MyTicket from '../screens/MyTicket'
+import MyTicketList from '../screens/MyTicketList'
+import NotificationScreen from '../screens/NotificationScreen'
+import ProfileScreen from '../screens/ProfileScreen'
+import RegisterScreen from '../screens/Register'
 import RouteDetailScreen from '../screens/RouteDetailScreen'
 import RoutesLookupScreen from '../screens/RoutesLookupScreen'
-import { useDispatch, useSelector } from 'react-redux'
-import LoginScreen from '../screens/Login'
-import RegisterScreen from '../screens/Register'
-import ProfileScreen from '../screens/ProfileScreen'
-import { TouchableOpacity } from 'react-native'
-import { View } from 'react-native'
-import { editProfileButtonClick } from '../actions/profile'
-import FriendScreen from '../screens/FriendScreen'
-import NotificationScreen from '../screens/NotificationScreen'
-import BuyTicket from '../screens/BuyTicket'
+import TicketInfo from '../screens/TicketInfo'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
@@ -115,17 +116,6 @@ function DrawerNavigator({ navigation }) {
             }}
           />
           <Drawer.Screen
-            name="BuyTicket"
-            component={BuyTicket}
-            options={{
-              headerTitle: 'Buy Ticket',
-              drawerLabel: 'Buy Ticket',
-              drawerIcon: ({ color, size }) => (
-                <Fontisto name="ticket" color={color} size={size} />
-              ),
-            }}
-          />
-          <Drawer.Screen
             name="Profile"
             component={ProfileScreen}
             options={{
@@ -180,6 +170,21 @@ function AppStack() {
       <Stack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="MyTicketList"
+        component={MyTicketList}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="TicketInfo"
+        component={TicketInfo}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="BuyTicket"
+        component={BuyTicket}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>
