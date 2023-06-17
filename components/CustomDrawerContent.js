@@ -21,7 +21,10 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       {authState.isAuthenticated ? (
         <View style={styles.userContainer}>
-          <Image style={styles.avatar} source={{ uri: user.avatar }} />
+          <Image
+            style={styles.avatar}
+            source={{ uri: authState.user.profile.avatar }}
+          />
           <Text style={styles.username} numberOfLines={1} ellipsizeMode="head">
             {authState.user.fullname}
           </Text>

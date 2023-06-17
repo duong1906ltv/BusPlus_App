@@ -2,7 +2,7 @@ import io from 'socket.io-client'
 import { GET_ACTIVE_BUSES } from './types'
 import axiosClient from '../api/axiosClient'
 
-const socket = io('http://localhost:3000')
+const socket = io('https://busplus.onrender.com/')
 
 export const startListeningToServer = () => {
   return (dispatch) => {

@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { Image, StyleSheet } from 'react-native'
 import MapView, { Marker, Polyline } from 'react-native-maps'
+import { useSelector } from 'react-redux'
+import * as Location from 'expo-location'
+import * as TaskManager from 'expo-task-manager'
+import { useEffect } from 'react'
+import { Linking } from 'react-native'
+import { Alert } from 'react-native'
+const TASK_FETCH_LOCATION = 'TASK_FETCH_LOCATION'
 
 function Map({ coordinates, stations, origin, children }) {
   const [zoomLevel, setZoomLevel] = useState(null)
