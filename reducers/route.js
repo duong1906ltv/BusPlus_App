@@ -8,18 +8,20 @@ import {
   SET_SUGGESTED_ROUTE_LIST,
   SET_SELECTED_SUGGESTED_ROUTE,
   SET_MAXIMUM_NUMBER_OF_ROUTE,
+  SET_PROGRESS,
 } from '../actions/types'
 import { FORWARD } from '../share/constants/direction'
 
 const initialState = {
+  inProgress: false,
   direction: FORWARD,
   routes: [],
   route: {},
   stations: {},
   schedule: {},
   foundRoute: {
-    original: null,
     destination: null,
+    original: null,
   },
   suggestedRouteList: [],
   suggestedRoute: null,
@@ -82,6 +84,11 @@ function routeReducer(state = initialState, action) {
         ...state,
         maximumNumOfRoute: payload,
       }
+    case  SET_PROGRESS:
+      return {
+        ...state,
+        inProgress: payload,
+      }
     default:
       return state
   }
@@ -97,4 +104,5 @@ export const selectSuggestedRouteList = (state) =>
   state.route.suggestedRouteList
 export const selectSuggestedRoute = (state) => state.route.suggestedRoute
 export const selectMaximumNumOfRoute = (state) => state.route.maximumNumOfRoute
+export const selectProgress = (state) => state.route.inProgress
 export default routeReducer

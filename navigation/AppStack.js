@@ -21,6 +21,9 @@ import ProfileScreen from '../screens/ProfileScreen'
 import RegisterScreen from '../screens/Register'
 import RouteDetailScreen from '../screens/RouteDetailScreen'
 import RoutesLookupScreen from '../screens/RoutesLookupScreen'
+import SearchScreen from '../screens/SearchScreen'
+import SuggestedRouteScreen from '../screens/SuggestedRouteScreen'
+import GuideRouteScreen from '../screens/GuideRouteScreen'
 import TicketInfo from '../screens/TicketInfo'
 
 const Drawer = createDrawerNavigator()
@@ -65,7 +68,6 @@ function DrawerNavigator({ navigation }) {
           ),
         }}
       />
-
       {!isAuthenticated ? (
         <>
           <Drawer.Screen
@@ -185,6 +187,23 @@ function AppStack() {
       <Stack.Screen
         name="BuyTicket"
         component={BuyTicket}
+        options={{ animation: 'slide_from_right' }}
+      />
+
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+
+      <Stack.Screen
+        name="SuggestedRouteScreen"
+        component={SuggestedRouteScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="GuideRouteScreen"
+        component={GuideRouteScreen}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>

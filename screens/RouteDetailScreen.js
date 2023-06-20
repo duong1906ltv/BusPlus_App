@@ -5,7 +5,6 @@ import RouteDirection from '../components/routes/RouteDirection'
 import { Colors } from '../constants/colors'
 import { getForwardRouteApi, getSchedules } from '../services/api'
 import { getFullDetailDirection } from '../utils/mapUtils'
-import { useDispatch, useSelector } from 'react-redux'
 
 function RouteDetailScreen({
   route: {
@@ -36,10 +35,16 @@ function RouteDetailScreen({
         setRoute(routeData.data.route)
 
         const decodedStations = forwardRoute.map((station) => ({
-          latitude: station.location.lat,
-          longitude: station.location.lng,
+            latitude: station.location.lat,
+            longitude: station.location.lng,
         }))
-        setRouteStations(decodedStations)
+        setRouteStations(decodedStations.map(item => ({
+          coordinate: {
+            latitude: item.latitude,
+            longitude: item.longitude,
+          },
+          icon: "../../assets/images/orange_icon_bus_station.png"
+        })))
 
         const direction = await getFullDetailDirection([...decodedStations])
 

@@ -1,5 +1,7 @@
-import L from 'leaflet'
-import axiosClient from '../api/axiosClient.js'
+// import L from 'leaflet'
+// import { calculateDrivingDistance } from '../services/api';
+import { API_BASE_URL, MAPBOX_API_KEY } from '@env'
+import api from '../services/api1'
 import {
   GET_ALL_ROUTES,
   SET_DIRECTION,
@@ -10,60 +12,74 @@ import {
   SET_SUGGESTED_ROUTE_LIST,
   SET_SELECTED_SUGGESTED_ROUTE,
   SET_MAXIMUM_NUMBER_OF_ROUTE,
+  SET_PROGRESS,
 } from './types'
+export const calculateDistance = (_origin, _destination) => {
+  const origin = {
+    latitude: _origin.lat,
+    longitude: _origin.lng,
+  }
+  const destination = {
+    latitude: _destination.lat,
+    longitude: _destination.lng,
+  }
+  const meters = getDistance(origin, destination);
+  return meters
+};
 
-const getLatLng = (data) => {
-  return L.latLng(data.location.lat, data.location.lng)
-}
 
 export const getAllRoutes = () => async (dispatch) => {
   try {
-    const res = await axiosClient.get(`/api/routes`)
-
+    console.log(1234564645);
+    const res = await api.get(`/routes`);
+    console.log("res", res.data);
     res.data.forEach((route) => {
       var index = -1
-      route.forwardRoute.forEach((station) => {
+      route.forwardRoute.forEach(async (station) => {
         var distance = 0
         ++index
+        
         if (index < route.forwardRoute.length - 1) {
-          distance = parseInt(
-            getLatLng(station).distanceTo(
-              getLatLng(route.forwardRoute[index + 1])
-            )
-          )
+          distance = calculateDistance(station.location, route.forwardRoute[index + 1].location)
+          station.distance = distance
+          station.numberBusStop = index
+          station.routeNumber = route.routeNumber
+          station.location = {
+            latitude: station.location.lat,
+            longitude: station.location.lng,
+          }
         }
-        station.numberBusStop = index
-        station.routeNumber = route.routeNumber
-        station.distance = distance
-      })
+      });
       index = -1
-      route.backwardRoute.forEach((station) => {
+      route.backwardRoute.forEach(async (station) => {
         var distance = 0
         ++index
+        
         if (index < route.backwardRoute.length - 1) {
-          distance = parseInt(
-            getLatLng(station).distanceTo(
-              getLatLng(route.backwardRoute[index + 1])
-            )
-          )
+          distance = calculateDistance(station.location, route.backwardRoute[index + 1].location)
+          station.distance = distance
+          station.numberBusStop = index
+          station.routeNumber = route.routeNumber
+          station.location = {
+            latitude: station.location.lat,
+            longitude: station.location.lng,
+          }
+          
         }
-        station.numberBusStop = index
-        station.routeNumber = route.routeNumber
-        station.distance = distance
-      })
-    })
+      });
+    });
     dispatch({
       type: GET_ALL_ROUTES,
       payload: res.data,
-    })
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
 export const getForwardRouteStations = (routeNumber) => async (dispatch) => {
   try {
-    const res = await axiosClient.get(
+    const res = await api.get(
       `/api/routes/forward-route/${routeNumber}`
     )
     dispatch({
@@ -77,7 +93,7 @@ export const getForwardRouteStations = (routeNumber) => async (dispatch) => {
 
 export const getBackwardRouteStations = (routeNumber) => async (dispatch) => {
   try {
-    const res = await axiosClient.get(
+    const res = await api.get(
       `/api/routes/backward-route/${routeNumber}`
     )
 
@@ -123,5 +139,9 @@ export const setSuggestedRoute = (data) => ({
 
 export const setMaximumNumOfRoute = (data) => ({
   type: SET_MAXIMUM_NUMBER_OF_ROUTE,
+  payload: data,
+})
+export const setProgress = (data) => ({
+  type: SET_PROGRESS,
   payload: data,
 })
