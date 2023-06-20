@@ -7,7 +7,7 @@ import { setFoundRoute, setProgress } from "../actions/route";
 import { getLocation } from '../services/api'
 import { DESTINATION, ORIGINAL } from '../share/constants/direction';
 function SearchScreen({ route, navigation }) {
-  const { searchFor, inProgess } = route.params;
+  const { searchFor, inProgress } = route.params;
   const dispatch = useDispatch();
   const foundRoute = useSelector(selectFoundRoute)
   const [searchResults, setSearchResults] = useState([]);
@@ -27,6 +27,9 @@ function SearchScreen({ route, navigation }) {
       }
     }
     dispatch(setFoundRoute(_foundRoute));
+  }, [])
+
+  useEffect(() => {
     handleSearch(inputText);
   }, [inputText])
 
@@ -73,15 +76,10 @@ function SearchScreen({ route, navigation }) {
       }
     }
     setSearchResults([])
+    dispatch(setProgress(true))
     dispatch(setFoundRoute(_foundRoute));
     navigation.goBack()
   }
-  useEffect(()=>{
-    if (foundRoute.original && foundRoute.destination && inProgess === true) {
-      dispatch(setProgress(true))
-      navigation.goBack()
-    }
-  }, [foundRoute])
 
   const backToHomeScreen = () => {
     onResultsSearchItemClick()

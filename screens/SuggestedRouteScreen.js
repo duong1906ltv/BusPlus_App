@@ -27,7 +27,7 @@ function SuggestedRouteScreen({ navigation }) {
   const [inputOriginal, setInputOriginal] = useState("");
   const [inputDestination, setInputDestination] = useState("");
 
-  const [pointsOfForwardNearOriginal, setPointsOfForwardNearOriginal] = useState([])
+  // const [pointsOfForwardNearOriginal, setPointsOfForwardNearOriginal] = useState([])
   const [pointsOfBackwardNearOriginal, setPointsOfBackwardNearOriginal] = useState([])
 
   const [pointsOfForwardNearDestination, setPointsOfForwardNearDestination] = useState([])
@@ -79,6 +79,10 @@ function SuggestedRouteScreen({ navigation }) {
 
   useEffect(() => {
     if (foundRoute.original && foundRoute.destination && allRoutes.length) {
+      const pointsOfForwardNearOriginal = []
+      const pointsOfForwardNearDestination = []
+      const pointsOfBackwardNearOriginal = []
+      const pointsOfBackwardNearDestination = []
       allRoutes.forEach((route, i) => {
         route.forwardRoute.forEach((station, index) => {
           try {
@@ -91,7 +95,9 @@ function SuggestedRouteScreen({ navigation }) {
                 numberBusStop: station.numberBusStop,
                 location: station.location
               }
-              setPointsOfForwardNearOriginal(pre => [...pre, newPoint])
+              // console.log("newPoint1, ",newPoint);
+              // setPointsOfForwardNearOriginal(pre => [...pre, newPoint])
+              pointsOfForwardNearOriginal.push(newPoint)
             }
           } catch (error) {
             console.log("error", error);
@@ -107,8 +113,7 @@ function SuggestedRouteScreen({ navigation }) {
               numberBusStop: station.numberBusStop,
               location: station.location
             }
-
-            setPointsOfForwardNearDestination(pre => [...pre, newPoint])
+            pointsOfForwardNearDestination.push(newPoint)
           }
         });
 
@@ -122,8 +127,7 @@ function SuggestedRouteScreen({ navigation }) {
               numberBusStop: station.numberBusStop,
               location: station.location
             }
-
-            setPointsOfBackwardNearOriginal(pre => [...pre, newPoint])
+            pointsOfBackwardNearOriginal.push(newPoint)
           }
         });
 
@@ -138,7 +142,7 @@ function SuggestedRouteScreen({ navigation }) {
               location: station.location
             }
 
-            setPointsOfBackwardNearDestination(pre => [...pre, newPoint])
+            pointsOfBackwardNearDestination.push(newPoint)
           }
         });
       })
@@ -148,10 +152,6 @@ function SuggestedRouteScreen({ navigation }) {
       setListDestinationOfBackward(getNearerPoint(pointsOfBackwardNearDestination))
 
     } else {
-      setPointsOfForwardNearOriginal([])
-      setPointsOfBackwardNearOriginal([])
-      setPointsOfForwardNearDestination([])
-      setPointsOfBackwardNearDestination([])
       setListOriginalOfForward([])
       setListOriginalOfBackward([])
       setListDestinationOfForward([])
@@ -544,7 +544,7 @@ function SuggestedRouteScreen({ navigation }) {
     if (inputDestinationRef.current) {
       inputDestinationRef.current.blur();
     }
-    navigation.navigate('SearchScreen', { searchFor: searchFor });
+    navigation.navigate('SearchScreen', { searchFor: searchFor, inProgress: true });
   };
 
 
