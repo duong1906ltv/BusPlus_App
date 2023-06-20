@@ -2,6 +2,7 @@
 // import { calculateDrivingDistance } from '../services/api';
 import { API_BASE_URL, MAPBOX_API_KEY } from '@env'
 import api from '../services/api1'
+import { getDistance } from 'geolib';
 import {
   GET_ALL_ROUTES,
   SET_DIRECTION,
@@ -30,9 +31,7 @@ export const calculateDistance = (_origin, _destination) => {
 
 export const getAllRoutes = () => async (dispatch) => {
   try {
-    console.log(1234564645);
     const res = await api.get(`/routes`);
-    console.log("res", res.data);
     res.data.forEach((route) => {
       var index = -1
       route.forwardRoute.forEach(async (station) => {

@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { Icon } from '@rneui/themed';
 import { selectFoundRoute} from "../reducers/route";
-import { setFoundRoute } from "../actions/route";
+import { setFoundRoute, setProgress } from "../actions/route";
 import { getLocation } from '../services/api'
 import { DESTINATION, ORIGINAL } from '../share/constants/direction';
 function SearchScreen({ route, navigation }) {
-  const { searchFor } = route.params;
+  const { searchFor, inProgess } = route.params;
   const dispatch = useDispatch();
   const foundRoute = useSelector(selectFoundRoute)
   const [searchResults, setSearchResults] = useState([]);
@@ -76,6 +76,12 @@ function SearchScreen({ route, navigation }) {
     dispatch(setFoundRoute(_foundRoute));
     navigation.goBack()
   }
+  useEffect(()=>{
+    if (foundRoute.original && foundRoute.destination && inProgess === true) {
+      dispatch(setProgress(true))
+      navigation.goBack()
+    }
+  }, [foundRoute])
 
   const backToHomeScreen = () => {
     onResultsSearchItemClick()
