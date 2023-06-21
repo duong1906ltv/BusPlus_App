@@ -6,13 +6,15 @@ import {
   Text,
   View,
   useWindowDimensions,
+  TouchableOpacity,
 } from 'react-native'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
 import { Colors } from '../constants/colors'
+import { Swipeable } from 'react-native-gesture-handler'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 function FriendListTabs({ friendList }) {
   const layout = useWindowDimensions()
-  console.log('friendList', typeof friendList)
 
   const activeFriend = friendList.filter((friend) => friend.status === 'active')
   const freezedFriend = friendList.filter(
@@ -26,8 +28,56 @@ function FriendListTabs({ friendList }) {
   ])
 
   const FlatListItem = ({ item, index }) => {
+    const handleReject = () => {
+      Alert.alert('Confrim', `Do you want to reject this request`, [
+        { text: 'NO' },
+        {
+          text: 'YES',
+          onPress: () => {
+            dispatch(rejectRequest(item._id))
+            dispatch(getFriendRequest())
+          },
+        },
+      ])
+    }
+
+    const handleAccept = () => {
+      Alert.alert('Confrim', `Do you want to accept this request`, [
+        { text: 'NO' },
+        {
+          text: 'YES',
+          onPress: () => {
+            dispatch(acceptRequest(item._id))
+            dispatch(getFriendRequest())
+          },
+        },
+      ])
+    }
+    const rightSwipe = () => {
+      return (
+        <View style={{ flexDirection: 'row', backgroundColor: '#fff' }}>
+          <TouchableOpacity
+            style={{
+              width: 110,
+              height: 110,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'green',
+              marginRight: 1,
+            }}
+            onPress={handleAccept}
+          >
+            <FontAwesome
+              name="check-circle"
+              size={50}
+              color={'yellow'}
+            ></FontAwesome>
+          </TouchableOpacity>
+        </View>
+      )
+    }
     return (
-      <>
+      <Swipeable renderRightActions={rightSwipe}>
         <View
           style={{
             flex: 1,
@@ -95,7 +145,7 @@ function FriendListTabs({ friendList }) {
             </Text>
           </View>
         </View>
-      </>
+      </Swipeable>
     )
   }
 

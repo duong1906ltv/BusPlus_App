@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Image, ScrollView } from 'react-native';
-import Map from '../components/map/Map';
-import { Divider, Icon } from '@rneui/themed';
-import { Colors } from '../constants/colors';
-import { iconSize } from '../constants/styles';
-import { useSelector } from 'react-redux';
-import { selectSuggestedRoute } from '../reducers/route';
+import React, { useState } from 'react'
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Image,
+  ScrollView,
+} from 'react-native'
+import Map from '../components/map/Map'
+import { Divider, Icon } from '@rneui/themed'
+import { Colors } from '../constants/colors'
+import { iconSize } from '../constants/styles'
+import { useSelector } from 'react-redux'
+import { selectSuggestedRoute } from '../reducers/route'
 
+const GUIDE_DETAIL = 'GUIDE_DETAIL'
+const ROUTE_PASS_THROUGH = 'ROUTE_PASS_THROUGH'
 
-const GUIDE_DETAIL = "GUIDE_DETAIL"
-const ROUTE_PASS_THROUGH = "ROUTE_PASS_THROUGH"
-
-const handleTouchEnd = ({ navigation }) => {
-  const [tagHeight, setTagHeight] = useState(300);
+const HandleTouchEnd = ({ navigation }) => {
+  const [tagHeight, setTagHeight] = useState(300)
   const [selectedTab, setSelectedTab] = useState(GUIDE_DETAIL)
   const suggestedRoute = useSelector(selectSuggestedRoute)
 
@@ -28,144 +34,194 @@ const handleTouchEnd = ({ navigation }) => {
       <View style={{ height: tagHeight }}>
         <Divider></Divider>
         <View style={styles.tabContainer}>
-          <View style={selectedTab === GUIDE_DETAIL ? styles.activeTab : styles.tab}>
+          <View
+            style={selectedTab === GUIDE_DETAIL ? styles.activeTab : styles.tab}
+          >
             <TouchableOpacity onPress={() => setSelectedTab(GUIDE_DETAIL)}>
-              <Text style={selectedTab === GUIDE_DETAIL ? styles.activeText : styles.text}>Hướng dẫn đường đi</Text>
+              <Text
+                style={
+                  selectedTab === GUIDE_DETAIL ? styles.activeText : styles.text
+                }
+              >
+                Hướng dẫn đường đi
+              </Text>
             </TouchableOpacity>
           </View>
-          <View style={selectedTab === ROUTE_PASS_THROUGH ? styles.activeTab : styles.tab}>
-            <TouchableOpacity onPress={() => setSelectedTab(ROUTE_PASS_THROUGH)}>
-              <Text style={selectedTab === ROUTE_PASS_THROUGH ? styles.activeText : styles.text}>Các tuyến đi qua</Text>
+          <View
+            style={
+              selectedTab === ROUTE_PASS_THROUGH ? styles.activeTab : styles.tab
+            }
+          >
+            <TouchableOpacity
+              onPress={() => setSelectedTab(ROUTE_PASS_THROUGH)}
+            >
+              <Text
+                style={
+                  selectedTab === ROUTE_PASS_THROUGH
+                    ? styles.activeText
+                    : styles.text
+                }
+              >
+                Các tuyến đi qua
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
         <ScrollView>
-          {
-            selectedTab === GUIDE_DETAIL
-              ? (
-                <View style={styles.guideContainer}>
-                  {
-                    suggestedRoute
-                      ? (
-                        suggestedRoute.map(item => (
-                          item.transport === "walking"
-                            ? (
-                              <>
-                                <View style={styles.guideDetail}>
-                                  <Image style={iconSize(30)} source={require('../assets/images/icon_walking_person.png')} />
-                                  {
-                                    item.listPoint[1].routeNumber
-                                      ? (
-                                        <View style={styles.guiText}>
-                                          <Text style={{ color: '#111' }}>Đi đến trạm</Text>
-                                          <Text style={{ color: '#999' }}>Từ vị trí bắt đầu đi đến trạm xe ở {item.listPoint[1].name}</Text>
-                                        </View>
-                                      )
-                                      : (
-                                        <View style={styles.guiText}>
-                                          <Text style={{ color: '#111' }}>Xuống trạm và đi đến điểm đến</Text>
-                                          <Text style={{ color: '#999' }}>Xuống tại trạm {item.listPoint[0].name} </Text>
-                                        </View>
-                                      )
-                                  }
+          {selectedTab === GUIDE_DETAIL ? (
+            <View style={styles.guideContainer}>
+              {suggestedRoute ? (
+                suggestedRoute.map((item) =>
+                  item.transport === 'walking' ? (
+                    <>
+                      <View style={styles.guideDetail}>
+                        <Image
+                          style={iconSize(30)}
+                          source={require('../assets/images/icon_walking_person.png')}
+                        />
+                        {item.listPoint[1].routeNumber ? (
+                          <View style={styles.guiText}>
+                            <Text style={{ color: '#111' }}>Đi đến trạm</Text>
+                            <Text style={{ color: '#999' }}>
+                              Từ vị trí bắt đầu đi đến trạm xe ở{' '}
+                              {item.listPoint[1].name}
+                            </Text>
+                          </View>
+                        ) : (
+                          <View style={styles.guiText}>
+                            <Text style={{ color: '#111' }}>
+                              Xuống trạm và đi đến điểm đến
+                            </Text>
+                            <Text style={{ color: '#999' }}>
+                              Xuống tại trạm {item.listPoint[0].name}{' '}
+                            </Text>
+                          </View>
+                        )}
 
-                                  <View style={{ height: '100%', marginLeft: 'auto' }}>
-                                    <Text style={{ color: Colors.orange }}>{item.totalDistance}m</Text>
-                                  </View>
-                                </View>
-                                <Divider />
-                              </>
-                            )
-                            : (
-                              <>
-                                <View style={styles.guideDetail}>
-                                  <Image style={iconSize(30)} source={require('../assets/images/icon_bus.png')} />
-                                  <View style={styles.guiText}>
-                                    <Text style={{ color: '#111' }}>Đi tuyến {item.routeNumber}</Text>
-                                    <Text style={{ color: '#999' }}>{item.listPoint[0].name} -> {item.listPoint[item.listPoint.length - 1].name}</Text>
-                                  </View>
-                                  <View style={{ height: '100%', marginLeft: 'auto' }}>
-                                    <Text style={{ color: Colors.orange }}>{item.totalDistance}m</Text>
-                                  </View>
-                                </View>
-                                <Divider />
-                              </>
-                            )
-                        )
-                        )
-                      )
-                      : <></>
-                  }
+                        <View style={{ height: '100%', marginLeft: 'auto' }}>
+                          <Text style={{ color: Colors.orange }}>
+                            {item.totalDistance}m
+                          </Text>
+                        </View>
+                      </View>
+                      <Divider />
+                    </>
+                  ) : (
+                    <>
+                      <View style={styles.guideDetail}>
+                        <Image
+                          style={iconSize(30)}
+                          source={require('../assets/images/icon_bus.png')}
+                        />
+                        <View style={styles.guiText}>
+                          <Text style={{ color: '#111' }}>
+                            Đi tuyến {item.routeNumber}
+                          </Text>
+                          <Text style={{ color: '#999' }}>
+                            {item.listPoint[0].name} ->{' '}
+                            {item.listPoint[item.listPoint.length - 1].name}
+                          </Text>
+                        </View>
+                        <View style={{ height: '100%', marginLeft: 'auto' }}>
+                          <Text style={{ color: Colors.orange }}>
+                            {item.totalDistance}m
+                          </Text>
+                        </View>
+                      </View>
+                      <Divider />
+                    </>
+                  )
+                )
+              ) : (
+                <></>
+              )}
+            </View>
+          ) : suggestedRoute ? (
+            suggestedRoute.map((item) =>
+              item.transport === 'bus' ? (
+                <View style={styles.routePassContainer}>
+                  <View
+                    style={{
+                      ...styles.verticalDivider,
+                      backgroundColor: item.color,
+                    }}
+                  ></View>
+                  <View style={styles.routePassContent}>
+                    {item.listPoint.map((point, index) => (
+                      <View style={styles.item}>
+                        <View style={{ paddingVertical: 10 }}>
+                          <Text style={{ color: '#111' }}>{point.name}</Text>
+                        </View>
+                        <Divider></Divider>
+                        {index === 0 || index === item.listPoint.length - 1 ? (
+                          <View
+                            style={{
+                              ...styles.circle,
+                              backgroundColor: item.color,
+                            }}
+                          ></View>
+                        ) : (
+                          <View
+                            style={{
+                              ...styles.square,
+                              backgroundColor: item.color,
+                            }}
+                          ></View>
+                        )}
+                      </View>
+                    ))}
+                  </View>
                 </View>
               ) : (
-                suggestedRoute
-                  ? (
-                    suggestedRoute.map(item => (
-                      item.transport === "bus"
-                        ? (
-                          <View style={styles.routePassContainer}>
-                            <View style={{ ...styles.verticalDivider, backgroundColor: item.color }}></View>
-                            <View style={styles.routePassContent}>
-                              {
-                                item.listPoint.map((point, index) => (
-                                  <View style={styles.item}>
-                                    <View style={{ paddingVertical: 10 }}>
-                                      <Text style={{ color: '#111' }}>{point.name}</Text>
-                                    </View>
-                                    <Divider></Divider>
-                                    {
-                                      index === 0 || index === item.listPoint.length - 1
-                                        ? <View style={{ ...styles.circle, backgroundColor: item.color }}></View>
-                                        : <View style={{ ...styles.square, backgroundColor: item.color }}></View>
-                                    }
-
-                                  </View>
-                                ))
-                              }
-                            </View>
-                          </View>
-                        )
-                        : <></>
-                    ))
-                  )
-                  : <></>
+                <></>
               )
-          }
+            )
+          ) : (
+            <></>
+          )}
         </ScrollView>
       </View>
       <View style={styles.backIcon}>
         <TouchableOpacity onPress={goBack}>
-          <Icon size={30} color="#fff" name="ios-chevron-back-outline" type="ionicon" />
+          <Icon
+            size={30}
+            color="#fff"
+            name="ios-chevron-back-outline"
+            type="ionicon"
+          />
         </TouchableOpacity>
       </View>
 
       <View style={styles.routeNameContainer}>
-        {
-          suggestedRoute
-          ? (
-              suggestedRoute.map(item => (
-                item.transport === "bus"
-                  ? (
-                    <View style={{ ...styles.routeName, backgroundColor: item.color }}>
-                      <Image style={iconSize(18)} source={require('../assets/images/white_icon_bus.png')} />
-                      <Text style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{item.routeNumber}</Text>
-                    </View>
-                  )
-                  : <></>
-
-              ))
+        {suggestedRoute ? (
+          suggestedRoute.map((item) =>
+            item.transport === 'bus' ? (
+              <View
+                style={{ ...styles.routeName, backgroundColor: item.color }}
+              >
+                <Image
+                  style={iconSize(18)}
+                  source={require('../assets/images/white_icon_bus.png')}
+                />
+                <Text style={{ fontSize: 14, color: '#fff', fontWeight: 600 }}>
+                  {item.routeNumber}
+                </Text>
+              </View>
+            ) : (
+              <></>
+            )
           )
-          : <></>
-          
-        }
+        ) : (
+          <></>
+        )}
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     flex: 1,
     position: 'relative',
   },
@@ -190,7 +246,6 @@ const styles = StyleSheet.create({
         elevation: 6,
       },
     }),
-
   },
   routeNameContainer: {
     flexDirection: 'row',
@@ -200,7 +255,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 20,
-    
   },
   routeName: {
     flexDirection: 'row',
@@ -240,14 +294,14 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.orange,
   },
   text: {
-    color: "#808080",
+    color: '#808080',
     fontSize: 16,
-    fontWeight: 600
+    fontWeight: 600,
   },
   activeText: {
     color: Colors.orange,
     fontSize: 16,
-    fontWeight: 600
+    fontWeight: 600,
   },
   guideContainer: {
     paddingHorizontal: 10,
@@ -272,13 +326,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.orange,
   },
   routePassContent: {
-    width: '100%'
+    width: '100%',
   },
   item: {
     width: '100%',
     position: 'relative',
     marginLeft: 20,
-
   },
   square: {
     height: '100%',
@@ -296,11 +349,7 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     top: 11,
     left: -29,
-  }
+  },
+})
 
-
-
-
-});
-
-export default handleTouchEnd;
+export default HandleTouchEnd

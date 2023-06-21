@@ -1,6 +1,3 @@
-// import L from 'leaflet'
-// import { calculateDrivingDistance } from '../services/api';
-import { API_BASE_URL, MAPBOX_API_KEY } from '@env'
 import api from '../services/api1'
 import {
   GET_ALL_ROUTES,
@@ -14,6 +11,7 @@ import {
   SET_MAXIMUM_NUMBER_OF_ROUTE,
   SET_PROGRESS,
 } from './types'
+import { getDistance } from 'geolib'
 export const calculateDistance = (_origin, _destination) => {
   const origin = {
     latitude: _origin.lat,
@@ -23,24 +21,26 @@ export const calculateDistance = (_origin, _destination) => {
     latitude: _destination.lat,
     longitude: _destination.lng,
   }
-  const meters = getDistance(origin, destination);
+  const meters = getDistance(origin, destination)
   return meters
-};
-
+}
 
 export const getAllRoutes = () => async (dispatch) => {
   try {
-    console.log(1234564645);
-    const res = await api.get(`/routes`);
-    console.log("res", res.data);
+    console.log(1234564645)
+    const res = await api.get(`/routes`)
+    console.log('res', res.data)
     res.data.forEach((route) => {
       var index = -1
       route.forwardRoute.forEach(async (station) => {
         var distance = 0
         ++index
-        
+
         if (index < route.forwardRoute.length - 1) {
-          distance = calculateDistance(station.location, route.forwardRoute[index + 1].location)
+          distance = calculateDistance(
+            station.location,
+            route.forwardRoute[index + 1].location
+          )
           station.distance = distance
           station.numberBusStop = index
           station.routeNumber = route.routeNumber
@@ -49,14 +49,17 @@ export const getAllRoutes = () => async (dispatch) => {
             longitude: station.location.lng,
           }
         }
-      });
+      })
       index = -1
       route.backwardRoute.forEach(async (station) => {
         var distance = 0
         ++index
-        
+
         if (index < route.backwardRoute.length - 1) {
-          distance = calculateDistance(station.location, route.backwardRoute[index + 1].location)
+          distance = calculateDistance(
+            station.location,
+            route.backwardRoute[index + 1].location
+          )
           station.distance = distance
           station.numberBusStop = index
           station.routeNumber = route.routeNumber
@@ -64,24 +67,21 @@ export const getAllRoutes = () => async (dispatch) => {
             latitude: station.location.lat,
             longitude: station.location.lng,
           }
-          
         }
-      });
-    });
+      })
+    })
     dispatch({
       type: GET_ALL_ROUTES,
       payload: res.data,
-    });
+    })
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
-};
+}
 
 export const getForwardRouteStations = (routeNumber) => async (dispatch) => {
   try {
-    const res = await api.get(
-      `/api/routes/forward-route/${routeNumber}`
-    )
+    const res = await api.get(`/api/routes/forward-route/${routeNumber}`)
     dispatch({
       type: GET_FORWARD_ROUTE_STATIONS,
       payload: res.data,
@@ -93,9 +93,7 @@ export const getForwardRouteStations = (routeNumber) => async (dispatch) => {
 
 export const getBackwardRouteStations = (routeNumber) => async (dispatch) => {
   try {
-    const res = await api.get(
-      `/api/routes/backward-route/${routeNumber}`
-    )
+    const res = await api.get(`/api/routes/backward-route/${routeNumber}`)
 
     dispatch({
       type: GET_BACKWARD_ROUTE_STATIONS,
