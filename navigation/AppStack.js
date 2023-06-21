@@ -22,6 +22,7 @@ import RegisterScreen from '../screens/Register'
 import RouteDetailScreen from '../screens/RouteDetailScreen'
 import RoutesLookupScreen from '../screens/RoutesLookupScreen'
 import TicketInfo from '../screens/TicketInfo'
+import FriendCheckin from '../screens/FriendCheckin'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
@@ -94,8 +95,19 @@ function DrawerNavigator({ navigation }) {
       ) : (
         <>
           <Drawer.Screen
-            name="Notification"
+            name="Friend Request"
             component={NotificationScreen}
+            options={{
+              headerTitle: 'Friend Request',
+              drawerLabel: 'Friend Request',
+              drawerIcon: ({ color, size }) => (
+                <FontAwesome5 name="user-friends" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Notification"
+            component={FriendCheckin}
             options={{
               headerTitle: 'Notification',
               drawerLabel: 'Notification',

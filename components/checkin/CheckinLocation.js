@@ -17,7 +17,7 @@ function CheckinLocation() {
     const { status } = await Location.requestForegroundPermissionsAsync()
     if (status !== 'granted') {
       console.log('Please grant location permissions')
-      handleCheckin()
+      return
     }
     let currentLocation = await Location.getCurrentPositionAsync({})
     let longitude = currentLocation.coords.longitude
