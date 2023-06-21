@@ -54,30 +54,12 @@ function Map({ coordinates, stations, origin, children }) {
   }
   useEffect(() => {
     if (suggestedRoute) {
-      console.log(suggestedRoute[1].listPoint[0].location);
-      // const listCoordinates = []
-      // const walkingDirection = suggestedRoute.filter(item => item.transport === "walking")
-      // if (walkingDirection){
-      //   walkingDirection.map(data => {
-      //     const list = data.listPoint.map(item=> {
-      //       listCoordinates.push(item.location)
-      //     })
-      //   })
-      //   getWalkingDirection(listCoordinates)
-      // }
       suggestedRoute.map(route => {
         const listCoordinates = route.listPoint.map(item => {
           return item.location
         })
         getWalkingDirection(listCoordinates, route.color)
       })
-      // suggestedRoute.map(route => {
-      //   if (route.transport === "walking") {
-      //     const results = getDirection(route.listPoint.map(item => item.location))
-      //     console.log(results);
-      //     // listCoordinates.push()
-      //   }
-      // })
     }
   }, [suggestedRoute])
 
@@ -161,10 +143,7 @@ function Map({ coordinates, stations, origin, children }) {
             route.listPoint.map(point => (
               index === 0
                 ? (
-                  <Marker coordinate={{
-                    latitude: point.location.lat,
-                    longitude: point.location.lng,
-                  }}>
+                  <Marker coordinate={point.location}>
                     <Image
                       source={require(orangeBusStationIcon)}
                       style={styles.markerImage}
@@ -174,10 +153,7 @@ function Map({ coordinates, stations, origin, children }) {
                   </Marker>
                 )
                 : (
-                  <Marker coordinate={{
-                    latitude: point.location.lat,
-                    longitude: point.location.lng,
-                  }}>
+                  <Marker coordinate={point.location}>
                     <Image
                       source={require(blueBusStationIcon)}
                       style={styles.markerImage}
