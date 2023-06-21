@@ -1,5 +1,4 @@
 import api from '../services/api1'
-import { getDistance } from 'geolib'
 import {
   GET_ALL_ROUTES,
   SET_DIRECTION,
