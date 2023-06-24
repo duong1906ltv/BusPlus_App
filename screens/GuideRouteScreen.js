@@ -1,17 +1,17 @@
+import { Divider, Icon } from '@rneui/themed'
 import React, { useState } from 'react'
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
   Image,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native'
+import { useSelector } from 'react-redux'
 import Map from '../components/map/Map'
-import { Divider, Icon } from '@rneui/themed'
 import { Colors } from '../constants/colors'
 import { iconSize } from '../constants/styles'
-import { useSelector } from 'react-redux'
 import { selectSuggestedRoute } from '../reducers/route'
 
 const GUIDE_DETAIL = 'GUIDE_DETAIL'
@@ -118,7 +118,8 @@ const HandleTouchEnd = ({ navigation }) => {
                             Đi tuyến {item.routeNumber}
                           </Text>
                           <Text style={{ color: '#999' }}>
-                            {item.listPoint[0].name} ->{' '}
+                            {item.listPoint[0].name}
+                            {` -> `}
                             {item.listPoint[item.listPoint.length - 1].name}
                           </Text>
                         </View>
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     left: 25,
     top: 30,
     backgroundColor: Colors.orange,
-    borderRadius: '50%',
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 15,
     height: 15,
-    borderRadius: '50%',
+    borderRadius: 8,
     top: 11,
     left: -29,
   },
