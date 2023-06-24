@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
-import { Image, ScrollView, View, StyleSheet } from 'react-native'
-import { SafeAreaView } from 'react-native'
+import { useEffect, useState } from 'react'
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import { RadioButton } from 'react-native-paper'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Zocial from 'react-native-vector-icons/Zocial'
-import InputField from '../components/auth/InputField'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
 import { getProfile } from '../actions/profile'
-import { RadioButton } from 'react-native-paper'
+import DatePicker from '../components/DatePicker'
+import InputField from '../components/auth/InputField'
 
 function ProfileScreen() {
-  const [checked, setChecked] = React.useState('second')
+  const [gender, setGender] = useState('male')
   const isEditing = useSelector((state) => state.profile.isEditing)
   const profile = useSelector((state) => state.profile.profile)
+  // const [birthDate, setBirthDate] = useState('');
+
+  const [birthDate, setBirthDate] = useState()
 
   const dispatch = useDispatch()
 
@@ -44,44 +53,59 @@ function ProfileScreen() {
             editable={isEditing}
             keyboardType="email-address"
           />
-          <InputField
-            label={'BirthDay'}
-            icon={
-              <FontAwesome
-                name="calendar"
-                size={20}
-                color="#666"
-                style={{ marginRight: 5 }}
-              />
-            }
-            keyboardType="email-address"
-            editable={isEditing}
-          />
-          {/* <InputField
-            label={'Gender'}
-            icon={
+          <DatePicker onChangeDate={setBirthDate} birthDate={birthDate} />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderBottomWidth: 1,
+              borderBottomColor: '#cbcbcb',
+              marginBottom: 20,
+              marginTop: -5,
+              paddingBottom: 5,
+            }}
+          >
+            <View style={{ flexDirection: 'row' }}>
               <FontAwesome
                 name="transgender"
                 size={20}
                 color="#666"
-                style={{ marginRight: 5 }}
+                style={{ marginRight: 10 }}
               />
-            }
-            keyboardType="email-address"
-            editable={isEditing}
-          /> */}
-          <View>
-            <RadioButton
-              value="first"
-              status={checked === 'first' ? 'checked' : 'unchecked'}
-              onPress={() => setChecked('first')}
-              testID="Male"
-            />
-            <RadioButton
-              value="second"
-              status={checked === 'second' ? 'checked' : 'unchecked'}
-              onPress={() => setChecked('second')}
-            />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: '70%',
+                gap: 20,
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View>
+                  <RadioButton
+                    value="male"
+                    status={gender === 'male' ? 'checked' : 'unchecked'}
+                    onPress={() => setGender('male')}
+                  />
+                </View>
+                <View>
+                  <Text>Male</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View>
+                  <RadioButton
+                    value="female"
+                    status={gender === 'female' ? 'checked' : 'unchecked'}
+                    onPress={() => setGender('female')}
+                  />
+                </View>
+                <View>
+                  <Text>Female</Text>
+                </View>
+              </View>
+            </View>
           </View>
           <InputField
             label={'Phone numer'}
