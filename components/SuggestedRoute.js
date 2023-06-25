@@ -40,7 +40,7 @@ export default SuggestedRoute = ({ suggestedRoute }) => {
                 <Text style={textBold(14)}>Đi tuyến số  - {listRouteName}</Text>
                 <View style={gap(5)}>
                     <Text style={round(Colors.blue, 10)}>{Math.round(time)} phút</Text>
-                    <Text style={round(Colors.orange, 10)}>{cost.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                    <Text style={round(Colors.primary, 10)}>{cost.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                 </View>
             </View>
             <View style={gap(10)}>

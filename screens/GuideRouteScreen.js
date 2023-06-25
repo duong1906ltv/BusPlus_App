@@ -99,7 +99,7 @@ const HandleTouchEnd = ({ navigation }) => {
                         )}
 
                         <View style={{ height: '100%', marginLeft: 'auto' }}>
-                          <Text style={{ color: Colors.orange }}>
+                          <Text style={{ color: Colors.primary }}>
                             {item.totalDistance}m
                           </Text>
                         </View>
@@ -124,7 +124,7 @@ const HandleTouchEnd = ({ navigation }) => {
                           </Text>
                         </View>
                         <View style={{ height: '100%', marginLeft: 'auto' }}>
-                          <Text style={{ color: Colors.orange }}>
+                          <Text style={{ color: Colors.primary }}>
                             {item.totalDistance}m
                           </Text>
                         </View>
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 25,
     top: 30,
-    backgroundColor: Colors.orange,
+    backgroundColor: Colors.primary,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
     borderBottomWidth: 2,
-    borderBottomColor: Colors.orange,
+    borderBottomColor: Colors.primary,
   },
   text: {
     color: '#808080',
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   activeText: {
-    color: Colors.orange,
+    color: Colors.primary,
     fontSize: 16,
     fontWeight: 600,
   },
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   verticalDivider: {
     height: '90%',
     width: 3,
-    backgroundColor: Colors.orange,
+    backgroundColor: Colors.primary,
   },
   routePassContent: {
     width: '100%',

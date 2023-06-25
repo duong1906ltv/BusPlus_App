@@ -1,13 +1,15 @@
 import { Picker } from '@react-native-picker/picker'
-import { useLayoutEffect, useState } from 'react'
-import { StyleSheet, Text, View, Modal } from 'react-native'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import Modal from 'react-native-modal';
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { RadioButton } from 'react-native-paper'
 import { Colors } from '../constants/colors'
 import { WebView } from 'react-native-webview';
 import queryString from 'query-string';
 import creatPaymentIntent from '../services/stripeApis';
 import paypalApi from '../services/paypalApi'
+import { CheckBox, Icon } from '@rneui/themed'
+
 
 const BuyTicket = ({ navigation }) => {
   useLayoutEffect(() => {
@@ -19,9 +21,6 @@ const BuyTicket = ({ navigation }) => {
     })
   }, [navigation])
 
-  const [userType, setUserType] = useState('binh-thuong')
-  const [routeType, setRouteType] = useState('don-tuyen')
-  const [selectedMonth, setSelectedMonth] = useState()
   const monthOptions = [
     '06/2023',
     '07/2023',
@@ -37,6 +36,9 @@ const BuyTicket = ({ navigation }) => {
     '05/2024',
     '06/2024',
   ]
+  const [userType, setUserType] = useState('Binh thuong')
+  const [routeType, setRouteType] = useState('Don tuyen')
+  const [selectedMonth, setSelectedMonth] = useState(monthOptions[0])
 
   const [selectedRoute, setSelectedRoute] = useState('Kim Liên - CĐ Việt Hàn')
 
@@ -46,7 +48,24 @@ const BuyTicket = ({ navigation }) => {
   const [isLoading, setLoading] = useState(false)
   const [paypalUrl, setPaypalUrl] = useState(null)
   const [accessToken, setAccessToken] = useState(null)
-
+  const [showRouteModal, setShowRouteModal] = useState(false);
+  const [showMonthModal, setShowMonthModal] = useState(false);
+  const [ticketCost, setTicketCost] = useState("")
+  const [description, serDescription] = useState("")
+  useEffect(()=>{
+    {
+      if (userType === 'Binh thuong' && routeType === 'Lien tuyen'){
+        setTicketCost(130000)
+      } else if (userType === 'Binh thuong' && routeType !== 'Lien tuyen') {
+        setTicketCost(120000)
+      } else if (userType !== 'Binh thuong' && routeType !== 'Lien tuyen') {
+        setTicketCost(60000)
+      } else {
+        setTicketCost(50000)
+      }
+      serDescription(userType + " - "+ routeType)
+    }
+  }, [userType, routeType])
   const onDone = async () => {
 
     let apiData = {
@@ -67,16 +86,6 @@ const BuyTicket = ({ navigation }) => {
       console.log("Error rasied during payment intent", error)
     }
 
-    // console.log("cardInfocardInfocardInfo", cardInfo)
-    // if (!!cardInfo) {
-    //     try {
-    //         const resToken = await createToken({ ...cardInfo, type: 'Card' })
-    //         console.log("resToken", resToken)
-
-    //     } catch (error) {
-    //         alert("Error raised during create token")
-    //     }
-    // }
 
 
   }
@@ -85,9 +94,8 @@ const BuyTicket = ({ navigation }) => {
     setLoading(true)
     try {
       const token = await paypalApi.generateToken()
-      const res = await paypalApi.createOrder(token)
+      const res = await paypalApi.createOrder(token, ticketCost, description)
       setAccessToken(token)
-      console.log("res++++++", res)
       setLoading(false)
       if (!!res?.links) {
         const findUrl = res.links.find(data => data?.rel == "approve")
@@ -101,7 +109,7 @@ const BuyTicket = ({ navigation }) => {
 
     }
   }
-  
+
 
 
   const onUrlChange = (webviewState) => {
@@ -148,18 +156,21 @@ const BuyTicket = ({ navigation }) => {
         </View>
         <View style={styles.inputContainer}>
           <View style={styles.radioInputContainer}>
-            <RadioButton
-              value="binh-thuong"
-              status={userType === 'binh-thuong' ? 'checked' : 'unchecked'}
-              onPress={() => setUserType('binh-thuong')}
+            <CheckBox
+              checked={userType === 'Binh thuong' ? true : false}
+              onPress={() => setUserType('Binh thuong')}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
             />
             <Text>Bình thường</Text>
           </View>
           <View style={styles.radioInputContainer}>
-            <RadioButton
-              value="uu-tien"
-              status={userType === 'uu-tien' ? 'checked' : 'unchecked'}
+
+            <CheckBox
+              checked={userType === 'uu-tien' ? true : false}
               onPress={() => setUserType('uu-tien')}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
             />
             <Text>Ưu tiên</Text>
           </View>
@@ -171,45 +182,38 @@ const BuyTicket = ({ navigation }) => {
         </View>
         <View style={styles.inputContainer}>
           <View style={styles.radioInputContainer}>
-            <RadioButton
-              value="lien-tuyen"
-              status={routeType === 'lien-tuyen' ? 'checked' : 'unchecked'}
-              onPress={() => setRouteType('lien-tuyen')}
+            <CheckBox
+              checked={routeType === 'Lien tuyen' ? true : false}
+              onPress={() => setRouteType('Lien tuyen')}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
             />
             <Text>Liên tuyến</Text>
           </View>
           <View style={styles.radioInputContainer}>
-            <RadioButton
-              value="don-tuyen"
-              status={routeType === 'don-tuyen' ? 'checked' : 'unchecked'}
-              onPress={() => setRouteType('don-tuyen')}
+            <CheckBox
+              checked={routeType === 'Don tuyen' ? true : false}
+              onPress={() => setRouteType('Don tuyen')}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
             />
             <Text>Đơn tuyến</Text>
           </View>
         </View>
       </View>
-      {routeType === 'don-tuyen' && (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <View style={[styles.pickerContainer, { width: '70%' }]}>
-            <Picker
-              selectedValue={selectedRoute}
-              style={{
-                height: 50,
-                width: '100%',
-                backgroundColor: 'transparent',
-              }}
-              onValueChange={(route, itemIndex) => setSelectedRoute(route)}
-            >
-              {routeList.length &&
-                routeList.map((route) => (
-                  <Picker.Item label={route} value={route} key={route} />
-                ))}
-            </Picker>
+      {routeType === 'Don tuyen' && (
+        <View style={styles.inputGroup} >
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Tuyến xe</Text>
+          </View>
+          <View style={styles.pickerContainer}>
+            <View style={styles.selectBoxContainer} >
+              <TouchableOpacity style={styles.selectBox} onPress={() => setShowRouteModal(true)}>
+                <Text >{selectedRoute}</Text>
+                <Icon size={15}name="caret-down-sharp" type="ionicon" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
@@ -217,21 +221,13 @@ const BuyTicket = ({ navigation }) => {
         <View style={styles.labelContainer}>
           <Text style={styles.label}>Tháng</Text>
         </View>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedMonth}
-            style={{
-              height: 50,
-              width: 150,
-              backgroundColor: 'transparent',
-            }}
-            onValueChange={(month, itemIndex) => setSelectedMonth(month)}
-          >
-            {monthOptions.length &&
-              monthOptions.map((month) => (
-                <Picker.Item label={month} value={month} key={month} />
-              ))}
-          </Picker>
+        <View style={[styles.pickerContainer]}>
+            <View style={styles.selectBoxContainer} >
+              <TouchableOpacity style={styles.selectBox} onPress={() => setShowMonthModal(true)}>
+              <Text>{selectedMonth}</Text>
+              <Icon size={15}name="caret-down-sharp" type="ionicon" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View style={styles.ticketPriceContainer}>
@@ -239,15 +235,7 @@ const BuyTicket = ({ navigation }) => {
           <Text style={styles.label}>Giá vé</Text>
         </View>
         <View>
-          <Text style={styles.ticketPrice}>
-            {userType === 'binh-thuong'
-              ? routeType === 'lien-tuyen'
-                ? '130.000'
-                : '120.000'
-              : routeType === 'lien-tuyen'
-              ? '65.000'
-              : '60.000'}
-          </Text>
+          <Text style={styles.ticketPrice}>{ticketCost}</Text>
         </View>
       </View>
       <View style={styles.submitButtonContainer}>
@@ -258,7 +246,8 @@ const BuyTicket = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <Modal
-        visible={!!paypalUrl}
+
+        isVisible={!!paypalUrl}
       >
         <TouchableOpacity
           onPress={clearPaypalState}
@@ -273,7 +262,56 @@ const BuyTicket = ({ navigation }) => {
 
           />
         </View>
-
+      </Modal>
+      <Modal
+        isVisible={showRouteModal}
+        style={styles.modal}
+        onBackdropPress={() => setShowRouteModal(false)}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        backdropOpacity={0.5}
+        backdropTransitionOutTiming={0}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTextHeader}>Chọn tuyến </Text>
+          {
+            routeList.map(route => (
+              <TouchableOpacity onPress={() => {
+                setSelectedRoute(route)
+                setShowRouteModal(false)
+              }
+              }>
+                <Text style={styles.modalText}>{route}</Text>
+              </TouchableOpacity>
+            ))
+          }
+        </View>
+      </Modal>
+      <Modal
+        isVisible={showMonthModal}
+        style={styles.modal}
+        onBackdropPress={() => setShowMonthModal(false)}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        backdropOpacity={0.5}
+        backdropTransitionOutTiming={0}
+      >
+        <View style={{ ...styles.modalContent, height: 300}}>
+          <Text style={styles.modalTextHeader}>Chọn vé tháng</Text>
+          <ScrollView>
+          {
+            monthOptions.map(month => (
+              <TouchableOpacity onPress={() => {
+                setSelectedMonth(month)
+                setShowMonthModal(false)
+              }
+              }>
+                <Text style={styles.modalText}>{month}</Text>
+              </TouchableOpacity>
+            ))
+          }
+          </ScrollView>
+        </View>
       </Modal>
     </View>
   )
@@ -283,6 +321,8 @@ export default BuyTicket
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
+    backgroundColor: '#fff',
     gap: 20,
     paddingHorizontal: 25,
     paddingVertical: 30,
@@ -290,9 +330,10 @@ const styles = StyleSheet.create({
   inputGroup: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between'
   },
   labelContainer: {
-    width: '30%',
+    width: '25%',
   },
   label: {
     fontSize: 16,
@@ -303,16 +344,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   radioInputContainer: {
+    width: '35%',
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 20,
+    marginRight: 25,
   },
   pickerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#dbdbdb',
+    backgroundColor: '#e6e6e6',
     borderRadius: 5,
     height: 40,
+    width: '70%'
   },
   ticketPriceContainer: {
     flexDirection: 'row',
@@ -339,4 +382,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.white,
   },
+  selectBoxContainer: {
+    borderRadius: 5,
+    width: "100%",
+  },
+  selectBox: {
+    flexDirection: 'row',
+    padding: 7,
+    justifyContent: 'space-between'
+
+  },
+  modal: {
+    overflow: 'scroll',
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  modalContent: {
+    overflow: 'scroll',
+    backgroundColor: 'white',
+    height: 150,
+    padding: 16,
+  },
+  modalTextHeader: {
+    fontSize: 16,
+    color: Colors.gray700,
+    padding: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    padding: 10,
+  }
 })

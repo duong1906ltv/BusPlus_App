@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    backgroundColor: ORANGE,
+    backgroundColor: Colors.primary,
     paddingHorizontal: 10,
     paddingTop: 25,
     paddingBottom: 10,
@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "25%",
     // paddingVertical: 10,
-    backgroundColor: ORANGE,
+    backgroundColor: Colors.primary,
     borderWidth: 1,
     borderColor: '#fff',
   },

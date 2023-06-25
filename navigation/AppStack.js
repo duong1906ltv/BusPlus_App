@@ -196,11 +196,11 @@ function AppStack() {
         component={TicketInfo}
         options={{ animation: 'slide_from_right' }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="BuyTicket"
         component={BuyTicket}
         options={{ animation: 'slide_from_right' }}
-      />
+      /> */}
 
       <Stack.Screen
         name="SearchScreen"

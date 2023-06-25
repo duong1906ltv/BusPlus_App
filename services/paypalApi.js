@@ -5,37 +5,42 @@ let baseUrl = 'https://api-m.sandbox.paypal.com';
 let clientId = 'AVPImteEODTlj0Av7n3iULYaKUy56gfAuhSZnE6oOyN8HJYX3lEf9IO3GXKS9dn2gnM9Db7doA-zNwTH';
 let secretKey = 'EA4l8h3OwbJTxQXVtPKWDEO780LFUH79Yk1ZY1nWHiw3ODO3_dMAeqmKKBy0z7kLaIDwliMd5WaFURB_';
 
+const convertDongToDolar = (data) => {
+    return Math.round(data / 23000 * 100) / 100
+}
 
-let orderDetail = {
-    "intent": "CAPTURE",
-    "purchase_units": [
-        {
-            "items": [
-                {
-                    "name": "Ticket",
-                    "description": "Bình thường - Liên tuyến",
-                    "quantity": "1",
-                    "unit_amount": {
-                        "currency_code": "USD",
-                        "value": "60.00"
+const orderDetail = (cost, description) => {
+    return {
+        "intent": "CAPTURE",
+        "purchase_units": [
+            {
+                "items": [
+                    {
+                        "name": "Buy bus ticket from BusPlus",
+                        "description": description,
+                        "quantity": "1",
+                        "unit_amount": {
+                            "currency_code": "USD",
+                            "value": cost
+                        }
                     }
-                }
-            ],
-            "amount": {
-                "currency_code": "USD",
-                "value": "60.00",
-                "breakdown": {
-                    "item_total": {
-                        "currency_code": "USD",
-                        "value": "60.00"
+                ],
+                "amount": {
+                    "currency_code": "USD",
+                    "value": cost,
+                    "breakdown": {
+                        "item_total": {
+                            "currency_code": "USD",
+                            "value": cost
+                        }
                     }
                 }
             }
+        ],
+        "application_context": {
+            "return_url": "https://example.com/return",
+            "cancel_url": "https://example.com/cancel"
         }
-    ],
-    "application_context": {
-        "return_url": "https://example.com/return",
-        "cancel_url": "https://example.com/cancel"
     }
 }
 
@@ -63,7 +68,8 @@ const generateToken = () => {
     })
 }
 
-const createOrder = (token = '') => {
+const createOrder = (token = '', cost, description) => {
+
     var requestOptions = {
         method: 'POST',
         headers: {
@@ -71,7 +77,7 @@ const createOrder = (token = '') => {
             'Authorization': `Bearer ${token}`
 
         },
-        body: JSON.stringify(orderDetail)
+        body: JSON.stringify(orderDetail(convertDongToDolar(cost), description))
     };
 
     return new Promise((resolve, reject) => {
