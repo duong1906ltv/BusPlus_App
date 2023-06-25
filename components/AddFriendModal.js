@@ -37,7 +37,9 @@ export default class AddFriendModal extends Component {
                 <FontAweSome name="close" size={30}></FontAweSome>
               </Pressable>
               <View>
-                <Text style={styles.modalText}>ADD FRIEND BY PHONE </Text>
+                <Text style={styles.modalText}>
+                  Thêm bạn bè bằng số điện thoại{' '}
+                </Text>
               </View>
               {this.props.phone ? (
                 <TextInput
@@ -47,7 +49,7 @@ export default class AddFriendModal extends Component {
                 />
               ) : (
                 <TextInput
-                  placeholder="Type friend's phone number"
+                  placeholder="Nhập số điện thoại bạn bè ở đây"
                   style={{ textAlign: 'center' }}
                   onChangeText={(text) => this.props.setPhone(text)}
                 />
@@ -67,7 +69,7 @@ export default class AddFriendModal extends Component {
                       }
                 }
               >
-                <Text style={styles.textStyle}>Add friends</Text>
+                <Text style={styles.textStyle}>Thêm bạn bè</Text>
               </Pressable>
             </View>
           </View>

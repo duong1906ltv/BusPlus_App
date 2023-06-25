@@ -59,11 +59,11 @@ function DrawerNavigator({ navigation }) {
         }}
       />
       <Drawer.Screen
-        name="RoutesLookupScreen"
+        name="Danh sách các tuyến"
         component={RoutesLookupScreen}
         options={{
-          headerTitle: 'Look up all routes',
-          drawerLabel: 'All Routes',
+          headerTitle: 'Danh sách các tuyến',
+          drawerLabel: 'Danh sách các tuyến',
           drawerIcon: ({ color, size }) => (
             <Icon name="bus" color={color} size={size} />
           ),
@@ -72,7 +72,7 @@ function DrawerNavigator({ navigation }) {
       {!isAuthenticated ? (
         <>
           <Drawer.Screen
-            name="Login"
+            name="Đăng nhập"
             component={LoginScreen}
             options={{
               headerTitle: 'Login',
@@ -83,11 +83,11 @@ function DrawerNavigator({ navigation }) {
             }}
           />
           <Drawer.Screen
-            name="Register"
+            name="Đăng kí"
             component={RegisterScreen}
             options={{
-              headerTitle: 'Register',
-              drawerLabel: 'Register',
+              headerTitle: 'Đăng kí',
+              drawerLabel: 'Đăng kí',
               drawerIcon: ({ color, size }) => (
                 <FontAwesome name="registered" color={color} size={size} />
               ),
@@ -97,44 +97,44 @@ function DrawerNavigator({ navigation }) {
       ) : (
         <>
           <Drawer.Screen
-            name="Friend Request"
+            name="Yêu cầu kết bạn"
             component={NotificationScreen}
             options={{
-              headerTitle: 'Friend Request',
-              drawerLabel: 'Friend Request',
+              headerTitle: 'Yêu cầu kết bạn',
+              drawerLabel: 'Yêu cầu kết bạn',
               drawerIcon: ({ color, size }) => (
                 <FontAwesome5 name="user-friends" color={color} size={size} />
               ),
             }}
           />
           <Drawer.Screen
-            name="Notification"
+            name="Thông Báo"
             component={FriendCheckin}
             options={{
-              headerTitle: 'Notification',
-              drawerLabel: 'Notification',
+              headerTitle: 'Thông Báo',
+              drawerLabel: 'Thông Báo',
               drawerIcon: ({ color, size }) => (
                 <Icon name="notifications" color={color} size={size} />
               ),
             }}
           />
           <Drawer.Screen
-            name="MyTicket"
+            name="Vé của tôi"
             component={MyTicket}
             options={{
-              headerTitle: 'My Ticket',
-              drawerLabel: 'My Ticket',
+              headerTitle: 'Vé của tôi',
+              drawerLabel: 'Vé của tôi',
               drawerIcon: ({ color, size }) => (
                 <Fontisto name="ticket" color={color} size={size} />
               ),
             }}
           />
           <Drawer.Screen
-            name="Profile"
+            name="Thông tin cá nhân"
             component={ProfileScreen}
             options={{
-              headerTitle: 'Profile',
-              drawerLabel: 'Profile',
+              headerTitle: 'Thông tin cá nhân',
+              drawerLabel: 'Thông tin cá nhân',
               headerRight: () => (
                 <TouchableOpacity
                   onPress={() => dispatch(editProfileButtonClick())}
@@ -156,11 +156,11 @@ function DrawerNavigator({ navigation }) {
             }}
           />
           <Drawer.Screen
-            name="Friend"
+            name="Bạn bè"
             component={FriendScreen}
             options={{
-              headerTitle: 'Friend',
-              drawerLabel: 'Friend',
+              headerTitle: 'Bạn bè',
+              drawerLabel: 'Bạn bè',
               drawerIcon: ({ color, size }) => (
                 <FontAwesome5 name="user-friends" color={color} size={size} />
               ),

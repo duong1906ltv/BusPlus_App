@@ -117,15 +117,16 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <InputField
-          label={'Email ID'}
+          label={'Phone numer'}
           icon={
-            <MaterialIcons
-              name="alternate-email"
+            <FontAwesome
+              name="phone"
               size={20}
               color="#666"
               style={{ marginRight: 5 }}
             />
           }
+          editable={true}
           keyboardType="email-address"
         />
 

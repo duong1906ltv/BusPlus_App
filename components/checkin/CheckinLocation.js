@@ -1,49 +1,43 @@
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet } from 'react-native'
-import { Marker } from 'react-native-maps'
+import { Marker, Callout } from 'react-native-maps'
 import * as Location from 'expo-location'
-import IonIcons from 'react-native-vector-icons/Ionicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Colors } from '../../constants/colors'
 import { useContext } from 'react'
 import { SocketContext } from '../../SocketContext'
+import { useSelector } from 'react-redux'
 
 function CheckinLocation() {
-  const [location, setLocation] = useState()
-
-  const { myLocation, myCheckin } = useContext(SocketContext)
-
-  const startLocationUpdates = async () => {
-    // Theo dõi vị trí hiện tại
-    const { status } = await Location.requestForegroundPermissionsAsync()
-    if (status !== 'granted') {
-      console.log('Please grant location permissions')
-      return
-    }
-    let currentLocation = await Location.getCurrentPositionAsync({})
-    let longitude = currentLocation.coords.longitude
-    let latitude = currentLocation.coords.latitude
-    setLocation({
-      longitude,
-      latitude,
-    })
-  }
+  const { checkinStatus } = useContext(SocketContext)
+  const [currentLocation, setCurrentLocation] = useState()
+  const [fakeLocation, setFakeLocation] = useState({
+    longitude: '108.145702',
+    latitude: '16.082891',
+  })
 
   useEffect(() => {
-    startLocationUpdates()
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      startLocationUpdates()
+    const interval = setInterval(async () => {
+      const { status } = await Location.getForegroundPermissionsAsync()
+      if (status === 'granted') {
+        let currentLocation = await Location.getCurrentPositionAsync({})
+        let longitude = currentLocation.coords.longitude
+        let latitude = currentLocation.coords.latitude
+        setCurrentLocation({
+          longitude,
+          latitude,
+        })
+      }
     }, 1000)
     return () => clearInterval(interval)
   }, [])
 
   return (
     <>
-      {myLocation && (
-        <Marker coordinate={location}>
-          <IonIcons name="location-sharp" size={50} color={Colors.primary} />
+      {checkinStatus && (
+        <Marker coordinate={fakeLocation}>
+          <MaterialCommunityIcons name="human-male" size={50} color={'black'} />
+          <Callout tooltip></Callout>
         </Marker>
       )}
     </>

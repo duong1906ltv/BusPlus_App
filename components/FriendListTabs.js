@@ -7,55 +7,71 @@ import {
   View,
   useWindowDimensions,
   TouchableOpacity,
+  Alert,
 } from 'react-native'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
 import { Colors } from '../constants/colors'
 import { Swipeable } from 'react-native-gesture-handler'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useDispatch } from 'react-redux'
+import { activeFriend, freezedFriend, getListFriend } from '../actions/friend'
 
-function FriendListTabs({ friendList }) {
+function FriendListTabs({
+  friendList,
+  reloadData,
+  setReloadData,
+  listCheckIn,
+}) {
   const layout = useWindowDimensions()
+  const dispatch = useDispatch()
 
-  const activeFriend = friendList.filter((friend) => friend.status === 'active')
-  const freezedFriend = friendList.filter(
+  const activeFriendList = friendList.filter(
+    (friend) => friend.status === 'active'
+  )
+  const freezedFriendList = friendList.filter(
     (friend) => friend.status === 'freeze'
   )
 
   const [index, setIndex] = React.useState(0)
   const [routes] = React.useState([
-    { key: 'first', title: 'Active Friend' },
-    { key: 'second', title: 'Freezed Friend' },
+    { key: 'first', title: 'Bạn đang theo dõi' },
+    { key: 'second', title: 'Bạn đã bị ẩn' },
   ])
 
-  const FlatListItem = ({ item, index }) => {
-    const handleReject = () => {
-      Alert.alert('Confrim', `Do you want to reject this request`, [
+  const FlatListItem = ({ item, index, type }) => {
+    const handleClick = (text) => {
+      Alert.alert('Xác nhận', `Bạn có muốn ${text} người dùng này không`, [
         { text: 'NO' },
         {
           text: 'YES',
-          onPress: () => {
-            dispatch(rejectRequest(item._id))
-            dispatch(getFriendRequest())
+          onPress: async () => {
+            text === 'active'
+              ? dispatch(activeFriend(item?.profile.user)) &&
+                setReloadData(!reloadData)
+              : dispatch(freezedFriend(item?.profile.user)) &&
+                setReloadData(!reloadData)
           },
         },
       ])
     }
-
-    const handleAccept = () => {
-      Alert.alert('Confrim', `Do you want to accept this request`, [
-        { text: 'NO' },
-        {
-          text: 'YES',
-          onPress: () => {
-            dispatch(acceptRequest(item._id))
-            dispatch(getFriendRequest())
-          },
-        },
-      ])
-    }
-    const rightSwipe = () => {
+    const rightSwipe = (type) => {
+      let iconName, text
+      if (type === 'active') {
+        text = 'ghost'
+        iconName = 'snapchat-ghost'
+      } else {
+        text = 'active'
+        iconName = 'check-square-o'
+      }
       return (
-        <View style={{ flexDirection: 'row', backgroundColor: '#fff' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: '#fff',
+            height: 110,
+          }}
+        >
           <TouchableOpacity
             style={{
               width: 110,
@@ -65,97 +81,156 @@ function FriendListTabs({ friendList }) {
               backgroundColor: 'green',
               marginRight: 1,
             }}
-            onPress={handleAccept}
+            onPress={() => handleClick(text)}
           >
             <FontAwesome
-              name="check-circle"
+              name={iconName}
               size={50}
               color={'yellow'}
             ></FontAwesome>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 110,
+              height: 110,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'red',
+            }}
+            onPress={() => handleClick('delete')}
+          >
+            <AntDesign name="deleteuser" size={50} color={'yellow'}></AntDesign>
+          </TouchableOpacity>
         </View>
       )
     }
-    return (
-      <Swipeable renderRightActions={rightSwipe}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 20,
-            shadowColor: '#000000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
+
+    const renderCheckInIcon = () => {
+      if (listCheckIn.includes(item.profile.user)) {
+        return (
+          <FontAwesome
+            name="check-circle"
+            size={25}
+            color="#4fb477"
+            style={{ marginLeft: 'auto', marginRight: 20 }}
+          />
+        )
+      } else {
+        return (
+          <FontAwesome
+            name="check-circle"
+            size={25}
+            color={Colors.lightGray}
+            style={{ marginLeft: 'auto', marginRight: 20 }}
+          />
+        )
+      }
+    }
+
+    const handleFriendClick = () => {
+      if (listCheckIn.includes(item.profile.user)) {
+        console.log('OK')
+      } else {
+        Alert.alert(
+          'Cảnh báo ',
+          `Bạn của bạn đang không checkin hoặc bạn đã bị set là không được theo dõi`,
+          [
+            {
+              text: 'OK',
             },
-            shadowOpacity: 0.17,
-            shadowRadius: 2.54,
-            elevation: 3,
-            padding: 10,
-          }}
-        >
-          {item.profile.avatar ? (
-            <Image
-              source={{ uri: item.profile.avatar }}
-              style={{
-                width: 80,
-                height: 80,
-                margin: 5,
-                borderRadius: 40,
-                borderColor: Colors.primary,
-                borderWidth: 1,
-              }}
-            />
-          ) : (
-            <Image
-              source={{
-                uri: 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg',
-              }}
-              style={{
-                width: 80,
-                height: 80,
-                margin: 5,
-                borderRadius: 40,
-                borderColor: Colors.primary,
-                borderWidth: 1,
-              }}
-            />
-          )}
-          <View style={{ gap: 10 }}>
-            <Text
-              style={{
-                paddingHorizontal: 10,
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: 'bold',
-              }}
-            >
-              {item.profile.fullname}
-            </Text>
-            <Text
-              style={{
-                paddingHorizontal: 10,
-                color: Colors.black,
-                fontSize: 14,
-              }}
-            >
-              {item.profile.phone}
-            </Text>
+          ]
+        )
+      }
+    }
+    return (
+      <Swipeable renderRightActions={() => rightSwipe(type)}>
+        <TouchableOpacity onPress={handleFriendClick}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'white',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 20,
+              shadowColor: '#000000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.17,
+              shadowRadius: 2.54,
+              elevation: 3,
+              padding: 10,
+            }}
+          >
+            {item.profile.avatar ? (
+              <Image
+                source={{ uri: item.profile.avatar }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  margin: 5,
+                  borderRadius: 40,
+                  borderColor: Colors.primary,
+                  borderWidth: 1,
+                }}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg',
+                }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  margin: 5,
+                  borderRadius: 40,
+                  borderColor: Colors.primary,
+                  borderWidth: 1,
+                }}
+              />
+            )}
+            <View style={{ gap: 10 }}>
+              <Text
+                style={{
+                  paddingHorizontal: 10,
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}
+              >
+                {item.profile.fullname}
+              </Text>
+              <Text
+                style={{
+                  paddingHorizontal: 10,
+                  color: Colors.black,
+                  fontSize: 14,
+                }}
+              >
+                {item.profile.phone}
+              </Text>
+            </View>
+            {renderCheckInIcon()}
           </View>
-        </View>
+        </TouchableOpacity>
       </Swipeable>
     )
   }
 
   const FirstRoute = () => (
     <View style={styles.tabContent}>
-      {activeFriend.length ? (
+      {activeFriendList.length ? (
         <FlatList
-          data={activeFriend}
+          data={activeFriendList}
           renderItem={({ item, index }) => {
-            return <FlatListItem item={item} index={index}></FlatListItem>
+            return (
+              <FlatListItem
+                item={item}
+                index={index}
+                type={'active'}
+              ></FlatListItem>
+            )
           }}
           keyExtractor={(item) => {
             return item.profile._id
@@ -170,11 +245,17 @@ function FriendListTabs({ friendList }) {
 
   const SecondRoute = () => (
     <View style={styles.tabContent}>
-      {freezedFriend.length ? (
+      {freezedFriendList.length ? (
         <FlatList
-          data={freezedFriend}
+          data={freezedFriendList}
           renderItem={({ item, index }) => {
-            return <FlatListItem item={item} index={index}></FlatListItem>
+            return (
+              <FlatListItem
+                item={item}
+                index={index}
+                type={'freeze'}
+              ></FlatListItem>
+            )
           }}
           keyExtractor={(item) => {
             return item.profile._id

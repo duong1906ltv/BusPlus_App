@@ -1,6 +1,15 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 
 function TicketComponent({ ticket, qrCode }) {
+  const [modalShow, setModalShow] = useState(false)
   return (
     <>
       {ticket && (
@@ -34,7 +43,29 @@ function TicketComponent({ ticket, qrCode }) {
             <Text style={styles.content}>{ticket?.ticketType}</Text>
           </View>
           <View style={[styles.item, styles.imageContainer]}>
-            <Image style={styles.qrCode} source={{ uri: qrCode }} />
+            {modalShow ? (
+              <Modal isVisible={modalShow} style={styles.modalContainer}>
+                <TouchableOpacity
+                  onPress={() => setModalShow(false)}
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <View>
+                    <Image
+                      style={{ width: 400, height: 400 }}
+                      source={{ uri: qrCode }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            ) : (
+              <TouchableOpacity onPress={() => setModalShow(true)}>
+                <Image style={styles.qrCode} source={{ uri: qrCode }} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       )}
@@ -74,5 +105,15 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginTop: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
   },
 })

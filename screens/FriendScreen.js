@@ -1,5 +1,5 @@
 import { useIsFocused } from '@react-navigation/native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,33 +8,47 @@ import AddFriendModal from '../components/AddFriendModal'
 // import ToastMessage from '../components/ToastMessage'
 import FriendListTabs from '../components/FriendListTabs'
 import { Colors } from '../constants/colors'
+import { getFriendsCheckInStatus } from '../actions/checkin'
+import { SocketContext } from '../SocketContext'
 
 const FriendScreen = () => {
-  const friend = useSelector((state) => state.friend)
+  const [reloadData, setReloadData] = useState(false)
+  const { isLoading, listFriend } = useSelector((state) => state.friend)
+  const { listFriendCheckIn } = useSelector((state) => state.checkin)
+  const { listCheckIn } = useContext(SocketContext)
   const isFocused = useIsFocused()
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getListFriend())
-  }, [dispatch, isFocused])
+    dispatch(getFriendsCheckInStatus())
+  }, [dispatch, isFocused, reloadData, listCheckIn])
 
   const [modalVisible, setModalVisible] = useState(false)
   const [phone, setPhone] = useState('')
 
   const handleAddFriend = () => {
     Alert.alert(
-      'Confrim',
-      `Do you want to make friends with a friend with phone number "${phone}"`,
+      'Xác nhận',
+      `Bạn có muốn kết bạn với người bạn có số điện thoại "${phone}"này không`,
       [
-        { text: 'NO' },
+        { text: 'Không' },
         {
-          text: 'YES',
+          text: 'Có ',
           onPress: () => {
             dispatch(sentFriendRequest({ phone }))
           },
         },
       ]
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
     )
   }
 
@@ -48,7 +62,7 @@ const FriendScreen = () => {
           marginTop: 5,
         }}
       >
-        <Text style={styles.title}>My Friends</Text>
+        <Text style={styles.title}>Bạn bè</Text>
         <View
           style={{
             width: 40,
@@ -81,8 +95,13 @@ const FriendScreen = () => {
           </Pressable>
         </View>
       </View>
-      {friend && friend?.listFriend && (
-        <FriendListTabs friendList={friend?.listFriend} />
+      {listFriend && (
+        <FriendListTabs
+          friendList={listFriend}
+          reloadData={reloadData}
+          setReloadData={setReloadData}
+          listCheckIn={listCheckIn}
+        />
       )}
     </View>
   )

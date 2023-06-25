@@ -21,10 +21,19 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       {authState.isAuthenticated ? (
         <View style={styles.userContainer}>
-          <Image
-            style={styles.avatar}
-            source={{ uri: authState.user.profile.avatar }}
-          />
+          {authState.user.profile.avatar ? (
+            <Image
+              style={styles.avatar}
+              source={{ uri: authState.user.profile.avatar }}
+            />
+          ) : (
+            <Image
+              source={{
+                uri: 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg',
+              }}
+              style={styles.avatar}
+            />
+          )}
           <Text style={styles.username} numberOfLines={1} ellipsizeMode="head">
             {authState.user.fullname}
           </Text>

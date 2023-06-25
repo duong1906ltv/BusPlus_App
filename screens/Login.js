@@ -16,9 +16,8 @@ import { Colors } from '../constants/colors'
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch()
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
 
-  const { isLoading, user, error } = useSelector((state) => state.auth)
+  const { isLoading } = useSelector((state) => state.auth)
 
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
@@ -28,26 +27,13 @@ const LoginScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    if (error) {
-      Toast.show({
-        type: 'error',
-        text1: error,
-      })
-      dispatch(clearError())
-    }
-
-    if (user) {
+    if (isLoading) {
       Toast.show({
         type: 'success',
-        text1: 'Redirecting...',
+        text1: 'Đăng nhập thành công. Đang di chuyển...',
       })
     }
-  }, [error, user, dispatch])
-
-  if (isAuthenticated) {
-    navigation.navigate('HomeScreen')
-    return null
-  }
+  }, [isLoading])
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
@@ -188,11 +174,5 @@ const LoginScreen = ({ navigation }) => {
     </SafeAreaView>
   )
 }
-
-const mapStateToProps = (state) => ({
-  user: state.auth.user,
-  loading: state.auth.loading,
-  error: state.auth.error,
-})
 
 export default LoginScreen

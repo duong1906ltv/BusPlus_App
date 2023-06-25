@@ -24,23 +24,22 @@ export const register = (userData) => {
 
 // Action đăng nhập (login)
 export const login = (userData) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: 'LOGIN_REQUEST' })
 
-    api
-      .post('/auth/login', userData)
-      .then((response) => {
-        dispatch({
-          type: 'LOGIN_SUCCESS',
-          payload: response.data,
-        })
+    try {
+      const response = await api.post('/auth/login', userData)
+
+      dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: response.data,
       })
-      .catch((error) => {
-        dispatch({
-          type: 'LOGIN_FAILURE',
-          payload: error.response.data,
-        })
+    } catch (error) {
+      dispatch({
+        type: 'LOGIN_FAILURE',
+        payload: error.response.data,
       })
+    }
   }
 }
 

@@ -135,7 +135,73 @@ export const rejectRequest = (requestId) => {
           text2: error.response.data.error,
           autoHide: true,
         })
-        console.log(error.response.data.error)
       })
+  }
+}
+
+export const freezedFriend = (friendId) => {
+  return async (dispatch, getState) => {
+    try {
+      const state = getState()
+      const response = await api.post(
+        `/profile/freeze`,
+        {
+          userId: friendId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${state.auth.token}`,
+          },
+        }
+      )
+
+      Toast.show({
+        type: 'success',
+        text1: 'SUCCESS',
+        text2: response.data.message,
+        autoHide: true,
+      })
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'ERROR',
+        text2: error.response.data.error,
+        autoHide: true,
+      })
+    }
+  }
+}
+
+export const activeFriend = (friendId) => {
+  return async (dispatch, getState) => {
+    try {
+      const state = getState()
+      const response = await api.post(
+        `/profile/active`,
+        {
+          userId: friendId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${state.auth.token}`,
+          },
+        }
+      )
+
+      Toast.show({
+        type: 'success',
+        text1: 'SUCCESS',
+        text2: response.data.message,
+        autoHide: true,
+      })
+    } catch (error) {
+      console.log(error.response.data.message)
+      Toast.show({
+        type: 'error',
+        text1: 'ERROR',
+        text2: error.response.data.error,
+        autoHide: true,
+      })
+    }
   }
 }
