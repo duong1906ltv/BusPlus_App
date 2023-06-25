@@ -93,7 +93,8 @@ function SuggestedRouteScreen({ navigation }) {
                 routeNumber: route.routeNumber,
                 name: station.name,
                 numberBusStop: station.numberBusStop,
-                location: station.location
+                location: station.location,
+                cost: route.cost,
               }
               // console.log("newPoint1, ",newPoint);
               // setPointsOfForwardNearOriginal(pre => [...pre, newPoint])
@@ -111,7 +112,8 @@ function SuggestedRouteScreen({ navigation }) {
               routeNumber: route.routeNumber,
               name: station.name,
               numberBusStop: station.numberBusStop,
-              location: station.location
+              location: station.location,
+              cost: route.cost,
             }
             pointsOfForwardNearDestination.push(newPoint)
           }
@@ -125,7 +127,8 @@ function SuggestedRouteScreen({ navigation }) {
               routeNumber: route.routeNumber,
               name: station.name,
               numberBusStop: station.numberBusStop,
-              location: station.location
+              location: station.location,
+              cost: route.cost,
             }
             pointsOfBackwardNearOriginal.push(newPoint)
           }
@@ -139,7 +142,8 @@ function SuggestedRouteScreen({ navigation }) {
               routeNumber: route.routeNumber,
               name: station.name,
               numberBusStop: station.numberBusStop,
-              location: station.location
+              location: station.location,
+              cost: route.cost,
             }
 
             pointsOfBackwardNearDestination.push(newPoint)
@@ -183,6 +187,7 @@ function SuggestedRouteScreen({ navigation }) {
             const suggestedRoute = [
               {
                 transport: "bus",
+                cost: destination.cost,
                 routeNumber: destination.routeNumber,
                 listPoint: allRoutes.find(item => item.routeNumber === destination.routeNumber).forwardRoute.slice(original.numberBusStop, destination.numberBusStop + 1),
                 color: "#FFA836",
@@ -238,6 +243,7 @@ function SuggestedRouteScreen({ navigation }) {
             const suggestedRoute = [
               {
                 transport: "bus",
+                cost: original.cost,
                 routeNumber: original.routeNumber,
                 listPoint: busStation_Original.slice(original.numberBusStop, posBusStation_Original + 1),
                 color: "#FFA836",
@@ -245,6 +251,7 @@ function SuggestedRouteScreen({ navigation }) {
               },
               {
                 transport: "bus",
+                cost: destination.cost,
                 routeNumber: destination.routeNumber,
                 listPoint: busStation_Destination.slice(posBusStation_Destination, destination.numberBusStop + 1),
                 color: "#2983c7",
@@ -259,7 +266,7 @@ function SuggestedRouteScreen({ navigation }) {
             const stationSwitchingDistance = getDistance(busStation_Original[posBusStation_Original].location, busStation_Destination[posBusStation_Destination].location)
             if (stationSwitchingDistance > 0) {
               const route = {
-                transport: "bus",
+                transport: "walking",
                 routeNumber: null,
                 listPoint: [busStation_Original[posBusStation_Original], busStation_Destination[posBusStation_Destination]],
                 totalDistance: parseInt(stationSwitchingDistance),
@@ -302,6 +309,7 @@ function SuggestedRouteScreen({ navigation }) {
             const suggestedRoute = [
               {
                 transport: "bus",
+                cost: destination.cost,
                 routeNumber: destination.routeNumber,
                 listPoint: allRoutes.find(item => item.routeNumber === destination.routeNumber).backwardRoute.slice(original.numberBusStop, destination.numberBusStop + 1),
                 color: "#FFA836",
@@ -356,6 +364,7 @@ function SuggestedRouteScreen({ navigation }) {
             const suggestedRoute = [
               {
                 transport: "bus",
+                cost: original.cost,
                 routeNumber: original.routeNumber,
                 listPoint: busStation_Original.slice(original.numberBusStop, posBusStation_Original + 1),
                 color: "#FFA836",
@@ -363,6 +372,7 @@ function SuggestedRouteScreen({ navigation }) {
               },
               {
                 transport: "bus",
+                cost: destination.cost,
                 routeNumber: destination.routeNumber,
                 listPoint: busStation_Destination.slice(posBusStation_Destination, destination.numberBusStop + 1),
                 color: "#2983c7",
@@ -446,6 +456,7 @@ function SuggestedRouteScreen({ navigation }) {
             const suggestedRoute = [
               {
                 transport: "bus",
+                cost: original.cost,
                 routeNumber: original.routeNumber,
                 listPoint: busStation_Original.slice(original.numberBusStop, posBusStation_Original + 1),
                 color: "#FFA836",
@@ -453,6 +464,7 @@ function SuggestedRouteScreen({ navigation }) {
               },
               {
                 transport: "bus",
+                cost: destination.cost,
                 routeNumber: destination.routeNumber,
                 listPoint: busStation_Destination.slice(posBusStation_Destination, destination.numberBusStop + 1),
                 color: "#2983c7",
@@ -500,6 +512,7 @@ function SuggestedRouteScreen({ navigation }) {
             const suggestedRoute = [
               {
                 transport: "bus",
+                cost: original.cost,
                 routeNumber: original.routeNumber,
                 listPoint: busStation_Original.slice(original.numberBusStop, posBusStation_Original + 1),
                 color: "#FFA836",
@@ -507,6 +520,7 @@ function SuggestedRouteScreen({ navigation }) {
               },
               {
                 transport: "bus",
+                cost: destination.cost,
                 routeNumber: destination.routeNumber,
                 listPoint: busStation_Destination.slice(posBusStation_Destination, destination.numberBusStop + 1),
                 color: "#2983c7",

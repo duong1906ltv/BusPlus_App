@@ -37,7 +37,7 @@ export const round = (color, paddingHorizontal) => {
         color: color,
         borderWidth: 1,
         borderColor: color,
-        padding: 5,
+        padding: 2,
         paddingHorizontal: paddingHorizontal,
         borderRadius: 5,
     }

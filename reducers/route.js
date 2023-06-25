@@ -23,6 +23,7 @@ const initialState = {
     destination: null,
     original: null,
   },
+	// foundRoute: { "destination": { "location": { "lat": 16.065846021000027, "lng": 108.19974490600003 }, "name": "120 Điện Biên Phủ, Chính Gián, Thanh Khê, Đà Nẵng", "zoom": 17 }, "original": { "location": { "lat": 16.07359725300006, "lng": 108.14986788200008 }, "name": "54 Nguyễn Lương Bằng, Hòa Khánh Bắc, Liên Chiểu, Đà Nẵng", "zoom": 17 } },
   suggestedRouteList: [],
   suggestedRoute: null,
   maximumNumOfRoute: 1,
