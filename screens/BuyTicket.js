@@ -1,9 +1,13 @@
 import { Picker } from '@react-native-picker/picker'
 import { useLayoutEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Modal } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { RadioButton } from 'react-native-paper'
 import { Colors } from '../constants/colors'
+import { WebView } from 'react-native-webview';
+import queryString from 'query-string';
+import creatPaymentIntent from '../services/stripeApis';
+import paypalApi from '../services/paypalApi'
 
 const BuyTicket = ({ navigation }) => {
   useLayoutEffect(() => {
@@ -37,6 +41,104 @@ const BuyTicket = ({ navigation }) => {
   const [selectedRoute, setSelectedRoute] = useState('Kim Liên - CĐ Việt Hàn')
 
   const routeList = ['Kim Liên - CĐ Việt Hàn', 'Huế - Đà Nẵng']
+
+
+  const [isLoading, setLoading] = useState(false)
+  const [paypalUrl, setPaypalUrl] = useState(null)
+  const [accessToken, setAccessToken] = useState(null)
+
+  const onDone = async () => {
+
+    let apiData = {
+      amount: 500,
+      currency: "INR"
+    }
+
+    try {
+      const res = await creatPaymentIntent(apiData)
+      console.log("payment intent create succesfully...!!!", res)
+
+      if (res?.data?.paymentIntent) {
+        let confirmPaymentIntent = await confirmPayment(res?.data?.paymentIntent, { paymentMethodType: 'Card' })
+        console.log("confirmPaymentIntent res++++", confirmPaymentIntent)
+        alert("Payment succesfully...!!!")
+      }
+    } catch (error) {
+      console.log("Error rasied during payment intent", error)
+    }
+
+    // console.log("cardInfocardInfocardInfo", cardInfo)
+    // if (!!cardInfo) {
+    //     try {
+    //         const resToken = await createToken({ ...cardInfo, type: 'Card' })
+    //         console.log("resToken", resToken)
+
+    //     } catch (error) {
+    //         alert("Error raised during create token")
+    //     }
+    // }
+
+
+  }
+
+  const onPressPaypal = async () => {
+    setLoading(true)
+    try {
+      const token = await paypalApi.generateToken()
+      const res = await paypalApi.createOrder(token)
+      setAccessToken(token)
+      console.log("res++++++", res)
+      setLoading(false)
+      if (!!res?.links) {
+        const findUrl = res.links.find(data => data?.rel == "approve")
+        setPaypalUrl(findUrl.href)
+      }
+
+
+    } catch (error) {
+      console.log("error", error)
+      setLoading(false)
+
+    }
+  }
+  
+
+
+  const onUrlChange = (webviewState) => {
+    console.log("webviewStatewebviewState", webviewState)
+    if (webviewState.url.includes('https://example.com/cancel')) {
+      clearPaypalState()
+      return;
+    }
+    if (webviewState.url.includes('https://example.com/return')) {
+
+      const urlValues = queryString.parseUrl(webviewState.url)
+      console.log("my urls value", urlValues)
+      const { token } = urlValues.query
+      if (!!token) {
+        paymentSucess(token)
+      }
+
+    }
+  }
+
+
+
+  const clearPaypalState = () => {
+    setPaypalUrl(null)
+    setAccessToken(null)
+  }
+
+  const paymentSucess = async (id) => {
+    try {
+      const res = paypalApi.capturePayment(id, accessToken)
+      console.log("capturePayment res++++", res)
+      alert("Payment sucessfull...!!!")
+      clearPaypalState()
+    } catch (error) {
+      console.log("error raised in payment capture", error)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -149,12 +251,30 @@ const BuyTicket = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.submitButtonContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPressPaypal}>
           <View style={styles.submitButton}>
             <Text style={styles.submitButtonText}>Mua vé</Text>
           </View>
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={!!paypalUrl}
+      >
+        <TouchableOpacity
+          onPress={clearPaypalState}
+          style={{ margin: 24 }}
+        >
+          <Text >Closed</Text>
+        </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          <WebView
+            source={{ uri: paypalUrl }}
+            onNavigationStateChange={onUrlChange}
+
+          />
+        </View>
+
+      </Modal>
     </View>
   )
 }
