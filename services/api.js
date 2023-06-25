@@ -1,7 +1,6 @@
 import { API_BASE_URL, MAPBOX_API_KEY } from '@env'
 import axios from 'axios'
-import { getDistance } from 'geolib';
-
+import { getDistance } from 'geolib'
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -57,8 +56,9 @@ export const getDetailDirectionApi = (coordinates) => {
   let i = 0
   while (i < coordinates.length) {
     const coordinate = coordinates[i]
-    if (Object.keys(coordinate).includes('longitude')){
-      coordinatesString += coordinate.longitude + ',' + coordinate.latitude + ';'
+    if (Object.keys(coordinate).includes('longitude')) {
+      coordinatesString +=
+        coordinate.longitude + ',' + coordinate.latitude + ';'
     } else {
       coordinatesString += coordinate.lng + ',' + coordinate.lat + ';'
     }
@@ -71,7 +71,9 @@ export const getDetailDirectionApi = (coordinates) => {
   )
 }
 export const getLocation = (query) => {
-  const url = `https://rsapi.goong.io/geocode?address=${encodeURIComponent(query)}&api_key=yiOtDspWb1HocRioIwx5awYH85WSm2vEYGo9iTKa`
+  const url = `https://rsapi.goong.io/geocode?address=${encodeURIComponent(
+    query
+  )}&api_key=yiOtDspWb1HocRioIwx5awYH85WSm2vEYGo9iTKa`
   // const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${(query)}.json?access_token=${MAPBOX_API_KEY}`
   return axios.get(url)
 }

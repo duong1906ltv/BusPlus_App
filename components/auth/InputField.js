@@ -30,6 +30,7 @@ export default function InputField({
           keyboardType={keyboardType}
           style={{ flex: 1, paddingVertical: 0, paddingHorizontal: 10 }}
           onChangeText={(text) => setText(text)}
+          secureTextEntry={true}
         />
       ) : (
         <TextInput

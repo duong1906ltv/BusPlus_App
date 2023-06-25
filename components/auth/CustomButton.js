@@ -14,15 +14,17 @@ export default function CustomButton({ isLoading, label, onPress }) {
       }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        {/* <ActivityIndicator
-          style={{
-            position: 'absolute',
-            alignSelf: 'center',
-            right: '50%',
-          }}
-          size={100}
-          color={'white'}
-        /> */}
+        {isLoading && (
+          <ActivityIndicator
+            style={{
+              position: 'absolute',
+              alignSelf: 'center',
+              right: '50%',
+            }}
+            size={100}
+            color={'white'}
+          />
+        )}
 
         <Text
           style={{

@@ -27,7 +27,7 @@ const FlatListItem = ({ item, index, onComponentOpen }) => {
   }, [dispatch])
 
   const handleReject = () => {
-    Alert.alert('Confrim', `Do you want to reject this request`, [
+    Alert.alert('Xác nhận', `Bạn từ chối với lời mời kết bạn này?`, [
       { text: 'NO' },
       {
         text: 'YES',
@@ -40,7 +40,7 @@ const FlatListItem = ({ item, index, onComponentOpen }) => {
   }
 
   const handleAccept = () => {
-    Alert.alert('Confrim', `Do you want to accept this request`, [
+    Alert.alert('Xác nhận', `Bạn đồng ý với lời mời kết bạn này?`, [
       { text: 'NO' },
       {
         text: 'YES',
@@ -145,10 +145,10 @@ const FlatListItem = ({ item, index, onComponentOpen }) => {
               fontSize: 16,
             }}
           >
-            Phone number: {item.senderId.profile.phone}
+            số điện thoại: {item.senderId.profile.phone}
           </Text>
           <Text style={{ paddingLeft: 10, color: 'white', fontSize: 16 }}>
-            sent you a friend request
+            đã gửi bạn một lời mời kết bạn
           </Text>
         </View>
       </View>

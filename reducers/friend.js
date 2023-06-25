@@ -10,17 +10,18 @@ const friendReducer = (state = initialState, action) => {
     case 'SEND_FRIEND_INVITE_REQUEST':
       return {
         ...state,
-        loading: false,
+        isLoading: true,
       }
     case 'SEND_FRIEND_INVITE_SUCCESS':
       return {
         ...state,
-        isEditing: false,
+        isLoading: false,
       }
     case 'SEND_FRIEND_INVITE_FAILURE':
       return {
         ...state,
-        isEditing: !state.isEditing,
+        error: action.payload.error,
+        isLoading: false,
       }
     case 'GET_FRIEND_REQUEST':
       return {
@@ -31,11 +32,13 @@ const friendReducer = (state = initialState, action) => {
       return {
         ...state,
         listFriend: action.payload,
+        isLoading: false,
       }
     case 'GET_FRIEND_FAILURE':
       return {
         ...state,
         error: action.payload.error,
+        isLoading: false,
       }
 
     case 'GET_FRIEND_INVITE_REQUEST':

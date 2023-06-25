@@ -30,7 +30,6 @@ const authReducer = (state = initialState, action) => {
     case 'LOGIN_FAILURE':
       return {
         ...state,
-        user: null,
         isAuthenticated: false,
         isLoading: false,
         error: action.payload.error,
@@ -41,6 +40,7 @@ const authReducer = (state = initialState, action) => {
         user: null,
         isAuthenticated: false,
         isLoading: false,
+        token: null,
         error: null,
       }
     case 'CLEAR_ERROR':

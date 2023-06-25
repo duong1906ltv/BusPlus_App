@@ -8,14 +8,14 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 export default function App() {
   return (
-    <SocketProvider>
-      <Provider store={store}>
-        <StatusBar style="auto" />
-        <NavigationContainer>
+    <Provider store={store}>
+      <StatusBar style="auto" />
+      <NavigationContainer>
+        <SocketProvider>
           <AppStack />
-        </NavigationContainer>
-        <Toast />
-      </Provider>
-    </SocketProvider>
+        </SocketProvider>
+      </NavigationContainer>
+      <Toast />
+    </Provider>
   )
 }

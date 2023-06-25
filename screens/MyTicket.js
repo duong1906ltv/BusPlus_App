@@ -13,17 +13,6 @@ function MyTicket({ navigation }) {
     dispatch(getMyTicket())
     dispatch(getQRCode())
   }, [dispatch])
-  const ticketInfo = {
-    avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
-    fullName: 'Phung Dinh Duong',
-    ticketId: '0001218',
-    month: '6/2023',
-    userType: 'Uu tien',
-    routeType: 'Lien tuyen',
-    qrCode:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png',
-  }
-  console.log(ticket)
 
   return (
     <View style={styles.container}>
