@@ -7,14 +7,12 @@ import { Colors } from '../../constants/colors'
 import { useContext } from 'react'
 import { SocketContext } from '../../SocketContext'
 import { useSelector } from 'react-redux'
+import api from '../../services/api1'
 
 function CheckinLocation() {
-  const { checkinStatus } = useContext(SocketContext)
+  const { checkinStatus, checkinId } = useContext(SocketContext)
   const [currentLocation, setCurrentLocation] = useState()
-  const [fakeLocation, setFakeLocation] = useState({
-    longitude: '108.145702',
-    latitude: '16.082891',
-  })
+  const authState = useSelector((state) => state.auth)
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -27,6 +25,14 @@ function CheckinLocation() {
           longitude,
           latitude,
         })
+        if (checkinStatus) {
+          await api.post(`/checkin/location`, {
+            user: authState.user._id,
+            checkinId: checkinId,
+            lat: latitude,
+            lng: longitude,
+          })
+        }
       }
     }, 1000)
     return () => clearInterval(interval)
@@ -35,7 +41,7 @@ function CheckinLocation() {
   return (
     <>
       {checkinStatus && (
-        <Marker coordinate={fakeLocation}>
+        <Marker coordinate={currentLocation}>
           <MaterialCommunityIcons name="human-male" size={50} color={'black'} />
           <Callout tooltip></Callout>
         </Marker>

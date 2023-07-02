@@ -26,6 +26,7 @@ import SuggestedRouteScreen from '../screens/SuggestedRouteScreen'
 import GuideRouteScreen from '../screens/GuideRouteScreen'
 import TicketInfo from '../screens/TicketInfo'
 import FriendCheckin from '../screens/FriendCheckin'
+import AdminNotiModal from '../components/AdminNotiModal'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
@@ -75,8 +76,8 @@ function DrawerNavigator({ navigation }) {
             name="Đăng nhập"
             component={LoginScreen}
             options={{
-              headerTitle: 'Login',
-              drawerLabel: 'Login',
+              headerTitle: 'Đăng nhập',
+              drawerLabel: 'Đăng nhập',
               drawerIcon: ({ color, size }) => (
                 <AntDesign name="login" color={color} size={size} />
               ),
@@ -174,51 +175,53 @@ function DrawerNavigator({ navigation }) {
 
 function AppStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Drawer" component={DrawerNavigator} />
-      <Stack.Screen
-        name="RouteDetailScreen"
-        component={RouteDetailScreen}
-        options={{ animation: 'slide_from_right' }}
-      />
-      <Stack.Screen
-        name="ProfileScreen"
-        component={ProfileScreen}
-        options={{ animation: 'slide_from_right' }}
-      />
-      <Stack.Screen
-        name="MyTicketList"
-        component={MyTicketList}
-        options={{ animation: 'slide_from_right' }}
-      />
-      <Stack.Screen
-        name="TicketInfo"
-        component={TicketInfo}
-        options={{ animation: 'slide_from_right' }}
-      />
-      {/* <Stack.Screen
-        name="BuyTicket"
-        component={BuyTicket}
-        options={{ animation: 'slide_from_right' }}
-      /> */}
+    <>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Drawer" component={DrawerNavigator} />
+        <Stack.Screen
+          name="RouteDetailScreen"
+          component={RouteDetailScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="MyTicketList"
+          component={MyTicketList}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="TicketInfo"
+          component={TicketInfo}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="BuyTicket"
+          component={BuyTicket}
+          options={{ animation: 'slide_from_right' }}
+        />
 
-      <Stack.Screen
-        name="SearchScreen"
-        component={SearchScreen}
-        options={{ animation: 'slide_from_right' }}
-      />
+        <Stack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
 
-      <Stack.Screen
-        name="SuggestedRouteScreen"
-        component={SuggestedRouteScreen}
-        options={{ animation: 'slide_from_right' }}
-      />
-      <Stack.Screen
-        name="GuideRouteScreen"
-        component={GuideRouteScreen}
-        options={{ animation: 'slide_from_right' }}
-      />
-    </Stack.Navigator>
+        <Stack.Screen
+          name="SuggestedRouteScreen"
+          component={SuggestedRouteScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="GuideRouteScreen"
+          component={GuideRouteScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+      </Stack.Navigator>
+    </>
   )
 }
 

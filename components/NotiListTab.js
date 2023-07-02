@@ -17,8 +17,6 @@ import { useEffect } from 'react'
 
 function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
   const layout = useWindowDimensions()
-  const dispatch = useDispatch()
-  const [address, setAddress] = useState()
 
   const adminNotiList = notiList.filter((noti) => noti.type === 'admin noti')
   const friendNotiList = notiList.filter(
@@ -32,22 +30,6 @@ function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
   ])
 
   const FlatListItem = ({ item, index, type }) => {
-    // if (item.lat) {
-    //   const apiUrl = `https://rsapi.goong.io/Geocode?latlng=${item.lat},${item.lng}&api_key=yiOtDspWb1HocRioIwx5awYH85WSm2vEYGo9iTKa`
-
-    //   fetch(apiUrl)
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       // Handle the API response
-    //       setAddress(data.results[0].formatted_address)
-    //     })
-    //     .catch((error) => {
-    //       // Handle any errors
-    //       console.error(error)
-    //     })
-    // }
-    // console.log(address)
-
     const [locationName, setLocationName] = useState('')
 
     useEffect(() => {
@@ -146,15 +128,20 @@ function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
               </Text>
             </View>
           ) : (
-            <Text
-              style={{
-                paddingHorizontal: 10,
-                color: Colors.black,
-                fontSize: 14,
-              }}
-            >
-              {item.description}
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  paddingHorizontal: 10,
+                  color: Colors.black,
+                  flexWrap: 'wrap',
+                  flex: 1,
+                  lineHeight: 20,
+                }}
+              >
+                {item.description}
+              </Text>
+            </View>
           )}
           <Text
             style={{

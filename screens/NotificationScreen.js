@@ -17,6 +17,7 @@ import {
 } from '../actions/friend'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { Alert } from 'react-native'
+import { Colors } from '../constants/colors'
 
 const FlatListItem = ({ item, index, onComponentOpen }) => {
   const dispatch = useDispatch()
@@ -107,48 +108,72 @@ const FlatListItem = ({ item, index, onComponentOpen }) => {
       <View
         style={{
           flex: 1,
-          backgroundColor: index % 2 == 0 ? 'mediumseagreen' : 'tomato',
+          backgroundColor: 'white',
           flexDirection: 'row',
+          alignItems: 'center',
+          shadowColor: '#000000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.17,
+          shadowRadius: 2.54,
+          elevation: 3,
+          padding: 10,
         }}
       >
         {item.senderId.profile.avatar ? (
           <Image
             source={{ uri: item.senderId.profile.avatar }}
-            style={{ width: 100, height: 100, margin: 5 }}
+            style={{
+              width: 80,
+              height: 80,
+              margin: 5,
+              borderRadius: 40,
+              borderColor: Colors.primary,
+              borderWidth: 1,
+            }}
           ></Image>
         ) : (
           <Image
             source={{
               uri: 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg',
             }}
-            style={{ width: 100, height: 100, margin: 5 }}
+            style={{
+              width: 80,
+              height: 80,
+              margin: 5,
+              borderRadius: 40,
+              borderColor: Colors.primary,
+              borderWidth: 1,
+            }}
           ></Image>
         )}
 
-        <View>
+        <View style={{ gap: 10, justifyContent: 'center' }}>
           <Text
             style={{
-              paddingBottom: 5,
-              paddingTop: 10,
-              paddingLeft: 10,
-              color: 'white',
+              paddingHorizontal: 10,
+              color: Colors.black,
               fontSize: 16,
+              fontWeight: 'bold',
             }}
           >
             {item.senderId.profile.fullname}
           </Text>
           <Text
             style={{
-              paddingBottom: 5,
-              paddingLeft: 10,
-              color: 'white',
-              fontSize: 16,
+              paddingHorizontal: 10,
+              color: Colors.black,
+              fontSize: 14,
             }}
           >
-            số điện thoại: {item.senderId.profile.phone}
+            Số điện thoại: {item.senderId.profile.phone}
           </Text>
-          <Text style={{ paddingLeft: 10, color: 'white', fontSize: 16 }}>
-            đã gửi bạn một lời mời kết bạn
+          <Text
+            style={{ paddingHorizontal: 10, color: Colors.black, fontSize: 14 }}
+          >
+            Đã gửi bạn một lời mời kết bạn
           </Text>
         </View>
       </View>

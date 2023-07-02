@@ -2,24 +2,24 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast.js'
 import api from '../services/api1.js'
 
 export const getListFriend = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState()
     dispatch({ type: 'GET_FRIEND_REQUEST' })
+    try {
+      const response = await api.get(
+        `/profile/get-friends/${state.auth.user._id}`
+      )
 
-    api
-      .get(`/profile/get-friends/${state.auth.user._id}`)
-      .then((response) => {
-        dispatch({
-          type: 'GET_FRIEND_SUCCESS',
-          payload: response.data,
-        })
+      dispatch({
+        type: 'GET_FRIEND_SUCCESS',
+        payload: response.data,
       })
-      .catch((error) => {
-        dispatch({
-          type: 'GET_FRIEND_FAILURE',
-          payload: error.response.data,
-        })
+    } catch (error) {
+      dispatch({
+        type: 'GET_FRIEND_FAILURE',
+        payload: error.response.data,
       })
+    }
   }
 }
 
@@ -141,6 +141,7 @@ export const rejectRequest = (requestId) => {
 
 export const freezedFriend = (friendId) => {
   return async (dispatch, getState) => {
+    dispatch({ type: 'FREEZE_FRIEND_REQUEST' })
     try {
       const state = getState()
       const response = await api.post(
@@ -154,14 +155,10 @@ export const freezedFriend = (friendId) => {
           },
         }
       )
-
-      Toast.show({
-        type: 'success',
-        text1: 'SUCCESS',
-        text2: response.data.message,
-        autoHide: true,
-      })
+      dispatch({ type: 'FREEZE_FRIEND_SUCCESS', payload: response.data })
     } catch (error) {
+      dispatch({ type: 'FREEZE_FRIEND_FAILURE', payload: error.response.data })
+
       Toast.show({
         type: 'error',
         text1: 'ERROR',
@@ -174,6 +171,8 @@ export const freezedFriend = (friendId) => {
 
 export const activeFriend = (friendId) => {
   return async (dispatch, getState) => {
+    dispatch({ type: 'ACTIVE_FRIEND_REQUEST' })
+
     try {
       const state = getState()
       const response = await api.post(
@@ -188,14 +187,11 @@ export const activeFriend = (friendId) => {
         }
       )
 
-      Toast.show({
-        type: 'success',
-        text1: 'SUCCESS',
-        text2: response.data.message,
-        autoHide: true,
-      })
+      dispatch({ type: 'ACTIVE_FRIEND_SUCCESS', payload: response.data })
     } catch (error) {
       console.log(error.response.data.message)
+      dispatch({ type: 'ACTIVE_FRIEND_FAILURE', payload: error.response.data })
+
       Toast.show({
         type: 'error',
         text1: 'ERROR',

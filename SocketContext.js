@@ -18,14 +18,16 @@ const SocketProvider = ({ children }) => {
   const [activeStatus, setActiveStatus] = useState(false)
   const [checkinStatus, setCheckinStatus] = useState(false)
   const [listCheckIn, setListCheckIn] = useState([])
+  const [checkinId, setCheckinId] = useState()
   const [currentLocation, setCurrentLocation] = useState()
+  const [friendStatus, setFriendStatus] = useState(false)
   const [location, setLocation] = useState({
     latitude: 16.07215,
     longitude: 108.22679,
   })
 
-  const authReducer = useSelector((state) => state.auth)
-  console.log(authReducer)
+  const authState = useSelector((state) => state.auth)
+  console.log('AUTH', authState)
 
   const [myCheckin, setMyCheckin] = useState()
 
@@ -75,7 +77,7 @@ const SocketProvider = ({ children }) => {
       if (data.status === 'active') {
         await api.post(`noti`, {
           user: profile.user,
-          friend: authReducer.user._id,
+          friend: authState.user._id,
           lat: checkinLocation.coords.latitude,
           lng: checkinLocation.coords.longitude,
         })
@@ -87,30 +89,34 @@ const SocketProvider = ({ children }) => {
       lng: checkinLocation.coords.longitude,
       user: lastCheckin.user,
     })
+    setCheckinId(lastCheckin._id)
     navigation.navigate('RouteDetailScreen', {
-      routeNumber: 'R16',
+      routeNumber: lastCheckin.routeNumber,
     })
   }
 
   const friendCheckIn = async (lastCheckin) => {
+    console.log('HELLO')
     try {
       const response = await api.get(
-        `/profile/get-friends/${authReducer.user._id}`
+        `/profile/get-friends/${authState.user._id}`
       )
       for (const data of response.data) {
         const profile = data.profile
-        if (profile.user === lastCheckin.user._id) {
-          Toast.show({
-            type: 'success',
-            text1: 'FRIEND CHECK IN',
-            text2: `Bạn của bạn ${profile.fullname} vừa checkin trên tuyến R16 .... `,
-            autoHide: true,
-          })
+        if (data.status === 'active') {
+          if (profile.user === lastCheckin.user._id) {
+            Toast.show({
+              type: 'success',
+              text1: 'FRIEND CHECK IN',
+              text2: `Bạn của bạn ${profile.fullname} vừa lên xe buýt `,
+              autoHide: true,
+            })
 
-          await api.post(`checkin`, {
-            user: profile.user,
-            status: 'Checking',
-          })
+            await api.post(`checkin`, {
+              user: profile.user,
+              status: 'Checking',
+            })
+          }
         }
       }
     } catch (error) {
@@ -119,29 +125,28 @@ const SocketProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const user = authReducer.user
+    // socket.on('busChange', (bus) => {
+    //   setActiveStatus(bus.updatedBus.activeStatus)
+    //   if (bus.updatedBus.activeStatus) {
+    //     setLocation({
+    //       latitude: bus.currentLocation.lat,
+    //       longitude: bus.currentLocation.lng,
+    //     })
+    //   }
+    // })
 
-    socket.on('busChange', (bus) => {
-      setActiveStatus(bus.updatedBus.activeStatus)
-      if (bus.updatedBus.activeStatus) {
-        setLocation({
-          latitude: bus.currentLocation.lat,
-          longitude: bus.currentLocation.lng,
-        })
-      }
-    })
-
-    socket.on('locationChange', (busLocation) => {
-      setLocation({
-        latitude: busLocation.lat,
-        longitude: busLocation.lng,
-      })
-    })
+    // socket.on('locationChange', (busLocation) => {
+    //   console.log('BUS', busLocation)
+    //   setLocation({
+    //     latitude: busLocation.lat,
+    //     longitude: busLocation.lng,
+    //   })
+    // })
 
     socket.on('CheckIn', (lastCheckin) => {
-      console.log('checkin', lastCheckin)
-      console.log(authReducer)
-      if (authReducer?.user?._id === lastCheckin.user) {
+      console.log(authState)
+      console.log(lastCheckin)
+      if (authState?.user?._id === lastCheckin.user) {
         handleCheckin(lastCheckin)
       }
     })
@@ -154,6 +159,9 @@ const SocketProvider = ({ children }) => {
     })
 
     socket.on('CheckOut', (lastCheckin) => {
+      console.log('CHEckout', lastCheckin)
+      setCheckinStatus(false)
+      setFriendStatus(false)
       setListCheckIn((prevListCheckIn) =>
         prevListCheckIn.filter(
           (checkInUser) => checkInUser.id !== lastCheckin.user
@@ -164,7 +172,8 @@ const SocketProvider = ({ children }) => {
     })
 
     socket.on('startHearingLocationOfUser', (lastCheckin) => {
-      if (authReducer?.user?._id !== lastCheckin?.checkinId?.user) {
+      console.log('ALO')
+      if (authState?.user?._id !== lastCheckin?.checkinId?.user) {
         friendCheckIn(lastCheckin)
       }
     })
@@ -177,7 +186,7 @@ const SocketProvider = ({ children }) => {
     return () => {
       socket.disconnect()
     }
-  }, [])
+  }, [authState])
 
   return (
     <SocketContext.Provider
@@ -191,6 +200,9 @@ const SocketProvider = ({ children }) => {
         myCheckin,
         currentLocation,
         listCheckIn,
+        checkinId,
+        setFriendStatus,
+        friendStatus,
       }}
     >
       {children}

@@ -33,10 +33,7 @@ function ProfileScreen() {
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
       <ScrollView showsVerticalScrollIndicator={true}>
         <View style={styles.avatarContainer}>
-          <Image
-            style={styles.avatar}
-            source={require('../assets/images/bus_green.png')}
-          />
+          <Image style={styles.avatar} source={{ uri: profile?.avatar }} />
         </View>
         <View style={styles.inputContainer}>
           <InputField
@@ -156,17 +153,16 @@ function ProfileScreen() {
 
 const styles = StyleSheet.create({
   avatarContainer: {
-    alignSelf: 'center',
     marginTop: 50,
+    marginBottom: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
   },
   avatar: {
-    // borderColor: Colors.Yellow,
-    // borderWidth: 2,
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     borderRadius: 150,
-    resizeMode: 'center',
-    marginBottom: 30,
   },
   inputContainer: {
     paddingHorizontal: 25,

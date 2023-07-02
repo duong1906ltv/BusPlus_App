@@ -81,6 +81,46 @@ const friendReducer = (state = initialState, action) => {
         request: action.payload,
       }
 
+    case 'ACTIVE_FRIEND_REQUEST':
+      return {
+        ...state,
+        isLoading: true,
+      }
+
+    case 'ACTIVE_FRIEND_SUCCESS':
+      return {
+        ...state,
+        listFriend: action.payload,
+        isLoading: false,
+      }
+
+    case 'ACTIVE_FRIEND_FAILURE':
+      return {
+        ...state,
+        error: action.payload.error,
+        isLoading: false,
+      }
+
+    case 'FREEZE_FRIEND_REQUEST':
+      return {
+        ...state,
+        isLoading: true,
+      }
+
+    case 'FREEZE_FRIEND_SUCCESS':
+      return {
+        ...state,
+        listFriend: action.payload,
+        isLoading: false,
+      }
+
+    case 'FREEZE_FRIEND_FAILURE':
+      return {
+        ...state,
+        error: action.payload.error,
+        isLoading: false,
+      }
+
     default:
       return state
   }

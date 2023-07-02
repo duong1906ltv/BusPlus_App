@@ -1,20 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import Map from '../components/map/Map'
-import { Divider } from '@rneui/themed';
-import { Icon } from '@rneui/themed';
-import { selectFoundRoute } from "../reducers/route";
-import { getAllRoutes, setProgress } from "../actions/route";
-import { DESTINATION, ORIGINAL } from '../share/constants/direction';
-import { getFullDetailDirection } from '../utils/mapUtils';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Divider } from '@rneui/themed'
+import { Icon } from '@rneui/themed'
+import { selectFoundRoute } from '../reducers/route'
+import { getAllRoutes, setProgress } from '../actions/route'
+import { DESTINATION, ORIGINAL } from '../share/constants/direction'
+import { getFullDetailDirection } from '../utils/mapUtils'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { SafeAreaView } from 'react-native'
+import AdminNotiModal from '../components/AdminNotiModal'
 function HomeScreen({ navigation }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const foundRoute = useSelector(selectFoundRoute)
-  const [inputOriginal, setInputOriginal] = useState("");
-  const [inputDestination, setInputDestination] = useState("");
+  const [inputOriginal, setInputOriginal] = useState('')
+  const [inputDestination, setInputDestination] = useState('')
   const [coordinates, setCoordinates] = useState([])
+  const [modalVisible, setModalVisible] = useState(true)
 
   useEffect(() => {
     dispatch(getAllRoutes())
@@ -23,13 +26,13 @@ function HomeScreen({ navigation }) {
   useEffect(() => {
     if (foundRoute.original) {
       setInputOriginal(foundRoute.original.name)
-    } else{
+    } else {
       setCoordinates(null)
       setInputOriginal('')
     }
     if (foundRoute.destination) {
       setInputDestination(foundRoute.destination.name)
-    } else{
+    } else {
       setCoordinates(null)
       setInputDestination('')
     }
@@ -38,7 +41,10 @@ function HomeScreen({ navigation }) {
     }
   }, [foundRoute])
   const getDirection = async () => {
-    const results = await getFullDetailDirection([foundRoute.original.location, foundRoute.destination.location])
+    const results = await getFullDetailDirection([
+      foundRoute.original.location,
+      foundRoute.destination.location,
+    ])
     setCoordinates(results)
   }
 
@@ -46,68 +52,91 @@ function HomeScreen({ navigation }) {
   const inputDestinationRef = useRef(null)
   const openSearchScreen = (searchFor) => {
     if (inputOriginalRef.current) {
-      inputOriginalRef.current.blur();
+      inputOriginalRef.current.blur()
     }
     if (inputDestinationRef.current) {
-      inputDestinationRef.current.blur();
+      inputDestinationRef.current.blur()
     }
-    navigation.navigate('SearchScreen', { searchFor: searchFor });
-  };
+    navigation.navigate('SearchScreen', { searchFor: searchFor })
+  }
   const openSuggestedRouteScreen = () => {
-    navigation.navigate('SuggestedRouteScreen');
+    navigation.navigate('SuggestedRouteScreen')
     dispatch(setProgress(true))
-
   }
   return (
-    <View style={styles.container}>
-      <Map coordinates={coordinates} />
-      <View style={styles.content}>
-        <View style={styles.searchBar}>
-          <View style={styles.inputContainer}>
-            <Icon style={styles.icon} size={20} name="md-locate" color="#ffab15" type="ionicon" />
-            <TextInput style={styles.input}
-              ref={inputOriginalRef}
-              onChangeText={setInputOriginal}
-              value={inputOriginal}
-              placeholder="Chọn điểm xuất phát"
-              onFocus={() => openSearchScreen(ORIGINAL)}
-            />
+    <SafeAreaView style={styles.mapContainer}>
+      <View style={styles.container}>
+        <Map coordinates={coordinates} />
+        <View style={styles.content}>
+          <View style={styles.searchBar}>
+            <View style={styles.inputContainer}>
+              <Icon
+                style={styles.icon}
+                size={20}
+                name="md-locate"
+                color="#ffab15"
+                type="ionicon"
+              />
+              <TextInput
+                style={styles.input}
+                ref={inputOriginalRef}
+                onChangeText={setInputOriginal}
+                value={inputOriginal}
+                placeholder="Chọn điểm xuất phát"
+                onFocus={() => openSearchScreen(ORIGINAL)}
+              />
+            </View>
+            <Divider />
+            <View style={styles.inputContainer}>
+              <Icon
+                style={styles.icon}
+                name="md-location-sharp"
+                size={18}
+                color="#ffab15"
+                type="ionicon"
+              />
+              <TextInput
+                style={styles.input}
+                ref={inputDestinationRef}
+                onChangeText={setInputDestination}
+                value={inputDestination}
+                placeholder="Chọn điểm kết thúc"
+                onFocus={() => openSearchScreen(DESTINATION)}
+              />
+            </View>
           </View>
-          <Divider />
-          <View style={styles.inputContainer}>
-            <Icon style={styles.icon} name="md-location-sharp" size={18} color="#ffab15" type="ionicon" />
-            <TextInput
-              style={styles.input}
-              ref={inputDestinationRef}
-              onChangeText={setInputDestination}
-              value={inputDestination}
-              placeholder="Chọn điểm kết thúc"
-              onFocus={() => openSearchScreen(DESTINATION)}
-            />
-          </View>
+          {foundRoute.original && foundRoute.destination && (
+            <View
+              style={styles.buttonContainer}
+              animationIn="slideInUp"
+              animationOut="slideOutDown"
+            >
+              <TouchableOpacity
+                style={styles.button}
+                onPress={openSuggestedRouteScreen}
+              >
+                <Text style={{ color: 'white' }}>Gợi ý tuyến xe</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-        {
-          foundRoute.original && foundRoute.destination && 
-          <View style={styles.buttonContainer}
-            animationIn="slideInUp"
-            animationOut="slideOutDown">
-              <TouchableOpacity style={styles.button} onPress={openSuggestedRouteScreen}>
-              <Text style={{ color: 'white' }}>Gợi ý tuyến xe</Text>
-            </TouchableOpacity>
-          </View>
-        }
       </View>
-    </View>
-
+      <AdminNotiModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  mapContainer: {
+    flex: 1,
+  },
   container: {
-
     width: '100%',
     height: '100%',
-    position: 'relative'
+    position: 'relative',
   },
   content: {
     width: '100%',
@@ -129,7 +158,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     backgroundColor: '#fff',
-    width: "94%",
+    width: '94%',
     height: 80,
     borderRadius: 10,
     paddingHorizontal: 20,
@@ -154,7 +183,7 @@ const styles = StyleSheet.create({
     top: 40,
     left: 30,
     position: 'absolute',
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 5,
     padding: 20,
     ...Platform.select({
@@ -176,14 +205,13 @@ const styles = StyleSheet.create({
     top: '460%',
     width: '94%',
     position: 'absolute',
-
   },
   button: {
     backgroundColor: '#ffab15',
     width: '100%',
     alignItems: 'center',
     marginBottom: 10,
-    paddingVertical: 10, 
+    paddingVertical: 10,
     borderRadius: 10,
     ...Platform.select({
       ios: {
@@ -196,7 +224,7 @@ const styles = StyleSheet.create({
         elevation: 6,
       },
     }),
-  }
+  },
 })
 
 export default HomeScreen

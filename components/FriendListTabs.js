@@ -16,6 +16,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useDispatch } from 'react-redux'
 import { activeFriend, freezedFriend, getListFriend } from '../actions/friend'
+import { useContext } from 'react'
+import { SocketContext } from '../SocketContext'
+import { useNavigation } from '@react-navigation/native'
 
 function FriendListTabs({
   friendList,
@@ -25,6 +28,9 @@ function FriendListTabs({
 }) {
   const layout = useWindowDimensions()
   const dispatch = useDispatch()
+  const navigation = useNavigation()
+
+  const { setFriendStatus } = useContext(SocketContext)
 
   const activeFriendList = friendList.filter(
     (friend) => friend.status === 'active'
@@ -47,10 +53,10 @@ function FriendListTabs({
           text: 'YES',
           onPress: async () => {
             text === 'active'
-              ? dispatch(activeFriend(item?.profile.user)) &&
-                setReloadData(!reloadData)
-              : dispatch(freezedFriend(item?.profile.user)) &&
-                setReloadData(!reloadData)
+              ? dispatch(activeFriend(item?.profile.user))
+              : dispatch(freezedFriend(item?.profile.user))
+
+            setReloadData(!reloadData)
           },
         },
       ])
@@ -129,7 +135,10 @@ function FriendListTabs({
 
     const handleFriendClick = () => {
       if (listCheckIn.includes(item.profile.user)) {
-        console.log('OK')
+        setFriendStatus(true)
+        navigation.navigate('RouteDetailScreen', {
+          routeNumber: 'R16',
+        })
       } else {
         Alert.alert(
           'Cảnh báo ',

@@ -14,7 +14,6 @@ import { SocketContext } from '../SocketContext'
 const FriendScreen = () => {
   const [reloadData, setReloadData] = useState(false)
   const { isLoading, listFriend } = useSelector((state) => state.friend)
-  const { listFriendCheckIn } = useSelector((state) => state.checkin)
   const { listCheckIn } = useContext(SocketContext)
   const isFocused = useIsFocused()
 
@@ -22,7 +21,6 @@ const FriendScreen = () => {
 
   useEffect(() => {
     dispatch(getListFriend())
-    dispatch(getFriendsCheckInStatus())
   }, [dispatch, isFocused, reloadData, listCheckIn])
 
   const [modalVisible, setModalVisible] = useState(false)

@@ -27,7 +27,6 @@ export const pointIcon = '../../assets/images/icon_points.png'
 export const busIcon = '../../assets/images/bus_orange.png'
 
 function Map({ coordinates, stations, origin, children }) {
-  console.log('STAT', stations)
   const [zoomLevel, setZoomLevel] = useState(null)
   const foundRoute = useSelector(selectFoundRoute)
   const suggestedRoute = useSelector(selectSuggestedRoute)

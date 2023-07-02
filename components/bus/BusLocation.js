@@ -1,24 +1,56 @@
-import { useContext } from 'react'
+import { BASE_URL } from '@env'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet } from 'react-native'
 import { Marker } from 'react-native-maps'
-import { SocketContext } from '../../SocketContext'
+import { io } from 'socket.io-client'
 
 function BusLocation() {
-  const { socket, setActiveStatus, setLocation, location, activeStatus } =
-    useContext(SocketContext)
-
-  const [fakeLocation, setFakeLocation] = useState({
-    longitude: '108.1238154',
-    latitude: '16.1200297',
+  const [location, setLocation] = useState({
+    latitude: 16.08291621,
+    longitude: 108.1461211,
   })
+  const [fakeData, setFakeData] = useState({
+    latitude: 16.07389618659687,
+    longitude: 108.14550009336939,
+  })
+  const [activeStatus, setActiveStatus] = useState(false)
+  // console.log('START', location, activeStatus)
+
+  useEffect(() => {
+    // Connect to the socket server
+    const socket = io(BASE_URL)
+
+    // Listen for the 'busChange' event
+    socket.on('busChange', (bus) => {
+      setActiveStatus(bus.updatedBus.activeStatus)
+      if (bus.updatedBus.activeStatus) {
+        setLocation({
+          latitude: bus.currentLocation.lat,
+          longitude: bus.currentLocation.lng,
+        })
+      }
+    })
+
+    socket.on('locationChange', (busLocation) => {
+      console.log(busLocation)
+      setLocation({
+        latitude: busLocation.lat,
+        longitude: busLocation.lng,
+      })
+    })
+
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
 
   const uri = '../../assets/images/bus_green.png'
 
   return (
     <>
-      {activeStatus && location && (
-        <Marker coordinate={fakeLocation}>
+      {true && location && (
+        <Marker coordinate={location}>
           <Image
             source={require(uri)}
             style={styles.markerImage}
