@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMyTicket, getQRCode } from '../actions/ticket'
 import TicketComponent from '../components/TicketComponent'
 import { Colors } from '../constants/colors'
+import { getMyTicket, getQRCode } from '../actions/ticket'
 
 function MyTicket({ navigation }) {
   const dispatch = useDispatch()
-  const ticket = useSelector((state) => state.ticket)
+  const tickets = useSelector((state) => state.tickets)
 
   const [currentTicket, setCurrentTicket] = useState()
   const [currentQrCode, setCurrentQrCode] = useState()
@@ -17,31 +17,34 @@ function MyTicket({ navigation }) {
     dispatch(getQRCode())
   }, [dispatch])
 
-  useEffect(() => {
-    if (ticket && ticket.myTicket.length) {
+  useEffect(()=> {
+    if (tickets && tickets.length){
       const currentMonth = new Date().getMonth() + 1
       var flag = false
-      ticket.myTicket.map((item, index) => {
-        console.log(item.month);
-        if (item.month === currentMonth) {
+      tickets.filter.map((item, index) => {
+        if (item.month === currentMonth){
           setCurrentTicket(item)
-          setCurrentQrCode(ticket?.qrCode[index])
+          setCurrentQrCode(tickets?.qrCode[index])
           flag = true
           return
         }
       })
-      if (!flag) {
-        setCurrentTicket(ticket?.myTicket[0])
-        setCurrentQrCode(ticket?.qrCode[0])
+      if(!flag){
+        setCurrentTicket(tickets?.myTicket[0])
+        setCurrentQrCode(tickets?.qrCode[0])
       }
     }
-  }, [ticket])
+  },[tickets])
+  console.log("-------------------");
+  console.log("-------------------");
+  console.log("-------------------");
+  console.log(tickets?.myTicket);
 
   return (
     <View style={styles.container}>
-      {ticket && ticket?.myTicket[0] && (
+      {tickets && tickets?.myTicket[0] && (
         <TicketComponent
-          ticket={currentTicket}
+          tickets={currentTicket}
           qrCode={currentQrCode}
         />
       )}

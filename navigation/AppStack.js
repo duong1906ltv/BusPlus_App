@@ -188,6 +188,12 @@ function AppStack() {
           component={ProfileScreen}
           options={{ animation: 'slide_from_right' }}
         />
+
+        <Stack.Screen
+          name="MyTicket"
+          component={MyTicket}
+          options={{ animation: 'slide_from_right' }}
+        />
         <Stack.Screen
           name="MyTicketList"
           component={MyTicketList}

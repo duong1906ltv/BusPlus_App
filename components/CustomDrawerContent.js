@@ -50,7 +50,7 @@ function CustomDrawerContent(props) {
       <DrawerItemList {...props} />
       {authState.isAuthenticated && (
         <DrawerItem
-          label="Logout"
+          label="Đăng xuất"
           icon={({ color, size }) => (
             <AntDesign name="login" color={color} size={size} />
           )}

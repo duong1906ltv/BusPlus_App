@@ -70,29 +70,11 @@ export const getDetailDirectionApi = (coordinates) => {
     `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinatesString}?alternatives=true&continue_straight=false&geometries=polyline&language=en&overview=simplified&access_token=${MAPBOX_API_KEY}`
   )
 }
+
+
 export const getLocation = (query) => {
   const url = `https://rsapi.goong.io/geocode?address=${encodeURIComponent(
     query
   )}&api_key=yiOtDspWb1HocRioIwx5awYH85WSm2vEYGo9iTKa`
-  // const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${(query)}.json?access_token=${MAPBOX_API_KEY}`
   return axios.get(url)
 }
-
-// export const calculateDrivingDistance = async (origin, destination) => {
-//   const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${MAPBOX_API_KEY}`;
-
-//   try {
-//     const response = await axios.get(url);
-//     const data = response.data;
-
-//     if (data.routes && data.routes.length > 0) {
-//       const distance = data.routes[0].distance; // Distance in meters
-//       const duration = data.routes[0].duration; // Duration in seconds
-//       return { distance, duration };
-//     } else {
-//       return null;
-//     }
-//   } catch (error) {
-//     throw new Error('An error occurred while calculating driving distance.');
-//   }
-// }

@@ -3,6 +3,7 @@ import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMyTicket, getQRCode } from '../actions/ticket'
 import { Colors } from '../constants/colors'
+import { convertToDong } from '../helpers'
 
 function MyTicketList({ navigation }) {
   const dispatch = useDispatch()
@@ -11,7 +12,7 @@ function MyTicketList({ navigation }) {
   useEffect(() => {
     dispatch(getMyTicket())
     dispatch(getQRCode())
-  }, [dispatch])
+  }, [])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,24 +31,27 @@ function MyTicketList({ navigation }) {
         </View>
         <View style={styles.itemInfo}>
           <View style={styles.infoContainer}>
-            <Text style={styles.title}>Month</Text>
-            <Text style={styles.content}>{item.month}</Text>
+            <Text style={styles.title}>Vé xe tháng:</Text>
+            <Text style={styles.content}>{item?.month + "/" + item?.year}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.title}>Ticket ID</Text>
             <Text style={styles.content}>{item.ticketCode}</Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.title}>User Type</Text>
-            <Text style={styles.content}>{item.priority}</Text>
+            <Text style={styles.title}>Loại vé xe: </Text>
+            <Text style={styles.content}>{item?.ticketType.priority + " - " + item?.ticketType.routeType}</Text>
           </View>
+          {
+            item?.description &&
+            <View style={styles.infoContainer}>
+              <Text style={styles.title}>Tuyến xe: </Text>
+              <Text style={styles.content}>{item?.description}</Text>
+            </View>
+          }
           <View style={styles.infoContainer}>
-            <Text style={styles.title}>Route Type</Text>
-            <Text style={styles.content}>{item.ticketType}</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.title}>Price</Text>
-            <Text style={styles.content}>65000</Text>
+            <Text style={styles.title}>Giá vé: </Text>
+            <Text style={styles.content}>{convertToDong(item.ticketType?.cost)}</Text>
           </View>
         </View>
       </View>

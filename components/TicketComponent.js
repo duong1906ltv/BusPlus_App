@@ -21,9 +21,9 @@ function TicketComponent({ ticket, qrCode }) {
             />
           </View>
           <View style={styles.item}>
-            <Text style={styles.title}>Full Name: </Text>
+            <Text style={styles.title}>Họ và tên: </Text>
             <Text style={styles.content}>
-              {ticket?.user?.profile?.fullname}
+              {ticket?.user?.fullname}
             </Text>
           </View>
           <View style={styles.item}>
@@ -31,17 +31,20 @@ function TicketComponent({ ticket, qrCode }) {
             <Text style={styles.content}>{ticket?.ticketCode}</Text>
           </View>
           <View style={styles.item}>
-            <Text style={styles.title}>Month: </Text>
-            <Text style={styles.content}>{ticket?.month}</Text>
+            <Text style={styles.title}>Vé xe tháng: </Text>
+            <Text style={styles.content}>{ticket?.month + "/" + ticket?.year}</Text>
           </View>
           <View style={styles.item}>
-            <Text style={styles.title}>User Type: </Text>
-            <Text style={styles.content}>{ticket?.priority}</Text>
+            <Text style={styles.title}>Loại vé xe: </Text>
+            <Text style={styles.content}>{ticket?.ticketType.priority + " - " + ticket?.ticketType.routeType}</Text>
           </View>
-          <View style={styles.item}>
-            <Text style={styles.title}>Route Type: </Text>
-            <Text style={styles.content}>{ticket?.ticketType}</Text>
-          </View>
+          {
+            ticket?.description && 
+            <View style={styles.item}>
+              <Text style={styles.title}>Tuyến xe: </Text>
+              <Text style={styles.content}>{ticket?.description}</Text>
+            </View>
+          }
           <View style={[styles.item, styles.imageContainer]}>
             {modalShow ? (
               <Modal isVisible={modalShow} style={styles.modalContainer}>

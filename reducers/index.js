@@ -8,6 +8,8 @@ import friendReducer from './friend'
 import ticketReducer from './ticket'
 import checkinReducer from './checkin'
 import notiReducer from './noti'
+import ticketTypeReducer from './ticketType'
+import transactionReducer from './transaction'
 
 const rootReducer = combineReducers({
   map: mapReducer,
@@ -19,6 +21,8 @@ const rootReducer = combineReducers({
   ticket: ticketReducer,
   checkin: checkinReducer,
   noti: notiReducer,
+  ticketType: ticketTypeReducer,
+  transaction: transactionReducer,
 })
 
 export default rootReducer
