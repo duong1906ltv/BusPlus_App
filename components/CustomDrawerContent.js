@@ -4,10 +4,10 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { Colors } from '../constants/colors'
-import { logout } from '../actions/auth'
-import { useDispatch, useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '../actions/auth'
+import { Colors } from '../constants/colors'
 
 const user = {
   avatar: 'https://i.redd.it/ah4sksgwvtz71.jpg',
@@ -39,10 +39,10 @@ function CustomDrawerContent(props) {
           </Text>
         </View>
       ) : (
-        <View style={styles.userContainer}>
+        <View style={styles.logoContainer}>
           <Image
-            style={styles.avatar}
-            source={require('../assets/images/bus_green.png')}
+            style={styles.logo}
+            source={require('../assets/images/logo.png')}
           />
         </View>
       )}
@@ -83,5 +83,15 @@ const styles = StyleSheet.create({
     // fontFamily: 'Roboto',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    // backgroundColor: 'pink',
+    width: '100%',
+    marginBottom: 15,
+  },
+  logo: {
+    width: '100%',
+    height: 80,
   },
 })
