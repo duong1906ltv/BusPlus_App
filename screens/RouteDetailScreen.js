@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { useDispatch } from 'react-redux'
+import { setSelectedBusStation } from '../actions/map'
 import RouteDetails from '../components/routes/RouteDetails'
 import RouteDirection from '../components/routes/RouteDirection'
 import { Colors } from '../constants/colors'
@@ -12,10 +14,10 @@ function RouteDetailScreen({
   },
   navigation,
 }) {
+  const dispatch = useDispatch()
   const [routeDirection, setRouteDirection] = useState([])
   const [routeStations, setRouteStations] = useState([])
   const [route, setRoute] = useState([])
-  const [origin, setOrigin] = useState()
   const [schedule, setSchedule] = useState()
 
   useLayoutEffect(() => {
@@ -35,21 +37,23 @@ function RouteDetailScreen({
         setRoute(routeData.data.route)
 
         const decodedStations = forwardRoute.map((station) => ({
-            latitude: station.location.lat,
-            longitude: station.location.lng,
+          latitude: station.location.lat,
+          longitude: station.location.lng,
         }))
-        setRouteStations(decodedStations.map(item => ({
-          coordinate: {
-            latitude: item.latitude,
-            longitude: item.longitude,
-          },
-          icon: "../../assets/images/orange_icon_bus_station.png"
-        })))
+        setRouteStations(
+          decodedStations.map((item) => ({
+            coordinate: {
+              latitude: item.latitude,
+              longitude: item.longitude,
+            },
+            icon: '../../assets/images/orange_icon_bus_station.png',
+          }))
+        )
 
         const direction = await getFullDetailDirection([...decodedStations])
 
         setRouteDirection(direction)
-        setOrigin(decodedStations[0])
+        dispatch(setSelectedBusStation(decodedStations[0]))
       } catch (error) {
         // Handle the error
         console.log(error)
@@ -83,7 +87,6 @@ function RouteDetailScreen({
       <RouteDirection
         routeDirection={routeDirection}
         routeStations={routeStations}
-        origin={origin}
       />
       <RouteDetails route={route} schedule={schedule} />
     </View>
