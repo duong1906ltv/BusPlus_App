@@ -10,38 +10,12 @@ import { useSelector } from 'react-redux'
 import api from '../../services/api1'
 
 function CheckinLocation() {
-  const { checkinStatus, checkinId } = useContext(SocketContext)
-  const [currentLocation, setCurrentLocation] = useState()
-  const authState = useSelector((state) => state.auth)
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const { status } = await Location.getForegroundPermissionsAsync()
-      if (status === 'granted') {
-        let currentLocation = await Location.getCurrentPositionAsync({})
-        let longitude = currentLocation.coords.longitude
-        let latitude = currentLocation.coords.latitude
-        setCurrentLocation({
-          longitude,
-          latitude,
-        })
-        if (checkinStatus) {
-          await api.post(`/checkin/location`, {
-            user: authState.user._id,
-            checkinId: checkinId,
-            lat: latitude,
-            lng: longitude,
-          })
-        }
-      }
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
+  const { checkinStatus, location } = useContext(SocketContext)
 
   return (
     <>
       {checkinStatus && (
-        <Marker coordinate={currentLocation}>
+        <Marker coordinate={location}>
           <MaterialCommunityIcons name="human-male" size={50} color={'black'} />
           <Callout tooltip></Callout>
         </Marker>
