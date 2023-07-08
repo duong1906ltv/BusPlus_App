@@ -41,7 +41,6 @@ function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
           fetch(apiUrl)
             .then((response) => response.json())
             .then((data) => {
-              console.log(data.results[0])
               // Handle the API response
               setLocationName(data.results[0].formatted_address)
             })

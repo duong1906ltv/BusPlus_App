@@ -8,14 +8,12 @@ export const getFriendsCheckInStatus = () => {
     api
       .get(`/checkin/friends/checkin/${state.auth.user._id}`)
       .then((response) => {
-        console.log(response.data)
         dispatch({
           type: 'GET_FRIEND_CHECK_IN_SUCCESS',
           payload: response.data,
         })
       })
       .catch((error) => {
-        console.log(error.response.data)
         dispatch({
           type: 'GET_FRIEND_CHECK_IN_FAILURE',
           payload: error.response.data,

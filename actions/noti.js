@@ -9,7 +9,6 @@ export const getListNoti = () => {
     api
       .get(`/noti/${state.auth.user._id}`)
       .then((response) => {
-        console.log('RESPONSE', response.data)
         dispatch({
           type: 'GET_NOTI_SUCCESS',
           payload: response.data,

@@ -1,70 +1,53 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMyTicket, getQRCode } from '../actions/ticket'
 import TicketComponent from '../components/TicketComponent'
 import { Colors } from '../constants/colors'
-import Loader from '../components/Loader'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { getMyTicket, getQRCode } from '../actions/ticket'
 
 function MyTicket({ navigation }) {
   const dispatch = useDispatch()
-  const ticket = useSelector((state) => state.ticket)
-  const { isLoading } = useSelector((state) => state.ticket)
+  const tickets = useSelector((state) => state.tickets)
 
   const [currentTicket, setCurrentTicket] = useState()
   const [currentQrCode, setCurrentQrCode] = useState()
 
   useEffect(() => {
     dispatch(getMyTicket())
+    dispatch(getQRCode())
   }, [dispatch])
 
-  useEffect(() => {
-    if (ticket && ticket.myTicket.length) {
+  useEffect(()=> {
+    if (tickets && tickets.length){
       const currentMonth = new Date().getMonth() + 1
       var flag = false
-      ticket.myTicket.map((item, index) => {
-        console.log(item.month);
-        if (item.month === currentMonth) {
+      tickets.filter.map((item, index) => {
+        if (item.month === currentMonth){
           setCurrentTicket(item)
-          setCurrentQrCode(ticket?.qrCode[index])
+          setCurrentQrCode(tickets?.qrCode[index])
           flag = true
           return
         }
       })
-      if (!flag) {
-        setCurrentTicket(ticket?.myTicket[0])
-        setCurrentQrCode(ticket?.qrCode[0])
+      if(!flag){
+        setCurrentTicket(tickets?.myTicket[0])
+        setCurrentQrCode(tickets?.qrCode[0])
       }
     }
-  }, [ticket])
+  },[tickets])
+  console.log("-------------------");
+  console.log("-------------------");
+  console.log("-------------------");
+  console.log(tickets?.myTicket);
 
   return (
     <View style={styles.container}>
-      {ticketIndex === -1 ? (
-        <View
-          style={{
-            marginTop: '50%',
-            alignItems: 'center',
-            gap: 30,
-          }}
-        >
-          <MaterialCommunityIcons
-            name="ticket-confirmation"
-            size={50}
-            color="lightgray"
-          />
-          <Text style={{ color: 'gray', fontSize: 16 }}>
-            Không có vé xe phù hợp với tháng hiện tại!
-          </Text>
-        </View>
-      ) : (
+      {tickets && tickets?.myTicket[0] && (
         <TicketComponent
-          ticket={currentTicket}
+          tickets={currentTicket}
           qrCode={currentQrCode}
         />
       )}
-
       <View style={styles.buttonsContainer}>
         <Pressable
           style={styles.button}

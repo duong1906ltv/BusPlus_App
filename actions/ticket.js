@@ -28,3 +28,30 @@ export const getMyTicket = () => {
     }
   }
 }
+
+export const createTicket = (ticket) => {
+  return (dispatch, getState) => {
+    const state = getState()
+    dispatch({ type: 'CREATE_TICKET_REQUEST' })
+    api
+      .post(`/ticket`, ticket, {
+        headers: {
+          authorization: `Bearer ${state.auth.token}`,
+        },
+      })
+      .then((response) => {
+        dispatch({
+          type: 'CREATE_TICKET_SUCCESS',
+          payload: response.data,
+        })
+      })
+      .catch((error) => {
+        console.log(error.response.data)
+
+        dispatch({
+          type: 'CREATE_TICKET_FAILURE',
+          payload: error.response.data,
+        })
+      })
+  }
+}
