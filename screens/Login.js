@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { login } from '../actions/auth.js'
 import { Colors } from '../constants/colors'
+import Loader from '../components/Loader'
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -26,14 +27,9 @@ const LoginScreen = ({ navigation }) => {
     dispatch(login({ phone, password }))
   }
 
-  useEffect(() => {
-    if (isLoading) {
-      Toast.show({
-        type: 'success',
-        text1: 'Đăng nhập thành công. Đang di chuyển...',
-      })
-    }
-  }, [isLoading])
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>

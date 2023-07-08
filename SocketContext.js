@@ -27,7 +27,6 @@ const SocketProvider = ({ children }) => {
   })
 
   const authState = useSelector((state) => state.auth)
-  console.log('AUTH', authState)
 
   const [myCheckin, setMyCheckin] = useState()
 

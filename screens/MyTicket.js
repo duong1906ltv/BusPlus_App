@@ -4,17 +4,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getMyTicket, getQRCode } from '../actions/ticket'
 import TicketComponent from '../components/TicketComponent'
 import { Colors } from '../constants/colors'
+import Loader from '../components/Loader'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 function MyTicket({ navigation }) {
   const dispatch = useDispatch()
   const ticket = useSelector((state) => state.ticket)
+  const { isLoading } = useSelector((state) => state.ticket)
 
   const [currentTicket, setCurrentTicket] = useState()
   const [currentQrCode, setCurrentQrCode] = useState()
 
   useEffect(() => {
     dispatch(getMyTicket())
-    dispatch(getQRCode())
   }, [dispatch])
 
   useEffect(() => {
@@ -39,12 +41,30 @@ function MyTicket({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {ticket && ticket?.myTicket[0] && (
+      {ticketIndex === -1 ? (
+        <View
+          style={{
+            marginTop: '50%',
+            alignItems: 'center',
+            gap: 30,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="ticket-confirmation"
+            size={50}
+            color="lightgray"
+          />
+          <Text style={{ color: 'gray', fontSize: 16 }}>
+            Không có vé xe phù hợp với tháng hiện tại!
+          </Text>
+        </View>
+      ) : (
         <TicketComponent
           ticket={currentTicket}
           qrCode={currentQrCode}
         />
       )}
+
       <View style={styles.buttonsContainer}>
         <Pressable
           style={styles.button}

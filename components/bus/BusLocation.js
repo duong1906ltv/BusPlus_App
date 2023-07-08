@@ -3,39 +3,65 @@ import { useEffect, useState } from 'react'
 import { Image, StyleSheet } from 'react-native'
 import { Marker } from 'react-native-maps'
 import { io } from 'socket.io-client'
+import api from '../../services/api1'
 
 function BusLocation() {
-  const [location, setLocation] = useState({
-    latitude: 16.08291621,
-    longitude: 108.1461211,
-  })
-  const [fakeData, setFakeData] = useState({
-    latitude: 16.07389618659687,
-    longitude: 108.14550009336939,
-  })
-  const [activeStatus, setActiveStatus] = useState(false)
+  const [activeBus, setActiveBus] = useState([])
   // console.log('START', location, activeStatus)
+
+  const addBus = (busId, lat, lng) => {
+    setActiveBus((prevActiveBus) => prevActiveBus.concat({ busId, lat, lng }))
+  }
+
+  const removeBus = (busId) => {
+    setActiveBus((prevActiveBus) =>
+      prevActiveBus.filter((bus) => bus.busId !== busId)
+    )
+  }
+
+  useEffect(() => {
+    const getcurrentActiveBus = async () => {
+      const res = await api.get(`/buses/active`)
+      res.data.map((bus) => {
+        addBus(bus.location.busId, bus.location.lat, bus.location.lng)
+      })
+    }
+
+    getcurrentActiveBus()
+  }, [])
 
   useEffect(() => {
     // Connect to the socket server
+
     const socket = io(BASE_URL)
 
     // Listen for the 'busChange' event
     socket.on('busChange', (bus) => {
-      setActiveStatus(bus.updatedBus.activeStatus)
       if (bus.updatedBus.activeStatus) {
-        setLocation({
-          latitude: bus.currentLocation.lat,
-          longitude: bus.currentLocation.lng,
-        })
+        addBus(
+          bus.currentLocation.busId,
+          bus.currentLocation.lat,
+          bus.currentLocation.lng
+        )
+      } else {
+        removeBus(bus.updatedBus._id)
       }
     })
 
     socket.on('locationChange', (busLocation) => {
-      console.log(busLocation)
-      setLocation({
-        latitude: busLocation.lat,
-        longitude: busLocation.lng,
+      setActiveBus((prevActiveBus) => {
+        const updatedActiveBus = prevActiveBus.map((bus) => {
+          if (bus.busId === busLocation.busId) {
+            return {
+              busId: bus.busId,
+              lat: busLocation.lat,
+              lng: busLocation.lng,
+            }
+          } else {
+            return bus
+          }
+        })
+        return updatedActiveBus
       })
     })
 
@@ -49,16 +75,23 @@ function BusLocation() {
 
   return (
     <>
-      {true && location && (
-        <Marker coordinate={location}>
-          <Image
-            source={require(uri)}
-            style={styles.markerImage}
-            resizeMode="center"
-            resizeMethod="resize"
-          />
-        </Marker>
-      )}
+      {activeBus &&
+        activeBus.map((bus) => (
+          <Marker
+            key={bus.busId}
+            coordinate={{
+              latitude: bus.lat,
+              longitude: bus.lng,
+            }}
+          >
+            <Image
+              source={require(uri)}
+              style={styles.markerImage}
+              resizeMode="center"
+              resizeMethod="resize"
+            />
+          </Marker>
+        ))}
     </>
   )
 }
