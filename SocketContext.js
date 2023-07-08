@@ -124,24 +124,6 @@ const SocketProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    // socket.on('busChange', (bus) => {
-    //   setActiveStatus(bus.updatedBus.activeStatus)
-    //   if (bus.updatedBus.activeStatus) {
-    //     setLocation({
-    //       latitude: bus.currentLocation.lat,
-    //       longitude: bus.currentLocation.lng,
-    //     })
-    //   }
-    // })
-
-    // socket.on('locationChange', (busLocation) => {
-    //   console.log('BUS', busLocation)
-    //   setLocation({
-    //     latitude: busLocation.lat,
-    //     longitude: busLocation.lng,
-    //   })
-    // })
-
     socket.on('CheckIn', (lastCheckin) => {
       console.log(authState)
       console.log(lastCheckin)

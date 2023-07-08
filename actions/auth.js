@@ -45,8 +45,10 @@ export const login = (userData) => {
 
 // Action đăng xuất (logout)
 export const logout = () => {
-  return {
-    type: 'LOGOUT',
+  return (dispatch) => {
+    dispatch({
+      type: 'LOGOUT',
+    })
   }
 }
 
