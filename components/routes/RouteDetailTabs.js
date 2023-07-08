@@ -3,12 +3,16 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native'
 import { SceneMap, TabView } from 'react-native-tab-view'
+import { useDispatch } from 'react-redux'
+import { setSelectedBusStation } from '../../actions/map'
 
 function RouteDetailTabs({ route, schedule }) {
+  const dispatch = useDispatch()
   const layout = useWindowDimensions()
   const stations = route?.forwardRoute
   const timeline = schedule?.arrivalTime
@@ -42,9 +46,20 @@ function RouteDetailTabs({ route, schedule }) {
         <FlatList
           data={stations}
           renderItem={({ item }) => (
-            <View style={styles.stationItem}>
-              <Text>{item.name}</Text>
-            </View>
+            <TouchableOpacity
+              onPress={() =>
+                dispatch(
+                  setSelectedBusStation({
+                    latitude: item.location.lat,
+                    longitude: item.location.lng,
+                  })
+                )
+              }
+            >
+              <View style={styles.stationItem}>
+                <Text>{item.name}</Text>
+              </View>
+            </TouchableOpacity>
           )}
           alwaysBounceVertical={false}
         />
