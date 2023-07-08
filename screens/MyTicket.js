@@ -4,24 +4,54 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getMyTicket, getQRCode } from '../actions/ticket'
 import TicketComponent from '../components/TicketComponent'
 import { Colors } from '../constants/colors'
+import Loader from '../components/Loader'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 function MyTicket({ navigation }) {
   const dispatch = useDispatch()
   const ticket = useSelector((state) => state.ticket)
+  const { isLoading } = useSelector((state) => state.ticket)
 
   useEffect(() => {
     dispatch(getMyTicket())
-    dispatch(getQRCode())
   }, [dispatch])
+
+  if (isLoading) {
+    return <Loader />
+  }
+
+  let currentMonth = new Date().getMonth() + 1
+  const ticketIndex = ticket.myTicket.findIndex(
+    (ticket) => ticket.month === currentMonth
+  )
+  console.log(ticketIndex)
 
   return (
     <View style={styles.container}>
-      {ticket && ticket?.myTicket[0] && (
+      {ticketIndex === -1 ? (
+        <View
+          style={{
+            marginTop: '50%',
+            alignItems: 'center',
+            gap: 30,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="ticket-confirmation"
+            size={50}
+            color="lightgray"
+          />
+          <Text style={{ color: 'gray', fontSize: 16 }}>
+            Không có vé xe phù hợp với tháng hiện tại!
+          </Text>
+        </View>
+      ) : (
         <TicketComponent
-          ticket={ticket?.myTicket[0]}
-          qrCode={ticket?.qrCode[0]}
+          ticket={ticket?.myTicket[ticketIndex]}
+          qrCode={ticket?.qrCode[ticketIndex]}
         />
       )}
+
       <View style={styles.buttonsContainer}>
         <Pressable
           style={styles.button}
@@ -29,7 +59,7 @@ function MyTicket({ navigation }) {
             navigation.navigate('MyTicketList')
           }}
         >
-          <Text style={styles.buttonText}>My Tickets</Text>
+          <Text style={styles.buttonText}>Vé của tôi </Text>
         </Pressable>
         <Pressable
           style={styles.button}
@@ -37,7 +67,7 @@ function MyTicket({ navigation }) {
             navigation.navigate('BuyTicket')
           }}
         >
-          <Text style={styles.buttonText}>Buy Ticket</Text>
+          <Text style={styles.buttonText}>Mua vé tháng</Text>
         </Pressable>
       </View>
     </View>

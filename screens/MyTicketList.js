@@ -10,7 +10,6 @@ function MyTicketList({ navigation }) {
 
   useEffect(() => {
     dispatch(getMyTicket())
-    dispatch(getQRCode())
   }, [dispatch])
 
   useLayoutEffect(() => {

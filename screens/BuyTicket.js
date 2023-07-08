@@ -1,15 +1,14 @@
 import { Picker } from '@react-native-picker/picker'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import Modal from 'react-native-modal';
+import Modal from 'react-native-modal'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Colors } from '../constants/colors'
-import { WebView } from 'react-native-webview';
-import queryString from 'query-string';
-import creatPaymentIntent from '../services/stripeApis';
+import { WebView } from 'react-native-webview'
+import queryString from 'query-string'
+import creatPaymentIntent from '../services/stripeApis'
 import paypalApi from '../services/paypalApi'
 import { CheckBox, Icon } from '@rneui/themed'
-
 
 const BuyTicket = ({ navigation }) => {
   useLayoutEffect(() => {
@@ -42,19 +41,25 @@ const BuyTicket = ({ navigation }) => {
 
   const [selectedRoute, setSelectedRoute] = useState('Kim Liên - CĐ Việt Hàn')
 
-  const routeList = ['Kim Liên - CĐ Việt Hàn', 'Huế - Đà Nẵng']
-
+  const routeList = [
+    'Kim Liên - CĐ Việt Hàn',
+    'Vũng Thùng - Công viên 29/3 - Công viên Biển Đông',
+    'Bến xe Trung tâm – Khu du lịch Non Nước',
+    'Cảng Sông Hàn - Hòa Tiến',
+    'Cảng Sông Hàn – TTHC huyện Hòa Vang',
+    'Bến xe Trung tâm – Thọ Quang',
+  ]
 
   const [isLoading, setLoading] = useState(false)
   const [paypalUrl, setPaypalUrl] = useState(null)
   const [accessToken, setAccessToken] = useState(null)
-  const [showRouteModal, setShowRouteModal] = useState(false);
-  const [showMonthModal, setShowMonthModal] = useState(false);
-  const [ticketCost, setTicketCost] = useState("")
-  const [description, serDescription] = useState("")
-  useEffect(()=>{
+  const [showRouteModal, setShowRouteModal] = useState(false)
+  const [showMonthModal, setShowMonthModal] = useState(false)
+  const [ticketCost, setTicketCost] = useState('')
+  const [description, serDescription] = useState('')
+  useEffect(() => {
     {
-      if (userType === 'Binh thuong' && routeType === 'Lien tuyen'){
+      if (userType === 'Binh thuong' && routeType === 'Lien tuyen') {
         setTicketCost(130000)
       } else if (userType === 'Binh thuong' && routeType !== 'Lien tuyen') {
         setTicketCost(120000)
@@ -63,31 +68,30 @@ const BuyTicket = ({ navigation }) => {
       } else {
         setTicketCost(50000)
       }
-      serDescription(userType + " - "+ routeType)
+      serDescription(userType + ' - ' + routeType)
     }
   }, [userType, routeType])
   const onDone = async () => {
-
     let apiData = {
       amount: 500,
-      currency: "INR"
+      currency: 'INR',
     }
 
     try {
       const res = await creatPaymentIntent(apiData)
-      console.log("payment intent create succesfully...!!!", res)
+      console.log('payment intent create succesfully...!!!', res)
 
       if (res?.data?.paymentIntent) {
-        let confirmPaymentIntent = await confirmPayment(res?.data?.paymentIntent, { paymentMethodType: 'Card' })
-        console.log("confirmPaymentIntent res++++", confirmPaymentIntent)
-        alert("Payment succesfully...!!!")
+        let confirmPaymentIntent = await confirmPayment(
+          res?.data?.paymentIntent,
+          { paymentMethodType: 'Card' }
+        )
+        console.log('confirmPaymentIntent res++++', confirmPaymentIntent)
+        alert('Payment succesfully...!!!')
       }
     } catch (error) {
-      console.log("Error rasied during payment intent", error)
+      console.log('Error rasied during payment intent', error)
     }
-
-
-
   }
 
   const onPressPaypal = async () => {
@@ -98,39 +102,30 @@ const BuyTicket = ({ navigation }) => {
       setAccessToken(token)
       setLoading(false)
       if (!!res?.links) {
-        const findUrl = res.links.find(data => data?.rel == "approve")
+        const findUrl = res.links.find((data) => data?.rel == 'approve')
         setPaypalUrl(findUrl.href)
       }
-
-
     } catch (error) {
-      console.log("error", error)
+      console.log('error', error)
       setLoading(false)
-
     }
   }
 
-
-
   const onUrlChange = (webviewState) => {
-    console.log("webviewStatewebviewState", webviewState)
+    console.log('webviewStatewebviewState', webviewState)
     if (webviewState.url.includes('https://example.com/cancel')) {
       clearPaypalState()
-      return;
+      return
     }
     if (webviewState.url.includes('https://example.com/return')) {
-
       const urlValues = queryString.parseUrl(webviewState.url)
-      console.log("my urls value", urlValues)
+      console.log('my urls value', urlValues)
       const { token } = urlValues.query
       if (!!token) {
         paymentSucess(token)
       }
-
     }
   }
-
-
 
   const clearPaypalState = () => {
     setPaypalUrl(null)
@@ -140,11 +135,11 @@ const BuyTicket = ({ navigation }) => {
   const paymentSucess = async (id) => {
     try {
       const res = paypalApi.capturePayment(id, accessToken)
-      console.log("capturePayment res++++", res)
-      alert("Payment sucessfull...!!!")
+      console.log('capturePayment res++++', res)
+      alert('Payment sucessfull...!!!')
       clearPaypalState()
     } catch (error) {
-      console.log("error raised in payment capture", error)
+      console.log('error raised in payment capture', error)
     }
   }
 
@@ -165,7 +160,6 @@ const BuyTicket = ({ navigation }) => {
             <Text>Bình thường</Text>
           </View>
           <View style={styles.radioInputContainer}>
-
             <CheckBox
               checked={userType === 'uu-tien' ? true : false}
               onPress={() => setUserType('uu-tien')}
@@ -202,16 +196,18 @@ const BuyTicket = ({ navigation }) => {
         </View>
       </View>
       {routeType === 'Don tuyen' && (
-        <View style={styles.inputGroup} >
-
+        <View style={styles.inputGroup}>
           <View style={styles.labelContainer}>
             <Text style={styles.label}>Tuyến xe</Text>
           </View>
           <View style={styles.pickerContainer}>
-            <View style={styles.selectBoxContainer} >
-              <TouchableOpacity style={styles.selectBox} onPress={() => setShowRouteModal(true)}>
-                <Text >{selectedRoute}</Text>
-                <Icon size={15}name="caret-down-sharp" type="ionicon" />
+            <View style={styles.selectBoxContainer}>
+              <TouchableOpacity
+                style={styles.selectBox}
+                onPress={() => setShowRouteModal(true)}
+              >
+                <Text>{selectedRoute}</Text>
+                <Icon size={15} name="caret-down-sharp" type="ionicon" />
               </TouchableOpacity>
             </View>
           </View>
@@ -222,10 +218,13 @@ const BuyTicket = ({ navigation }) => {
           <Text style={styles.label}>Tháng</Text>
         </View>
         <View style={[styles.pickerContainer]}>
-            <View style={styles.selectBoxContainer} >
-              <TouchableOpacity style={styles.selectBox} onPress={() => setShowMonthModal(true)}>
+          <View style={styles.selectBoxContainer}>
+            <TouchableOpacity
+              style={styles.selectBox}
+              onPress={() => setShowMonthModal(true)}
+            >
               <Text>{selectedMonth}</Text>
-              <Icon size={15}name="caret-down-sharp" type="ionicon" />
+              <Icon size={15} name="caret-down-sharp" type="ionicon" />
             </TouchableOpacity>
           </View>
         </View>
@@ -245,21 +244,14 @@ const BuyTicket = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </View>
-      <Modal
-
-        isVisible={!!paypalUrl}
-      >
-        <TouchableOpacity
-          onPress={clearPaypalState}
-          style={{ margin: 24 }}
-        >
-          <Text >Closed</Text>
+      <Modal isVisible={!!paypalUrl}>
+        <TouchableOpacity onPress={clearPaypalState} style={{ margin: 24 }}>
+          <Text>Closed</Text>
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <WebView
             source={{ uri: paypalUrl }}
             onNavigationStateChange={onUrlChange}
-
           />
         </View>
       </Modal>
@@ -274,17 +266,16 @@ const BuyTicket = ({ navigation }) => {
       >
         <View style={styles.modalContent}>
           <Text style={styles.modalTextHeader}>Chọn tuyến </Text>
-          {
-            routeList.map(route => (
-              <TouchableOpacity onPress={() => {
+          {routeList.map((route) => (
+            <TouchableOpacity
+              onPress={() => {
                 setSelectedRoute(route)
                 setShowRouteModal(false)
-              }
-              }>
-                <Text style={styles.modalText}>{route}</Text>
-              </TouchableOpacity>
-            ))
-          }
+              }}
+            >
+              <Text style={styles.modalText}>{route}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </Modal>
       <Modal
@@ -296,20 +287,19 @@ const BuyTicket = ({ navigation }) => {
         backdropOpacity={0.5}
         backdropTransitionOutTiming={0}
       >
-        <View style={{ ...styles.modalContent, height: 300}}>
+        <View style={{ ...styles.modalContent, height: 300 }}>
           <Text style={styles.modalTextHeader}>Chọn vé tháng</Text>
           <ScrollView>
-          {
-            monthOptions.map(month => (
-              <TouchableOpacity onPress={() => {
-                setSelectedMonth(month)
-                setShowMonthModal(false)
-              }
-              }>
+            {monthOptions.map((month) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedMonth(month)
+                  setShowMonthModal(false)
+                }}
+              >
                 <Text style={styles.modalText}>{month}</Text>
               </TouchableOpacity>
-            ))
-          }
+            ))}
           </ScrollView>
         </View>
       </Modal>
@@ -330,7 +320,7 @@ const styles = StyleSheet.create({
   inputGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   labelContainer: {
     width: '25%',
@@ -355,7 +345,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e6e6e6',
     borderRadius: 5,
     height: 40,
-    width: '70%'
+    width: '70%',
   },
   ticketPriceContainer: {
     flexDirection: 'row',
@@ -384,13 +374,12 @@ const styles = StyleSheet.create({
   },
   selectBoxContainer: {
     borderRadius: 5,
-    width: "100%",
+    width: '100%',
   },
   selectBox: {
     flexDirection: 'row',
     padding: 7,
-    justifyContent: 'space-between'
-
+    justifyContent: 'space-between',
   },
   modal: {
     overflow: 'scroll',
@@ -411,5 +400,5 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     padding: 10,
-  }
+  },
 })
