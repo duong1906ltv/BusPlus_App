@@ -6,6 +6,7 @@ export const getMyTicket = () => {
     dispatch({ type: 'GET_MY_TICKET_REQUEST' })
     try {
       api.get(`/ticket/my-ticket/${state.auth.user._id}`).then((response) => {
+        console.log(response.data)
         dispatch({
           type: 'GET_MY_TICKET_SUCCESS',
           payload: response.data,
@@ -13,6 +14,7 @@ export const getMyTicket = () => {
       })
 
       api.get(`/ticket/qrcode/${state.auth.user._id}`).then((response) => {
+        console.log(response.data)
         dispatch({
           type: 'QR_CODE',
           payload: response.data,

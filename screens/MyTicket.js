@@ -24,7 +24,7 @@ function MyTicket({ navigation }) {
       const currentMonth = new Date().getMonth() + 1
       var flag = false
       ticket.myTicket.map((item, index) => {
-        console.log(item.month);
+        console.log(item.month)
         if (item.month === currentMonth) {
           setCurrentTicket(item)
           setCurrentQrCode(ticket?.qrCode[index])
@@ -33,15 +33,20 @@ function MyTicket({ navigation }) {
         }
       })
       if (!flag) {
-        setCurrentTicket(ticket?.myTicket[0])
-        setCurrentQrCode(ticket?.qrCode[0])
+        setCurrentTicket(-1)
       }
+    } else {
+      setCurrentTicket(-1)
     }
   }, [ticket])
 
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
     <View style={styles.container}>
-      {ticketIndex === -1 ? (
+      {currentTicket === -1 ? (
         <View
           style={{
             marginTop: '50%',
@@ -59,10 +64,7 @@ function MyTicket({ navigation }) {
           </Text>
         </View>
       ) : (
-        <TicketComponent
-          ticket={currentTicket}
-          qrCode={currentQrCode}
-        />
+        <TicketComponent ticket={currentTicket} qrCode={currentQrCode} />
       )}
 
       <View style={styles.buttonsContainer}>
