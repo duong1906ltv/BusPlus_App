@@ -4,13 +4,20 @@ import { Image, StyleSheet } from 'react-native'
 import { Marker } from 'react-native-maps'
 import { io } from 'socket.io-client'
 import api from '../../services/api1'
+import { useContext } from 'react'
+import { SocketContext } from '../../SocketContext'
+import { View } from 'react-native'
+export const busIcon = '../../assets/images/bus_orange.png'
 
-function BusLocation() {
+function BusLocation({ routeNumber }) {
   const [activeBus, setActiveBus] = useState([])
-  // console.log('START', location, activeStatus)
+  const { listCheckIn } = useContext(SocketContext)
+  console.log(listCheckIn)
 
-  const addBus = (busId, lat, lng) => {
-    setActiveBus((prevActiveBus) => prevActiveBus.concat({ busId, lat, lng }))
+  const addBus = (busNumber, busId, lat, lng) => {
+    setActiveBus((prevActiveBus) =>
+      prevActiveBus.concat({ busNumber, busId, lat, lng })
+    )
   }
 
   const removeBus = (busId) => {
@@ -22,13 +29,23 @@ function BusLocation() {
   useEffect(() => {
     const getcurrentActiveBus = async () => {
       const res = await api.get(`/buses/active`)
+      if (res.data === 0) {
+        return
+      }
       res.data.map((bus) => {
-        addBus(bus.location.busId, bus.location.lat, bus.location.lng)
+        if (bus.routeNumber === routeNumber) {
+          addBus(
+            bus.bus.busNumber,
+            bus.location.busId,
+            bus.location.lat,
+            bus.location.lng
+          )
+        }
       })
     }
 
     getcurrentActiveBus()
-  }, [])
+  }, [listCheckIn])
 
   useEffect(() => {
     // Connect to the socket server
@@ -37,8 +54,10 @@ function BusLocation() {
 
     // Listen for the 'busChange' event
     socket.on('busChange', (bus) => {
+      console.log(bus)
       if (bus.updatedBus.activeStatus) {
         addBus(
+          bus.currentLocation.busNumber,
           bus.currentLocation.busId,
           bus.currentLocation.lat,
           bus.currentLocation.lng
@@ -53,6 +72,7 @@ function BusLocation() {
         const updatedActiveBus = prevActiveBus.map((bus) => {
           if (bus.busId === busLocation.busId) {
             return {
+              busNumber: bus.busNumber,
               busId: bus.busId,
               lat: busLocation.lat,
               lng: busLocation.lng,
@@ -84,12 +104,23 @@ function BusLocation() {
               longitude: bus.lng,
             }}
           >
-            <Image
-              source={require(uri)}
-              style={styles.markerImage}
-              resizeMode="center"
-              resizeMethod="resize"
-            />
+            {listCheckIn.find((e) => e.busNumber === bus.busNumber) ? (
+              <View style={styles.activeBusContainer}>
+                <Image
+                  source={require(busIcon)}
+                  style={styles.activeBus}
+                  resizeMode="center"
+                  resizeMethod="resize"
+                />
+              </View>
+            ) : (
+              <Image
+                source={require(uri)}
+                style={styles.markerImage}
+                resizeMode="center"
+                resizeMethod="resize"
+              />
+            )}
           </Marker>
         ))}
     </>
@@ -100,6 +131,18 @@ export default BusLocation
 
 const styles = StyleSheet.create({
   markerImage: {
+    width: 24,
+    height: 24,
+  },
+
+  activeBusContainer: {
+    padding: 5,
+    borderRadius: 30,
+    borderWidth: 4,
+    borderColor: '#B76F00',
+    borderStyle: 'solid',
+  },
+  activeBus: {
     width: 24,
     height: 24,
   },

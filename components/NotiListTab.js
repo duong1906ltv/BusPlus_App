@@ -122,8 +122,8 @@ function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
                   lineHeight: 20,
                 }}
               >
-                Checkin trên chuyến xe BUS1 thuộc tuyến R16 tại vị trí{' '}
-                {locationName}
+                Checkin trên chuyến xe {item.busNumber} thuộc tuyến{' '}
+                {item.routeNumber} tại vị trí {locationName}
               </Text>
             </View>
           ) : (

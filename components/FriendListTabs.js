@@ -112,7 +112,7 @@ function FriendListTabs({
     }
 
     const renderCheckInIcon = () => {
-      if (listCheckIn.includes(item.profile.user)) {
+      if (listCheckIn.some((e) => e.user === item.profile.user)) {
         return (
           <FontAwesome
             name="check-circle"
@@ -134,10 +134,12 @@ function FriendListTabs({
     }
 
     const handleFriendClick = () => {
-      if (listCheckIn.includes(item.profile.user)) {
+      const foundCheckIn = listCheckIn.find((e) => e.user === item.profile.user)
+      if (foundCheckIn) {
+        const routeNumber = foundCheckIn.routeNumber
         setFriendStatus(true)
         navigation.navigate('RouteDetailScreen', {
-          routeNumber: 'R16',
+          routeNumber: routeNumber,
         })
       } else {
         Alert.alert(
