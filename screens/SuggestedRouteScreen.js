@@ -8,13 +8,17 @@ import { getAllRoutes, setMaximumNumOfRoute, setProgress, setSuggestedRoute, set
 import { DESTINATION, ORIGINAL } from '../share/constants/direction';
 import { Divider } from '@rneui/base';
 import SuggestedRoute from '../components/SuggestedRoute';
-import {  spaceBetween, textBold } from '../constants/styles';
+import { spaceBetween, textBold } from '../constants/styles';
 import { getDistance } from 'geolib';
 import { Colors } from '../constants/colors';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { height } from 'deprecated-react-native-prop-types/DeprecatedImagePropType';
 
 
-const ORANGE = "#ffab15"
+// Van toc nguoi di bo (met/min)
+const walkingSpeed = 80
+// Van toc xe buyt (met/min)
+const busSpeed = 313
 
 
 function SuggestedRouteScreen({ navigation }) {
@@ -27,16 +31,12 @@ function SuggestedRouteScreen({ navigation }) {
   const [inputOriginal, setInputOriginal] = useState("");
   const [inputDestination, setInputDestination] = useState("");
 
-  // const [pointsOfForwardNearOriginal, setPointsOfForwardNearOriginal] = useState([])
-  const [pointsOfBackwardNearOriginal, setPointsOfBackwardNearOriginal] = useState([])
-
-  const [pointsOfForwardNearDestination, setPointsOfForwardNearDestination] = useState([])
-  const [pointsOfBackwardNearDestination, setPointsOfBackwardNearDestination] = useState([])
 
   const [listOriginalOfForward, setListOriginalOfForward] = useState([])
   const [listOriginalOfBackward, setListOriginalOfBackward] = useState([])
   const [listDestinationOfForward, setListDestinationOfForward] = useState([])
   const [listDestinationOfBackward, setListDestinationOfBackward] = useState([])
+
 
   const suggestedRouteList = useSelector(selectSuggestedRouteList)
   const maximumNumOfRoute = useSelector(selectMaximumNumOfRoute)
@@ -44,12 +44,23 @@ function SuggestedRouteScreen({ navigation }) {
   const inputOriginalRef = useRef(null)
   const inputDestinationRef = useRef(null)
 
+
+  const [currentSuggestedRouteList, setCurrentSuggestedRouteList] = useState(false)
+  const [suggestedRoutes, setSuggestedRoutes] = useState(suggestedRouteList)
+
   const backToHomeScreen = () => {
     navigation.goBack()
   }
   useEffect(() => {
     dispatch(getAllRoutes())
   }, [dispatch])
+
+
+  useEffect(() => {
+    setSuggestedRoutes(handleSort(suggestedRouteList))
+  }, [suggestedRouteList])
+
+
   useEffect(() => {
     if (foundRoute.original) {
       setInputOriginal(foundRoute.original.name)
@@ -538,18 +549,17 @@ function SuggestedRouteScreen({ navigation }) {
     }
 
   }, [listOriginalOfForward, listDestinationOfForward, listOriginalOfBackward, listDestinationOfBackward, maximumNumOfRoute])
-  const [currentSuggestedRouteList, setCurrentSuggestedRouteList] = useState(false)
   useEffect(() => {
-    console.log("suggestedRouteList", suggestedRouteList.length);
+    console.log("suggestedRoutes", suggestedRoutes.length);
     const _currentSuggestedRouteList = []
-    suggestedRouteList.map(route => {
+    suggestedRoutes.map(route => {
       if (route.filter(item => item.transport === "bus").length === maximumNumOfRoute) {
         _currentSuggestedRouteList.push(route)
       }
     })
 
-    if (_currentSuggestedRouteList) setCurrentSuggestedRouteList(_currentSuggestedRouteList)
-  }, [maximumNumOfRoute, suggestedRouteList])
+    if (_currentSuggestedRouteList) setCurrentSuggestedRouteList(handleSort(_currentSuggestedRouteList))
+  }, [maximumNumOfRoute, suggestedRoutes])
 
   const openSearchScreen = (searchFor) => {
     if (inputOriginalRef.current) {
@@ -561,21 +571,99 @@ function SuggestedRouteScreen({ navigation }) {
     navigation.navigate('SearchScreen', { searchFor: searchFor, inProgress: true });
   };
 
+  const TIME = 'Thời gian'
+  const COST = 'Giá tiền'
+  const ASC = 'ASC'
+  const DES = 'DES'
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [showSelectedRouteNum, setShowSelectedRouteNum] = useState(false);
+  const [showSelectedSort, setShowSelectedSort] = useState(false);
+  const [sort, setSort] = useState({
+    type: TIME,
+    order: ASC
+  })
 
   const showSelectBoxModal = () => {
-    setModalVisible(true);
+    setShowSelectedRouteNum(true);
   }
 
   const closeSelectBoxModal = () => {
-    setModalVisible(false);
+    setShowSelectedRouteNum(false);
   };
   const handleOptionSelect = (option) => {
     dispatch(setMaximumNumOfRoute(option))
     closeSelectBoxModal()
 
   };
+
+  const handleSelectSort = (type, order) => {
+    setSort({
+      type: type,
+      order: order
+    })
+    setShowSelectedSort(false)
+  }
+
+  const totalDistance = (listPoint) => {
+    var totalDistance = listPoint.reduce(function (accumulator, currentValue) {
+      return accumulator + currentValue.distance;
+    }, 0);
+    return totalDistance
+  }
+  const getTotalCost = (array) => {
+    var cost = 0
+    array.forEach(item => {
+      if (item.routeNumber) {
+        item.totalDistance = totalDistance(item.listPoint)
+        cost += item.cost
+      } else {
+
+      }
+    });
+    return cost
+  }
+
+  const getTotalTime = (array) => {
+    var time = 0
+    array.forEach(item => {
+      if (item.routeNumber) {
+        item.totalDistance = totalDistance(item.listPoint)
+        time += item.totalDistance / busSpeed
+      } else {
+        time += item.totalDistance / walkingSpeed
+
+      }
+    });
+    return time
+  }
+
+
+  const handleSort = (data) => {
+    const sortedArray = [...data]
+    if (sort.type === TIME && sort.order === ASC) {
+      sortedArray.sort((a, b) => getTotalTime(a) - getTotalTime(b))
+    } 
+    else if (sort.type === TIME && sort.order === DES) {
+      sortedArray.sort((a, b) => getTotalTime(b) - getTotalTime(a))
+    }
+    else if (sort.type === COST && sort.order === ASC) {
+      sortedArray.sort((a, b) => getTotalCost(a) - getTotalCost(b))
+    } 
+    else if (sort.type === COST && sort.order === DES) {
+      sortedArray.sort((a, b) => getTotalCost(b) - getTotalCost(a))
+    }
+    return sortedArray
+  }
+
+  useEffect(() => {
+    console.log(sort);
+    if (currentSuggestedRouteList.length) {
+      setCurrentSuggestedRouteList(handleSort(currentSuggestedRouteList))
+    }
+    if (suggestedRoutes.length) {
+        setSuggestedRoutes(handleSort(suggestedRoutes))
+    }
+  }, [sort])
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>
@@ -587,12 +675,6 @@ function SuggestedRouteScreen({ navigation }) {
             <Text style={{ fontSize: 20, color: "#fff" }}>Gợi ý tuyến xe</Text>
           </View>
 
-          <View style={styles.selectBoxContainer}>
-            <TouchableOpacity style={styles.selectBox} onPress={showSelectBoxModal}>
-              <Text style={{ color: '#fff' }}>{maximumNumOfRoute} tuyến</Text>
-              <Icon size={15} color={"#fff"} name="caret-down-sharp" type="ionicon" />
-            </TouchableOpacity>
-          </View>
         </View>
         <View style={styles.searchBar}>
           <View style={styles.inputContainer}>
@@ -616,6 +698,24 @@ function SuggestedRouteScreen({ navigation }) {
               placeholder="Chọn điểm kết thúc"
               onFocus={() => openSearchScreen(DESTINATION)}
             />
+          </View>
+        </View>
+
+        <View style={spaceBetween}>
+          <View style={styles.selectBoxContainer}>
+            <TouchableOpacity style={styles.selectBox} onPress={showSelectBoxModal}>
+              <Text style={{ color: '#fff' }}>{maximumNumOfRoute} tuyến</Text>
+              <Icon size={15} color={"#fff"} name="caret-down-sharp" type="ionicon" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.selectBoxContainer}>
+            <TouchableOpacity style={styles.selectBox} onPress={() => setShowSelectedSort(true)}>
+              <Text style={{ color: '#fff' }}>{sort.type}</Text>
+              <View>
+                <Icon size={12} color={sort.order === ASC ? "#fff" : Colors.primary200} name="caret-up-sharp" type="ionicon" />
+                <Icon size={12} color={sort.order === DES ? "#fff" : Colors.primary200} name="caret-down-sharp" type="ionicon" />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -646,13 +746,13 @@ function SuggestedRouteScreen({ navigation }) {
             : <></>
         }
         {
-          suggestedRouteList.length > 0
+          suggestedRoutes.length > 0
             ? (
               <View style={{ marginVertical: 10 }}>
                 <Text style={textBold(14)}>Các cách di chuyển gợp ý</Text>
                 <View style={styles.card}>
                   {
-                    suggestedRouteList.map(route => (
+                    suggestedRoutes.map(route => (
                       <>
                         <TouchableOpacity onPress={() => {
                           dispatch(setSuggestedRoute(route))
@@ -670,7 +770,7 @@ function SuggestedRouteScreen({ navigation }) {
             : <></>
         }
         {
-          suggestedRouteList.length <= 0 && !inProgress
+          suggestedRoutes.length <= 0 && !inProgress
             ? (
               <Text style={textBold(14)}>Không có tuyến đi phù hợp</Text>
             )
@@ -678,7 +778,7 @@ function SuggestedRouteScreen({ navigation }) {
         }
       </ScrollView>
       <Modal
-        isVisible={modalVisible}
+        isVisible={showSelectedRouteNum}
         style={styles.modal}
         onBackdropPress={closeSelectBoxModal}
         animationIn="slideInUp"
@@ -693,6 +793,32 @@ function SuggestedRouteScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleOptionSelect(2)}>
             <Text style={styles.modalText}>2 tuyến</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal
+        isVisible={showSelectedSort}
+        style={styles.modal}
+        onBackdropPress={() => setShowSelectedSort(false)}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        backdropOpacity={0.5}
+        backdropTransitionOutTiming={0}
+      >
+        <View style={{ ...styles.modalContent, height: 220 }}>
+          <Text style={styles.modalTextHeader}>Sắp xếp theo: </Text>
+          <TouchableOpacity onPress={() => handleSelectSort(TIME, ASC)}>
+            <Text style={styles.modalText}>Thời gian di chuyển - Tăng dần</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSelectSort(TIME, DES)}>
+            <Text style={styles.modalText}>Thời gian di chuyển - Giảm dần</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSelectSort(COST, ASC)}>
+            <Text style={styles.modalText}>Giá tiền - Tăng dần</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSelectSort(COST, DES)}>
+            <Text style={styles.modalText}>Giá tiền - Giảm dần</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -802,7 +928,9 @@ const styles = StyleSheet.create({
   selectBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 7,
+    alignItems: 'center',
+    paddingHorizontal: 7,
+    height: 30
 
   },
   card: {

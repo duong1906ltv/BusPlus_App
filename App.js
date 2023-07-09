@@ -6,7 +6,13 @@ import { Provider } from 'react-redux'
 import { SocketProvider } from './SocketContext'
 import AppStack from './navigation/AppStack'
 import store from './store'
+import { LogBox } from 'react-native'
+
+
 registerTranslation('en', en)
+// Ignore specific warnings
+LogBox.ignoreAllLogs()
+
 
 export default function App() {
   return (
