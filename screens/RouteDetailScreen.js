@@ -39,6 +39,7 @@ function RouteDetailScreen({
         const decodedStations = forwardRoute.map((station) => ({
           latitude: station.location.lat,
           longitude: station.location.lng,
+          name: station.name,
         }))
         setRouteStations(
           decodedStations.map((item) => ({
@@ -47,6 +48,7 @@ function RouteDetailScreen({
               longitude: item.longitude,
             },
             icon: '../../assets/images/orange_icon_bus_station.png',
+            name: item.name,
           }))
         )
 

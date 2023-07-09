@@ -10,8 +10,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { editProfileButtonClick } from '../actions/profile'
 import CustomDrawerContent from '../components/CustomDrawerContent'
 import { Colors } from '../constants/colors'
+import BusNearStation from '../screens/BusNearStation'
 import BuyTicket from '../screens/BuyTicket'
+import FriendCheckin from '../screens/FriendCheckin'
 import FriendScreen from '../screens/FriendScreen'
+import GuideRouteScreen from '../screens/GuideRouteScreen'
 import HomeScreen from '../screens/HomeScreen'
 import LoginScreen from '../screens/Login'
 import MyTicket from '../screens/MyTicket'
@@ -23,10 +26,7 @@ import RouteDetailScreen from '../screens/RouteDetailScreen'
 import RoutesLookupScreen from '../screens/RoutesLookupScreen'
 import SearchScreen from '../screens/SearchScreen'
 import SuggestedRouteScreen from '../screens/SuggestedRouteScreen'
-import GuideRouteScreen from '../screens/GuideRouteScreen'
 import TicketInfo from '../screens/TicketInfo'
-import FriendCheckin from '../screens/FriendCheckin'
-import AdminNotiModal from '../components/AdminNotiModal'
 
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
@@ -224,6 +224,11 @@ function AppStack() {
         <Stack.Screen
           name="GuideRouteScreen"
           component={GuideRouteScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="BusNearStation"
+          component={BusNearStation}
           options={{ animation: 'slide_from_right' }}
         />
       </Stack.Navigator>

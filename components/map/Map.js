@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
 import { Image, StyleSheet } from 'react-native'
 import MapView, { Marker, Polyline } from 'react-native-maps'
@@ -5,6 +6,7 @@ import { useSelector } from 'react-redux'
 import { selectBusStation } from '../../reducers/map'
 import { selectFoundRoute, selectSuggestedRoute } from '../../reducers/route'
 import { getFullDetailDirection } from '../../utils/mapUtils'
+
 const TASK_FETCH_LOCATION = 'TASK_FETCH_LOCATION'
 
 export const busStationIcon = '../../assets/images/orange_icon_bus_station.png'
@@ -21,14 +23,15 @@ export const pointIcon = '../../assets/images/icon_points.png'
 
 export const busIcon = '../../assets/images/bus_orange.png'
 
-function Map({ coordinates, stations, children }) {
+function Map({ coordinates, stations, children, busStation }) {
+  const navigation = useNavigation()
   const [zoomLevel, setZoomLevel] = useState(null)
   const foundRoute = useSelector(selectFoundRoute)
   const suggestedRoute = useSelector(selectSuggestedRoute)
   const originState = useSelector(selectBusStation)
 
   const region = {
-    latitude: 16.0738355,
+    latitude: 16.0738355 - 0.01,
     longitude: 108.145475,
     latitudeDelta: 0.04,
     longitudeDelta: 0.02,
@@ -61,6 +64,14 @@ function Map({ coordinates, stations, children }) {
     }
   }, [suggestedRoute])
 
+  const handleSelectStation = (station) => {
+    if (navigation) {
+      navigation.navigate('BusNearStation', {
+        station: station,
+      })
+    }
+  }
+
   return (
     <MapView
       style={styles.map}
@@ -68,16 +79,35 @@ function Map({ coordinates, stations, children }) {
       // initialRegion={region}
       region={
         originState
-          ? { ...originState, latitudeDelta: 0.04, longitudeDelta: 0.02 }
+          ? {
+              latitude: originState.latitude - 0.01,
+              longitude: originState.longitude,
+              latitudeDelta: 0.04,
+              longitudeDelta: 0.02,
+            }
           : { ...region }
       }
       onRegionChangeComplete={handleRegionChangeComplete}
     >
+      {zoomLevel <= 0.06 && busStation && (
+        <Marker coordinate={busStation.coordinate}>
+          <Image
+            source={require(blueBusStationIcon)}
+            style={styles.activeMarkerImage}
+            resizeMode="center"
+            resizeMethod="resize"
+          />
+        </Marker>
+      )}
       {zoomLevel <= 0.06 &&
         stations &&
         stations.map((station, index) =>
           JSON.stringify(station.coordinate) === JSON.stringify(originState) ? (
-            <Marker coordinate={station.coordinate} key={index + Date.now()}>
+            <Marker
+              coordinate={station.coordinate}
+              key={index + Date.now()}
+              onPress={() => handleSelectStation(station)}
+            >
               <Image
                 source={require(blueBusStationIcon)}
                 style={styles.activeMarkerImage}
@@ -90,6 +120,7 @@ function Map({ coordinates, stations, children }) {
               coordinate={station.coordinate}
               key={index}
               tracksViewChanges={false}
+              onPress={() => handleSelectStation(station)}
             >
               <Image
                 source={require(orangeBusStationIcon)}

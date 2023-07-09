@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { Marker } from 'react-native-maps'
 import { SocketContext } from '../../SocketContext'
 
@@ -11,6 +11,8 @@ function FriendLocation() {
   })
 
   useEffect(() => {}, [friendStatus])
+
+  const busIcon = '../../assets/images/bus_orange.png'
 
   return (
     <>
