@@ -13,6 +13,8 @@ function FriendLocation() {
 
   useEffect(() => {}, [friendStatus])
 
+  const busIcon = '../../assets/images/bus_orange.png'
+
   return (
     <>
       {true && (
