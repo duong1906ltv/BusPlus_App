@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
-import { Marker } from 'react-native-maps'
+import { Image, StyleSheet, Text, View } from 'react-native'
+import { Callout, Marker } from 'react-native-maps'
 import { SocketContext } from '../../SocketContext'
+export const busIcon = '../../assets/images/bus_orange.png'
 
 function FriendLocation() {
   const { friendStatus } = useContext(SocketContext)
@@ -26,6 +27,13 @@ function FriendLocation() {
               resizeMethod="resize"
             />
           </View>
+          <Callout tooltip={true}>
+            <View>
+              <View style={styles.bubble}>
+                <Text>TEST</Text>
+              </View>
+            </View>
+          </Callout>
         </Marker>
       )}
     </>
@@ -45,5 +53,15 @@ const styles = StyleSheet.create({
   activeBus: {
     width: 24,
     height: 24,
+  },
+  bubble: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    borderColor: '#ccc',
+    borderWidth: 0.5,
+    padding: 15,
+    width: 150,
   },
 })

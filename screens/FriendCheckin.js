@@ -9,7 +9,6 @@ function FriendCheckin() {
   const { listNoti } = useSelector((state) => state.noti)
   const dispatch = useDispatch()
   const isFocused = useIsFocused()
-  console.log('NOTI', listNoti)
 
   useEffect(() => {
     dispatch(getListNoti())

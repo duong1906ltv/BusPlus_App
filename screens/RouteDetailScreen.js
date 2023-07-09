@@ -89,6 +89,7 @@ function RouteDetailScreen({
       <RouteDirection
         routeDirection={routeDirection}
         routeStations={routeStations}
+        routeNumber={routeNumber}
       />
       <RouteDetails route={route} schedule={schedule} />
     </View>

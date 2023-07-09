@@ -63,14 +63,37 @@ const SocketProvider = ({ children }) => {
             Toast.show({
               type: 'success',
               text1: 'FRIEND CHECK IN',
-              text2: `Bạn của bạn ${profile.fullname} vừa lên xe buýt `,
+              text2: `Bạn của bạn ${data.fullname} vừa lên xe buýt `,
               autoHide: true,
             })
             await api.post(`noti`, {
               user: profile.user,
-              friend: authState.user._id,
+              friend: lastCheckin.user,
               lat: lastCheckin.lat,
               lng: lastCheckin.lng,
+              routeNumber: lastCheckin.routeNumber,
+              busNumber: lastCheckin.busNumber,
+            })
+            setListCheckIn((prevListCheckIn) => {
+              const isDuplicate = prevListCheckIn.some(
+                (item) =>
+                  item.user === lastCheckin.user &&
+                  item.routeNumber === lastCheckin.routeNumber &&
+                  item.busNumber === lastCheckin.busNumber
+              )
+
+              if (isDuplicate) {
+                return prevListCheckIn // Không thêm phần tử mới nếu bị trùng
+              }
+
+              return [
+                ...prevListCheckIn,
+                {
+                  user: lastCheckin.user,
+                  routeNumber: lastCheckin.routeNumber,
+                  busNumber: lastCheckin.busNumber,
+                },
+              ]
             })
           }
         }
