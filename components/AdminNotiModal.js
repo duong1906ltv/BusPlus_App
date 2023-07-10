@@ -1,42 +1,39 @@
 import React, { Component } from 'react'
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native'
+export function AdminNotiModal({ notices, modalVisible, setModalVisible }) {
 
-export class AdminNotiModal extends Component {
-  render() {
-    return (
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={false}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.')
-            this.props.setModalVisible(!this.props.modalVisible)
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.title}>Thông báo</Text>
+  return (
+    notices &&
+    <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.')
+          setModalVisible(!modalVisible)
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.title}>Thông báo</Text>
 
-              <Text style={styles.modalText}>
-                Hôm nay các tuyến xe buýt không hoạt động. Sẽ có thông báo mới
-                nhất khi các tuyến xe hoạt động trở lại. Xin lỗi vì sự bất tiện
-                này.
-              </Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() =>
-                  this.props.setModalVisible(!this.props.modalVisible)
-                }
-              >
-                <Text style={styles.textStyle}>OK</Text>
-              </Pressable>
-            </View>
+            <Text style={styles.modalText}>
+              {notices.description}
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() =>
+                setModalVisible(!modalVisible)
+              }
+            >
+              <Text style={styles.textStyle}>OK</Text>
+            </Pressable>
           </View>
-        </Modal>
-      </View>
-    )
-  }
+        </View>
+      </Modal>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

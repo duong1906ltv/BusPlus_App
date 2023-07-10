@@ -11,9 +11,12 @@ import { getFullDetailDirection } from '../utils/mapUtils'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native'
 import AdminNotiModal from '../components/AdminNotiModal'
+import { selectCurrentNotice } from '../reducers/noti'
+import { getCurrentAdminNotice } from '../actions/noti'
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch()
   const foundRoute = useSelector(selectFoundRoute)
+  const currentNotices = useSelector(selectCurrentNotice)
   const [inputOriginal, setInputOriginal] = useState('')
   const [inputDestination, setInputDestination] = useState('')
   const [coordinates, setCoordinates] = useState([])
@@ -23,6 +26,16 @@ function HomeScreen({ navigation }) {
     dispatch(getAllRoutes())
   }, [dispatch])
 
+  useEffect(() => {
+    dispatch(getCurrentAdminNotice())
+  }, [dispatch])
+
+  useEffect(() => {
+    if(currentNotices.length){
+      setModalVisible(true)
+    }
+  }, [currentNotices])
+  
   useEffect(() => {
     if (foundRoute.original) {
       setInputOriginal(foundRoute.original.name)
@@ -122,6 +135,7 @@ function HomeScreen({ navigation }) {
         </View>
       </View>
       <AdminNotiModal
+        notices={currentNotices[0]}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />

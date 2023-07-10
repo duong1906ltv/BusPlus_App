@@ -85,9 +85,11 @@ const BuyTicket = ({ navigation }) => {
   const handleCreateTicket = () => {
     const ticket = {
       ticketType: selectedTicketType,
-      description: selectedRoute.routeName,
       month: parseInt(selectedMonth.split("/")[0]),
       year: parseInt(selectedMonth.split("/")[1]),
+    }
+    if (routeType === SINGLE){
+      ticket.description = selectedRoute.routeName
     }
     dispatch(createTicket(ticket))
   }

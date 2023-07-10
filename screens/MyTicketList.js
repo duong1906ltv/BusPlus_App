@@ -45,7 +45,7 @@ function MyTicketList({ navigation }) {
             item?.description &&
             <View style={styles.infoContainer}>
               <Text style={styles.title}>Tuyến xe: </Text>
-              <Text style={styles.content}>{item?.description}</Text>
+                <Text style={styles.content} ellipsizeMode='tail' numberOfLines={1}>{item?.description}</Text>
             </View>
           }
           <View style={styles.infoContainer}>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   item: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: Colors.white,
     marginBottom: 30,
@@ -104,12 +104,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   title: {
-    width: '30%',
+    width: '25%',
     fontWeight: 'bold',
     fontSize: 14,
   },
   content: {
-    width: '70%',
+    maxWidth: 180,
+    width: '75%',
     fontSize: 14,
   },
 })
