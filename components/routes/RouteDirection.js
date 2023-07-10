@@ -1,6 +1,4 @@
 import BusLocation from '../bus/BusLocation'
-import CheckinLocation from '../checkin/CheckinLocation'
-import FriendLocation from '../checkin/friendLocation'
 import Map from '../map/Map'
 
 function RouteDirection({
@@ -8,6 +6,7 @@ function RouteDirection({
   routeStations,
   origin,
   routeNumber,
+  checkinLocation,
 }) {
   return (
     <>
@@ -15,10 +14,9 @@ function RouteDirection({
         coordinates={routeDirection}
         stations={routeStations}
         origin={origin}
+        checkinLocation={checkinLocation}
       >
         <BusLocation routeNumber={routeNumber} />
-        {/* <CheckinLocation />
-        <FriendLocation /> */}
       </Map>
     </>
   )

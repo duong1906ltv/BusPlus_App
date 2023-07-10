@@ -18,10 +18,8 @@ const SocketProvider = ({ children }) => {
   const [checkinStatus, setCheckinStatus] = useState(false)
   const [listCheckIn, setListCheckIn] = useState([])
   const [friendStatus, setFriendStatus] = useState(false)
-  const [location, setLocation] = useState({
-    latitude: 16.07215,
-    longitude: 108.22679,
-  })
+  const [closeTicketModal, setCloseTicketModel] = useState(false)
+  const [location, setLocation] = useState()
 
   const authState = useSelector((state) => state.auth)
 
@@ -41,6 +39,9 @@ const SocketProvider = ({ children }) => {
       {
         text: 'YES',
         onPress: () => {
+          if (lastCheckin.user === authState.user._id) {
+            setActiveStatus(true)
+          }
           sendNotiToFriend(lastCheckin)
           setCheckinStatus(true)
           setLocation({ lat, lng })
@@ -73,10 +74,12 @@ const SocketProvider = ({ children }) => {
               lng: lastCheckin.lng,
               routeNumber: lastCheckin.routeNumber,
               busNumber: lastCheckin.busNumber,
+              status: 'check in',
             })
             setListCheckIn((prevListCheckIn) => {
               const isDuplicate = prevListCheckIn.some(
                 (item) =>
+                  item.fullname === data.fullname &&
                   item.user === lastCheckin.user &&
                   item.routeNumber === lastCheckin.routeNumber &&
                   item.busNumber === lastCheckin.busNumber
@@ -89,12 +92,59 @@ const SocketProvider = ({ children }) => {
               return [
                 ...prevListCheckIn,
                 {
+                  fullname: data.fullname,
                   user: lastCheckin.user,
                   routeNumber: lastCheckin.routeNumber,
                   busNumber: lastCheckin.busNumber,
                 },
               ]
             })
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const systemNoti = (lastNoti) => {
+    if (lastNoti.user === authState.user._id) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi vé',
+        text2: lastNoti.description,
+        autoHide: true,
+      })
+    }
+  }
+  const friendCheckOut = async (lastCheckin) => {
+    try {
+      const response = await api.get(`/profile/get-friends/${lastCheckin.user}`)
+
+      for (const data of response.data) {
+        const profile = data.profile
+        if (data.status === 'active') {
+          if (profile.user === authState.user._id) {
+            Toast.show({
+              type: 'success',
+              text1: 'FRIEND CHECK OUT',
+              text2: `Bạn của bạn ${data.fullname} vừa xuống xe buýt `,
+              autoHide: true,
+            })
+            await api.post(`noti`, {
+              user: profile.user,
+              friend: lastCheckin.user,
+              lat: lastCheckin.lat,
+              lng: lastCheckin.lng,
+              routeNumber: lastCheckin.routeNumber,
+              busNumber: lastCheckin.busNumber,
+              status: 'check out',
+            })
+            setListCheckIn((prevListCheckIn) =>
+              prevListCheckIn.filter(
+                (checkInUser) => checkInUser.user !== lastCheckin.user
+              )
+            )
           }
         }
       }
@@ -115,14 +165,12 @@ const SocketProvider = ({ children }) => {
     })
 
     socket.on('CheckOut', (lastCheckin) => {
-      setCheckinStatus(false)
-      setFriendStatus(false)
-      setListCheckIn((prevListCheckIn) =>
-        prevListCheckIn.filter(
-          (checkInUser) => checkInUser.id !== lastCheckin.user
-        )
-      )
-      setCheckinStatus(false)
+      friendCheckOut(lastCheckin)
+    })
+
+    socket.on('SystemNoti', (lastNoti) => {
+      setCloseTicketModel(!closeTicketModal)
+      systemNoti(lastNoti)
     })
 
     // Clean up the socket connection when the component unmounts
@@ -144,6 +192,7 @@ const SocketProvider = ({ children }) => {
         listCheckIn,
         setFriendStatus,
         friendStatus,
+        closeTicketModal,
       }}
     >
       {children}

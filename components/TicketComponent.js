@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
   Image,
   Modal,
@@ -7,9 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { SocketContext } from '../SocketContext'
 
 function TicketComponent({ ticket, qrCode }) {
-  const [modalShow, setModalShow] = useState(false)
+  const [modalShow, setModalShow] = useState(true)
+  const { closeTicketModal } = useContext(SocketContext)
+  useEffect(() => {
+    setModalShow(!modalShow)
+  }, [closeTicketModal])
   return (
     <>
       {ticket && (
@@ -22,9 +27,7 @@ function TicketComponent({ ticket, qrCode }) {
           </View>
           <View style={styles.item}>
             <Text style={styles.title}>Họ và tên: </Text>
-            <Text style={styles.content}>
-              {ticket?.user?.fullname}
-            </Text>
+            <Text style={styles.content}>{ticket?.user?.fullname}</Text>
           </View>
           <View style={styles.item}>
             <Text style={styles.title}>Ticket ID: </Text>
@@ -32,19 +35,24 @@ function TicketComponent({ ticket, qrCode }) {
           </View>
           <View style={styles.item}>
             <Text style={styles.title}>Vé xe tháng: </Text>
-            <Text style={styles.content}>{ticket?.month + "/" + ticket?.year}</Text>
+            <Text style={styles.content}>
+              {ticket?.month + '/' + ticket?.year}
+            </Text>
           </View>
           <View style={styles.item}>
             <Text style={styles.title}>Loại vé xe: </Text>
-            <Text style={styles.content}>{ticket?.ticketType.priority + " - " + ticket?.ticketType.routeType}</Text>
+            <Text style={styles.content}>
+              {ticket?.ticketType.priority +
+                ' - ' +
+                ticket?.ticketType.routeType}
+            </Text>
           </View>
-          {
-            ticket?.description && 
+          {ticket?.description && (
             <View style={styles.item}>
               <Text style={styles.title}>Tuyến xe: </Text>
               <Text style={styles.content}>{ticket?.description}</Text>
             </View>
-          }
+          )}
           <View style={[styles.item, styles.imageContainer]}>
             {modalShow ? (
               <Modal isVisible={modalShow} style={styles.modalContainer}>

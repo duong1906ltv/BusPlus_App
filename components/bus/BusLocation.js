@@ -1,17 +1,18 @@
 import { BASE_URL } from '@env'
-import { useEffect, useState } from 'react'
-import { Image, StyleSheet } from 'react-native'
-import { Marker } from 'react-native-maps'
+import { useEffect, useRef, useState } from 'react'
+import { Image, StyleSheet, Text } from 'react-native'
+import { Callout, Marker } from 'react-native-maps'
 import { io } from 'socket.io-client'
 import api from '../../services/api1'
 import { useContext } from 'react'
 import { SocketContext } from '../../SocketContext'
 import { View } from 'react-native'
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 export const busIcon = '../../assets/images/bus_orange.png'
 
 function BusLocation({ routeNumber }) {
   const [activeBus, setActiveBus] = useState([])
-  const { listCheckIn } = useContext(SocketContext)
+  const { listCheckIn, activeStatus } = useContext(SocketContext)
   console.log(listCheckIn)
 
   const addBus = (busNumber, busId, lat, lng) => {
@@ -54,7 +55,6 @@ function BusLocation({ routeNumber }) {
 
     // Listen for the 'busChange' event
     socket.on('busChange', (bus) => {
-      console.log(bus)
       if (bus.updatedBus.activeStatus) {
         addBus(
           bus.currentLocation.busNumber,
@@ -93,35 +93,68 @@ function BusLocation({ routeNumber }) {
 
   const uri = '../../assets/images/bus_green.png'
 
+  const markerRef = useRef(null)
+
+  useEffect(() => {
+    if (markerRef.current) {
+      markerRef.current.showCallout()
+    }
+  }, [])
+
   return (
     <>
       {activeBus &&
         activeBus.map((bus) => (
-          <Marker
-            key={bus.busId}
-            coordinate={{
-              latitude: bus.lat,
-              longitude: bus.lng,
-            }}
-          >
+          <>
             {listCheckIn.find((e) => e.busNumber === bus.busNumber) ? (
-              <View style={styles.activeBusContainer}>
-                <Image
-                  source={require(busIcon)}
-                  style={styles.activeBus}
-                  resizeMode="center"
-                  resizeMethod="resize"
-                />
-              </View>
+              <Marker
+                key={bus.busId}
+                coordinate={{
+                  latitude: bus.lat,
+                  longitude: bus.lng,
+                }}
+                ref={markerRef}
+                onLayout={() => markerRef.current.showCallout()}
+              >
+                <View style={styles.activeBusContainer}>
+                  <Image
+                    source={require(busIcon)}
+                    style={styles.activeBus}
+                    resizeMode="center"
+                    resizeMethod="resize"
+                  />
+                </View>
+                <Callout>
+                  <Text>
+                    {
+                      listCheckIn.find((e) => e.busNumber === bus.busNumber)
+                        .fullname
+                    }
+                    đang ở trên xe buýt này
+                  </Text>
+                </Callout>
+              </Marker>
             ) : (
-              <Image
-                source={require(uri)}
-                style={styles.markerImage}
-                resizeMode="center"
-                resizeMethod="resize"
-              />
+              <Marker
+                key={bus.busId}
+                coordinate={{
+                  latitude: bus.lat,
+                  longitude: bus.lng,
+                }}
+              >
+                {activeStatus ? (
+                  <SimpleLineIcons name="location-pin" size={30} />
+                ) : (
+                  <Image
+                    source={require(uri)}
+                    style={styles.markerImage}
+                    resizeMode="center"
+                    resizeMethod="resize"
+                  />
+                )}
+              </Marker>
             )}
-          </Marker>
+          </>
         ))}
     </>
   )

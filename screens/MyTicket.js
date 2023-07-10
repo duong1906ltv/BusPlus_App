@@ -11,6 +11,7 @@ function MyTicket({ navigation }) {
   const dispatch = useDispatch()
   const ticket = useSelector((state) => state.ticket)
   const { isLoading } = useSelector((state) => state.ticket)
+  console.log(ticket)
 
   const [currentTicket, setCurrentTicket] = useState()
   const [currentQrCode, setCurrentQrCode] = useState()
@@ -24,7 +25,6 @@ function MyTicket({ navigation }) {
       const currentMonth = new Date().getMonth() + 1
       var flag = false
       ticket.myTicket.map((item, index) => {
-        console.log(item.month)
         if (item.month === currentMonth) {
           setCurrentTicket(item)
           setCurrentQrCode(ticket?.qrCode[index])

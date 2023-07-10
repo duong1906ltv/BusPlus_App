@@ -15,7 +15,6 @@ function BusNearStation({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('helo')
     dispatch(
       setSelectedBusStation({
         latitude: station.coordinate.latitude,

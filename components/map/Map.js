@@ -7,8 +7,6 @@ import { selectBusStation } from '../../reducers/map'
 import { selectFoundRoute, selectSuggestedRoute } from '../../reducers/route'
 import { getFullDetailDirection } from '../../utils/mapUtils'
 
-const TASK_FETCH_LOCATION = 'TASK_FETCH_LOCATION'
-
 export const busStationIcon = '../../assets/images/orange_icon_bus_station.png'
 
 export const orangeBusStationIcon =
@@ -23,7 +21,7 @@ export const pointIcon = '../../assets/images/icon_points.png'
 
 export const busIcon = '../../assets/images/bus_orange.png'
 
-function Map({ coordinates, stations, children, busStation }) {
+function Map({ coordinates, stations, children, busStation, checkinLocation }) {
   const navigation = useNavigation()
   const [zoomLevel, setZoomLevel] = useState(null)
   const foundRoute = useSelector(selectFoundRoute)
@@ -78,7 +76,14 @@ function Map({ coordinates, stations, children, busStation }) {
       customMapStyle={mapStyle}
       // initialRegion={region}
       region={
-        originState
+        checkinLocation
+          ? {
+              latitude: checkinLocation.latitude - 0.01,
+              longitude: checkinLocation.longitude,
+              latitudeDelta: 0.04,
+              longitudeDelta: 0.02,
+            }
+          : originState
           ? {
               latitude: originState.latitude - 0.01,
               longitude: originState.longitude,

@@ -9,13 +9,11 @@ import {
 } from 'react-native'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
 import { Colors } from '../constants/colors'
-import { useDispatch } from 'react-redux'
 import { formatDistanceToNowStrict } from 'date-fns'
-import { getFullDetailDirection } from '../utils/mapUtils'
 import { useState } from 'react'
 import { useEffect } from 'react'
 
-function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
+function NotiListTabs({ notiList }) {
   const layout = useWindowDimensions()
 
   const adminNotiList = notiList.filter((noti) => noti.type === 'admin noti')
@@ -31,6 +29,8 @@ function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
 
   const FlatListItem = ({ item, index, type }) => {
     const [locationName, setLocationName] = useState('')
+
+    console.log(item)
 
     useEffect(() => {
       // Call the Goong Geocoding API to get the location name
@@ -122,8 +122,9 @@ function NotiListTabs({ notiList, reloadData, setReloadData, listCheckIn }) {
                   lineHeight: 20,
                 }}
               >
-                Checkin trên chuyến xe {item.busNumber} thuộc tuyến{' '}
-                {item.routeNumber} tại vị trí {locationName}
+                {item.status ? item.status : 'check in'} trên chuyến xe{' '}
+                {item.busNumber} thuộc tuyến {item.routeNumber} tại vị trí{' '}
+                {locationName}
               </Text>
             </View>
           ) : (
