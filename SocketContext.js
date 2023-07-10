@@ -32,7 +32,7 @@ const SocketProvider = ({ children }) => {
   const handleCheckin = (lastCheckin) => {
     const lat = lastCheckin.lat
     const lng = lastCheckin.lng
-    Alert.alert('Xác nhận ', `Bạn có muốn checkin không?`, [
+    Alert.alert('Xác nhận ', `Bạn có muốn chia sẻ vị trí của mình không?`, [
       {
         text: 'NO',
       },

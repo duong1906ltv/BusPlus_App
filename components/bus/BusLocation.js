@@ -124,12 +124,13 @@ function BusLocation({ routeNumber }) {
                     resizeMethod="resize"
                   />
                 </View>
-                <Callout>
-                  <Text>
+                <Callout style={{ width: 200 }}>
+                  <Text style={{ textAlign: 'center' }}>
                     {
                       listCheckIn.find((e) => e.busNumber === bus.busNumber)
                         .fullname
                     }
+                    {'\n '}
                     đang ở trên xe buýt này
                   </Text>
                 </Callout>

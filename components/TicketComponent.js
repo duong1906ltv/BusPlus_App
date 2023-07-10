@@ -20,10 +20,19 @@ function TicketComponent({ ticket, qrCode }) {
       {ticket && (
         <View style={styles.container}>
           <View style={[styles.item, styles.imageContainer]}>
-            <Image
-              style={styles.avatar}
-              source={{ uri: ticket?.user?.profile?.avatar }}
-            />
+            {ticket?.user?.profile?.avatar ? (
+              <Image
+                style={styles.avatar}
+                source={{ uri: ticket?.user?.profile?.avatar }}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg',
+                }}
+                style={styles.avatar}
+              />
+            )}
           </View>
           <View style={styles.item}>
             <Text style={styles.title}>Họ và tên: </Text>
